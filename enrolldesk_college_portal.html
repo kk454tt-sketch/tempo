@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnrollDesk — Smart Campus Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            DEFAULT: '#182449',
+                            light: '#243464',
+                            dark: '#0f1730',
+                        },
+                        gold: {
+                            DEFAULT: '#C9982F',
+                            hover: '#b08323',
+                            light: '#fdf8ec'
+                        },
+                        coral: {
+                            DEFAULT: '#FF6B5B',
+                            hover: '#e55343',
+                            light: '#fff0ee'
+                        },
+                        canvas: '#F5F6F9',
+                    },
+                    fontFamily: {
+                        heading: ['Space Grotesk', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F6F9;
+            color: #1f2937;
+        }
+        h1, h2, h3, h4, h5, h6, .font-heading {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-canvas text-gray-800">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Navigation Bar -->
+    <header class="bg-navy text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo & Name -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="bg-gold text-navy font-heading font-bold rounded-lg w-10 h-10 flex items-center justify-center text-xl shadow">
+                        ED
+                    </div>
+                    <div>
+                        <span id="nav-site-name" class="font-heading font-bold text-lg sm:text-xl text-white tracking-wide block leading-tight">EnrollDesk</span>
+                        <span id="nav-site-tagline" class="text-xs text-gray-300 hidden sm:block leading-none">Smart Student Portal</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <button onclick="navigateTo('home')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-navy-light transition" data-target="home">Home</button>
+                    <button onclick="navigateTo('enroll')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-navy-light transition" data-target="enroll">Enroll</button>
+                    <button onclick="navigateTo('notices')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-navy-light transition" data-target="notices">Notices</button>
+                    <button onclick="navigateTo('forms')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-navy-light transition" data-target="forms">Forms</button>
+                    <button onclick="navigateTo('matches')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-navy-light transition" data-target="matches">Find Matches</button>
+                    <button onclick="navigateTo('admin')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium bg-gold text-navy hover:bg-gold-hover font-semibold shadow-sm ml-2 transition" data-target="admin">Admin Panel</button>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 rounded-md text-gray-300 hover:text-white hover:bg-navy-light focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden bg-navy-dark border-t border-navy-light px-2 pt-2 pb-3 space-y-1">
+            <button onclick="navigateTo('home'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-navy-light">Home</button>
+            <button onclick="navigateTo('enroll'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-navy-light">Enroll</button>
+            <button onclick="navigateTo('notices'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-navy-light">Notices</button>
+            <button onclick="navigateTo('forms'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-navy-light">Forms</button>
+            <button onclick="navigateTo('matches'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-navy-light">Find Matches</button>
+            <button onclick="navigateTo('admin'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-gold text-navy font-bold">Admin Panel</button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ================= HOME VIEW ================= -->
+        <section id="view-home" class="view-section space-y-8">
+            <!-- Hero Banner -->
+            <div class="bg-navy rounded-2xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-gold opacity-10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="max-w-2xl space-y-4 relative z-10">
+                    <span class="inline-block bg-gold/20 text-gold border border-gold/30 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider">Campus Portal</span>
+                    <h1 id="hero-title" class="text-3xl sm:text-5xl font-bold tracking-tight">EnrollDesk</h1>
+                    <p id="hero-tagline" class="text-lg text-gray-300">Empowering student enrollment, seamless notices, custom forms, and privacy-first classmate matching.</p>
+                    <div class="pt-4 flex flex-wrap gap-3">
+                        <button onclick="navigateTo('enroll')" class="bg-gold hover:bg-gold-hover text-navy font-bold px-6 py-3 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Start Enrollment</button>
+                        <button onclick="navigateTo('matches')" class="bg-coral hover:bg-coral-hover text-white font-bold px-6 py-3 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Find Classmates</button>
+                        <button onclick="navigateTo('notices')" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium px-5 py-3 rounded-xl transition">View Notices</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Stats Row -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
+                    <span class="text-xs uppercase font-semibold text-gray-400">Total Students</span>
+                    <span id="stat-students" class="text-3xl font-heading font-bold text-navy mt-1">0</span>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
+                    <span class="text-xs uppercase font-semibold text-gray-400">Departments</span>
+                    <span id="stat-departments" class="text-3xl font-heading font-bold text-navy mt-1">0</span>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
+                    <span class="text-xs uppercase font-semibold text-gray-400">Active Notices</span>
+                    <span id="stat-notices" class="text-3xl font-heading font-bold text-navy mt-1">0</span>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
+                    <span class="text-xs uppercase font-semibold text-gray-400">Match Profiles</span>
+                    <span id="stat-matches" class="text-3xl font-heading font-bold text-coral mt-1">0</span>
+                </div>
+            </div>
+
+            <!-- How It Works Section -->
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold text-navy">How It Works</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200/60 shadow-sm relative">
+                        <div class="w-10 h-10 bg-navy/10 text-navy font-bold rounded-lg flex items-center justify-center mb-4 text-lg">1</div>
+                        <h3 class="font-bold text-lg text-navy mb-2">Self Enrollment</h3>
+                        <p class="text-sm text-gray-600">Register your details, select your department and academic year directly with direct photo upload.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200/60 shadow-sm relative">
+                        <div class="w-10 h-10 bg-gold/20 text-gold-hover font-bold rounded-lg flex items-center justify-center mb-4 text-lg">2</div>
+                        <h3 class="font-bold text-lg text-navy mb-2">Stay Informed & Submit</h3>
+                        <p class="text-sm text-gray-600">Access department notices, receive updates, and fill custom dynamic forms instantly.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200/60 shadow-sm relative">
+                        <div class="w-10 h-10 bg-coral/20 text-coral font-bold rounded-lg flex items-center justify-center mb-4 text-lg">3</div>
+                        <h3 class="font-bold text-lg text-navy mb-2">Privacy Matchmaking</h3>
+                        <p class="text-sm text-gray-600">Connect with study buddies or project partners with strict privacy—contact details stay secure.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Recent Notices -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-navy">Recent Notices</h2>
+                    <button onclick="navigateTo('notices')" class="text-sm text-navy hover:text-gold font-semibold flex items-center gap-1">View All &rarr;</button>
+                </div>
+                <div id="home-notices-preview" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Dynamic Notice Cards Preview Inserted Here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ENROLL VIEW ================= -->
+        <section id="view-enroll" class="view-section hidden max-w-3xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-navy">Student Self Enrollment</h2>
+                    <p class="text-sm text-gray-500 mt-1">Please fill out your details accurately to register with your department portal.</p>
+                </div>
+
+                <form id="enrollment-form" onsubmit="handleEnrollmentSubmit(event)" class="space-y-5">
+                    <!-- Full Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+                        <input type="text" id="enroll-fullname" required placeholder="e.g. Alex Johnson" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-navy focus:border-navy text-sm">
+                    </div>
+
+                    <!-- Photo Upload with Preview -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Student Photo <span class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-4">
+                            <div id="enroll-photo-preview" class="w-20 h-20 rounded-xl bg-gray-100 border border-gray-300 flex items-center justify-center overflow-hidden text-gray-400">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <input type="file" id="enroll-photo-file" accept="image/*" required onchange="handleImagePreview(event, 'enroll-photo-preview')" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-navy/10 file:text-navy hover:file:bg-navy/20 cursor-pointer">
+                                <span class="text-xs text-gray-400 mt-1 block">PNG, JPG or JPEG up to 5MB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Department & Year Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Department <span class="text-red-500">*</span></label>
+                            <select id="enroll-dept" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-navy focus:border-navy text-sm bg-white">
+                                <option value="">Select Department...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Academic Year <span class="text-red-500">*</span></label>
+                            <select id="enroll-year" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-navy focus:border-navy text-sm bg-white">
+                                <option value="">Select Year...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Social / Contact Details -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Instagram Handle <span class="text-gray-400 font-normal">(Optional)</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 text-sm">@</span>
+                                <input type="text" id="enroll-insta" placeholder="username" class="w-full pl-8 pr-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-navy focus:border-navy text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number <span class="text-gray-400 font-normal">(Optional)</span></label>
+                            <input type="tel" id="enroll-whatsapp" placeholder="+1234567890" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-navy focus:border-navy text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Admin Configured Dynamic Custom Fields -->
+                    <div id="enroll-custom-fields-container" class="space-y-4 pt-2 border-t border-gray-100">
+                        <!-- Custom fields rendered dynamically -->
+                    </div>
+
+                    <button type="submit" class="w-full bg-navy hover:bg-navy-light text-white font-bold py-3 rounded-xl shadow transition">Complete Enrollment</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= NOTICES VIEW ================= -->
+        <section id="view-notices" class="view-section hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-gray-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-navy">Campus Notices & Announcements</h2>
+                    <p class="text-sm text-gray-500">Official updates from college administration and departments.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <select id="notice-filter-dept" onchange="renderNoticesView()" class="px-3 py-2 rounded-xl border border-gray-300 text-xs sm:text-sm bg-white">
+                        <option value="">All Departments</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="notices-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic Notice Cards Inserted Here -->
+            </div>
+        </section>
+
+        <!-- ================= FORMS VIEW ================= -->
+        <section id="view-forms" class="view-section hidden space-y-6">
+            <div>
+                <h2 class="text-2xl font-bold text-navy">Student Forms & Applications</h2>
+                <p class="text-sm text-gray-500">Fill and submit dynamic custom forms requested by your faculty or admin.</p>
+            </div>
+
+            <div id="forms-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Dynamic List of Forms -->
+            </div>
+
+            <!-- Modal / Form Filler Drawer -->
+            <div id="form-filler-modal" class="fixed inset-0 bg-navy/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 relative shadow-2xl">
+                    <button onclick="closeFormFillerModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                    <div id="form-filler-header">
+                        <!-- Dynamic Header -->
+                    </div>
+                    <form id="dynamic-form-element" onsubmit="handleDynamicFormSubmit(event)" class="space-y-4">
+                        <div id="form-filler-fields" class="space-y-4">
+                            <!-- Rendered Dynamic Input Elements -->
+                        </div>
+                        <div class="pt-4 flex justify-end gap-3">
+                            <button type="button" onclick="closeFormFillerModal()" class="px-5 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-50">Cancel</button>
+                            <button type="submit" class="px-6 py-2.5 rounded-xl bg-navy hover:bg-navy-light text-white text-sm font-bold shadow">Submit Form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= FIND MATCHES VIEW ================= -->
+        <section id="view-matches" class="view-section hidden space-y-8">
+            <div class="max-w-3xl mx-auto bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-sm space-y-6">
+                <div class="border-b border-gray-100 pb-4">
+                    <span class="bg-coral/10 text-coral text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Classmate Matchmaker</span>
+                    <h2 class="text-2xl font-bold text-navy mt-2">Find Matching Classmates</h2>
+                    <p class="text-sm text-gray-500 mt-1">Discover peers with similar hobbies, study goals, or project interests.</p>
+                    <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-start gap-2">
+                        <svg class="w-5 h-5 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        <span><strong>Strict Privacy Protection:</strong> Your WhatsApp number and gender are stored safely and will NEVER be shown to other students under any circumstances. Only Admin can view contact details.</span>
+                    </div>
+                </div>
+
+                <form id="match-submission-form" onsubmit="handleMatchSubmit(event)" class="space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="match-fullname" required placeholder="e.g. Sam Miller" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-coral text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Gender <span class="text-red-500">*</span> <span class="text-xs text-gray-400 font-normal">(Private)</span></label>
+                            <select id="match-gender" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-coral text-sm bg-white">
+                                <option value="">Select Gender...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other / Prefer not to say">Other / Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Department <span class="text-red-500">*</span></label>
+                            <select id="match-dept" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-coral text-sm bg-white">
+                                <option value="">Select Department...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Academic Year <span class="text-red-500">*</span></label>
+                            <select id="match-year" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-coral text-sm bg-white">
+                                <option value="">Select Year...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Photo Upload <span class="text-gray-400 font-normal">(Optional)</span></label>
+                        <input type="file" id="match-photo-file" accept="image/*" onchange="handleImagePreview(event, 'match-photo-preview')" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-coral/10 file:text-coral hover:file:bg-coral/20 cursor-pointer">
+                        <div id="match-photo-preview" class="hidden mt-2 w-16 h-16 rounded-xl overflow-hidden border border-gray-200"></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Select Hobbies & Interests <span class="text-red-500">*</span></label>
+                        <div id="match-hobbies-container" class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
+                            <!-- Rendered Checkboxes -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">What are you looking for? <span class="text-red-500">*</span></label>
+                        <select id="match-lookingfor" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-coral text-sm bg-white">
+                            <option value="">Select Option...</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Instagram Handle <span class="text-gray-400 font-normal">(Public on match card)</span></label>
+                            <input type="text" id="match-insta" placeholder="username" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-coral text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number <span class="text-red-500">*</span> <span class="text-xs text-coral font-semibold">(Private - Admin Only)</span></label>
+                            <input type="tel" id="match-whatsapp" required placeholder="+1234567890" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-coral text-sm">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-coral hover:bg-coral-hover text-white font-bold py-3 rounded-xl shadow-lg transition">Find My Matches</button>
+                </form>
+            </div>
+
+            <!-- Ranked Match Results Container -->
+            <div id="match-results-wrapper" class="hidden space-y-6">
+                <div class="text-center max-w-xl mx-auto space-y-2">
+                    <h3 class="text-2xl font-bold text-navy">Top Classmate Matches</h3>
+                    <p class="text-sm text-gray-600">Based on shared hobbies (+2 pts), matching goals (+3 pts), same department (+1 pt), and year (+1 pt).</p>
+                </div>
+                <div id="match-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards with STRICT PRIVACY will be rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ADMIN PANEL VIEW ================= -->
+        <section id="view-admin" class="view-section hidden space-y-6">
+            <!-- Login Overlay (shown if not authenticated) -->
+            <div id="admin-login-card" class="max-w-md mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 bg-navy/10 text-navy rounded-xl flex items-center justify-center mx-auto text-2xl font-bold">🔒</div>
+                    <h2 class="text-2xl font-bold text-navy">Admin Authentication</h2>
+                    <p class="text-xs text-gray-500">Enter your administrative password to access system controls.</p>
+                </div>
+                <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="admin-password-input" required placeholder="Default: admin123" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-navy text-sm">
+                    </div>
+                    <button type="submit" class="w-full bg-navy hover:bg-navy-light text-white font-bold py-2.5 rounded-xl shadow">Login to Admin</button>
+                </form>
+            </div>
+
+            <!-- Admin Dashboard (shown once authenticated) -->
+            <div id="admin-dashboard" class="hidden space-y-6">
+                <!-- Admin Header & Tabs -->
+                <div class="bg-navy rounded-2xl p-6 text-white shadow-md flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold font-heading">Admin Control Center</h2>
+                        <p class="text-xs text-gray-300">Manage students, notices, dynamic forms, classmate matches, and portal settings.</p>
+                    </div>
+                    <button onclick="handleAdminLogout()" class="px-4 py-2 bg-red-600/80 hover:bg-red-600 text-white text-xs font-semibold rounded-xl border border-red-400/30 transition self-start md:self-auto">Logout Session</button>
+                </div>
+
+                <!-- Admin Tab Menu -->
+                <div class="flex overflow-x-auto gap-2 border-b border-gray-200 pb-2">
+                    <button onclick="switchAdminTab('overview')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap bg-white border border-gray-200 text-navy shadow-sm" data-tab="overview">Overview</button>
+                    <button onclick="switchAdminTab('students')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap text-gray-600 hover:bg-gray-100" data-tab="students">Students</button>
+                    <button onclick="switchAdminTab('matches')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap text-gray-600 hover:bg-gray-100" data-tab="matches">Match Profiles</button>
+                    <button onclick="switchAdminTab('notices')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap text-gray-600 hover:bg-gray-100" data-tab="notices">Notices</button>
+                    <button onclick="switchAdminTab('forms')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap text-gray-600 hover:bg-gray-100" data-tab="forms">Forms</button>
+                    <button onclick="switchAdminTab('settings')" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap text-gray-600 hover:bg-gray-100" data-tab="settings">Settings</button>
+                </div>
+
+                <!-- ADMIN TAB 1: OVERVIEW -->
+                <div id="admin-tab-overview" class="admin-tab-content space-y-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <span class="text-xs text-gray-500 font-semibold uppercase">Total Enrolled</span>
+                            <div id="admin-stat-students" class="text-2xl font-bold text-navy mt-1">0</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <span class="text-xs text-gray-500 font-semibold uppercase">Departments</span>
+                            <div id="admin-stat-depts" class="text-2xl font-bold text-navy mt-1">0</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <span class="text-xs text-gray-500 font-semibold uppercase">Published Notices</span>
+                            <div id="admin-stat-notices" class="text-2xl font-bold text-navy mt-1">0</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <span class="text-xs text-gray-500 font-semibold uppercase">Match Submissions</span>
+                            <div id="admin-stat-matches" class="text-2xl font-bold text-navy mt-1">0</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Department Breakdown -->
+                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                            <h3 class="font-bold text-navy text-lg">Department Distribution</h3>
+                            <div id="admin-dept-breakdown" class="space-y-3">
+                                <!-- Rendered breakdown bars -->
+                            </div>
+                        </div>
+
+                        <!-- Recent Enrollments List -->
+                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                            <h3 class="font-bold text-navy text-lg">Recent Student Registrations</h3>
+                            <div id="admin-recent-enrollments" class="space-y-3">
+                                <!-- Rendered recent students -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADMIN TAB 2: STUDENTS -->
+                <div id="admin-tab-students" class="admin-tab-content hidden space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-gray-200 flex flex-col md:flex-row justify-between gap-4 items-center">
+                        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                            <input type="text" id="admin-student-search" oninput="renderAdminStudentsTable()" placeholder="Search name or handles..." class="px-3 py-2 rounded-xl border border-gray-300 text-xs sm:text-sm w-full sm:w-64">
+                            <select id="admin-student-dept-filter" onchange="renderAdminStudentsTable()" class="px-3 py-2 rounded-xl border border-gray-300 text-xs sm:text-sm bg-white">
+                                <option value="">All Departments</option>
+                            </select>
+                            <select id="admin-student-year-filter" onchange="renderAdminStudentsTable()" class="px-3 py-2 rounded-xl border border-gray-300 text-xs sm:text-sm bg-white">
+                                <option value="">All Years</option>
+                            </select>
+                        </div>
+                        <button onclick="handleBulkWhatsAppSend()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow flex items-center gap-2 whitespace-nowrap">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                            Bulk WhatsApp Action
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-gray-200 overflow-x-auto shadow-sm">
+                        <table class="w-full text-left text-xs sm:text-sm text-gray-600">
+                            <thead class="bg-gray-50 text-navy font-bold uppercase text-[11px] border-b border-gray-200">
+                                <tr>
+                                    <th class="p-3"><input type="checkbox" id="select-all-students" onchange="toggleSelectAllStudents(this)"></th>
+                                    <th class="p-3">Photo</th>
+                                    <th class="p-3">Name</th>
+                                    <th class="p-3">Department</th>
+                                    <th class="p-3">Year</th>
+                                    <th class="p-3">Instagram</th>
+                                    <th class="p-3">WhatsApp</th>
+                                    <th class="p-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-students-tbody" class="divide-y divide-gray-100">
+                                <!-- Rendered table rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ADMIN TAB 3: MATCHES -->
+                <div id="admin-tab-matches" class="admin-tab-content hidden space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-gray-200 flex flex-wrap items-center gap-3">
+                        <input type="text" id="admin-match-search" oninput="renderAdminMatchesTable()" placeholder="Search name..." class="px-3 py-2 rounded-xl border border-gray-300 text-xs sm:text-sm w-full sm:w-64">
+                        <select id="admin-match-dept-filter" onchange="renderAdminMatchesTable()" class="px-3 py-2 rounded-xl border border-gray-300 text-xs sm:text-sm bg-white">
+                            <option value="">All Departments</option>
+                        </select>
+                        <select id="admin-match-looking-filter" onchange="renderAdminMatchesTable()" class="px-3 py-2 rounded-xl border border-gray-300 text-xs sm:text-sm bg-white">
+                            <option value="">All Looking For</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-gray-200 overflow-x-auto shadow-sm">
+                        <table class="w-full text-left text-xs sm:text-sm text-gray-600">
+                            <thead class="bg-gray-50 text-navy font-bold uppercase text-[11px] border-b border-gray-200">
+                                <tr>
+                                    <th class="p-3">Photo</th>
+                                    <th class="p-3">Name</th>
+                                    <th class="p-3 bg-red-50 text-red-700">Gender (Priv)</th>
+                                    <th class="p-3">Dept & Year</th>
+                                    <th class="p-3">Looking For</th>
+                                    <th class="p-3">Hobbies</th>
+                                    <th class="p-3 bg-red-50 text-red-700">WhatsApp (Priv)</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-matches-tbody" class="divide-y divide-gray-100">
+                                <!-- Rendered Match rows including private info -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ADMIN TAB 4: NOTICES -->
+                <div id="admin-tab-notices" class="admin-tab-content hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-navy text-lg">Compose New Notice</h3>
+                        <form onsubmit="handleCreateNotice(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">Notice Title *</label>
+                                    <input type="text" id="admin-notice-title" required placeholder="e.g. Mid-term Exam Schedule" class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">Target Audience Tag</label>
+                                    <input type="text" id="admin-notice-target" placeholder="e.g. Computer Science / Year 2" class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Message Content *</label>
+                                <textarea id="admin-notice-msg" required rows="3" placeholder="Write full notice message here..." class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Optional Image Attachment</label>
+                                <input type="file" id="admin-notice-image-file" accept="image/*" class="text-xs text-gray-500">
+                            </div>
+                            <button type="submit" class="px-6 py-2.5 bg-navy hover:bg-navy-light text-white text-sm font-bold rounded-xl shadow">Publish Notice</button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-navy text-lg">Published Notices History</h3>
+                        <div id="admin-notices-list" class="space-y-3">
+                            <!-- Admin list of past notices -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADMIN TAB 5: FORMS -->
+                <div id="admin-tab-forms" class="admin-tab-content hidden space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-navy text-lg">Dynamic Form Builder</h3>
+                        <form onsubmit="handleCreateForm(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">Form Title *</label>
+                                    <input type="text" id="builder-form-title" required placeholder="e.g. Scholarship Application 2026" class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">Description</label>
+                                    <input type="text" id="builder-form-desc" placeholder="Brief summary for students..." class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-100 pt-3 space-y-3">
+                                <span class="text-xs font-bold uppercase text-gray-500">Form Fields Configuration</span>
+                                <div id="builder-fields-list" class="space-y-2">
+                                    <!-- Dynamic Builder Fields -->
+                                </div>
+                                <button type="button" onclick="addBuilderField()" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-navy text-xs font-semibold rounded-lg border border-gray-300">+ Add Field</button>
+                            </div>
+
+                            <button type="submit" class="px-6 py-2.5 bg-navy hover:bg-navy-light text-white text-sm font-bold rounded-xl shadow">Publish Form</button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-navy text-lg">Active Forms & Submissions</h3>
+                        <div id="admin-forms-list" class="space-y-4">
+                            <!-- Forms list with view response button -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADMIN TAB 6: SETTINGS -->
+                <div id="admin-tab-settings" class="admin-tab-content hidden space-y-6">
+                    <!-- General Portal Settings -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-navy text-lg">General Portal Configuration</h3>
+                        <form onsubmit="handleSaveGeneralSettings(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">Portal Name</label>
+                                    <input type="text" id="settings-site-name" class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">Tagline</label>
+                                    <input type="text" id="settings-tagline" class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                                </div>
+                            </div>
+                            <button type="submit" class="px-5 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl">Save Brand Settings</button>
+                        </form>
+                    </div>
+
+                    <!-- Change Admin Password -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-navy text-lg">Security & Admin Password</h3>
+                        <form onsubmit="handleChangePassword(event)" class="max-w-md space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Current Password</label>
+                                <input type="password" id="pass-current" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">New Password</label>
+                                <input type="password" id="pass-new" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                            </div>
+                            <button type="submit" class="px-5 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl">Update Password</button>
+                        </form>
+                    </div>
+
+                    <!-- Manage Departments & Years -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                            <h3 class="font-bold text-navy text-lg">Departments List</h3>
+                            <div class="flex gap-2">
+                                <input type="text" id="new-dept-input" placeholder="New Dept Name" class="flex-1 px-3 py-2 rounded-xl border border-gray-300 text-xs">
+                                <button onclick="addDepartmentItem()" class="px-4 py-2 bg-gold text-navy font-bold text-xs rounded-xl shadow">Add</button>
+                            </div>
+                            <ul id="settings-depts-list" class="divide-y divide-gray-100 text-sm"></ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                            <h3 class="font-bold text-navy text-lg">Academic Years List</h3>
+                            <div class="flex gap-2">
+                                <input type="text" id="new-year-input" placeholder="e.g. 5th Year" class="flex-1 px-3 py-2 rounded-xl border border-gray-300 text-xs">
+                                <button onclick="addYearItem()" class="px-4 py-2 bg-gold text-navy font-bold text-xs rounded-xl shadow">Add</button>
+                            </div>
+                            <ul id="settings-years-list" class="divide-y divide-gray-100 text-sm"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Manage Hobbies & Match Goal Options -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                            <h3 class="font-bold text-navy text-lg">Hobbies Checklist Options</h3>
+                            <div class="flex gap-2">
+                                <input type="text" id="new-hobby-input" placeholder="e.g. Chess, Robotics" class="flex-1 px-3 py-2 rounded-xl border border-gray-300 text-xs">
+                                <button onclick="addHobbyItem()" class="px-4 py-2 bg-coral text-white font-bold text-xs rounded-xl shadow">Add</button>
+                            </div>
+                            <ul id="settings-hobbies-list" class="divide-y divide-gray-100 text-sm"></ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                            <h3 class="font-bold text-navy text-lg font-heading">"Looking For" Goal Options</h3>
+                            <div class="flex gap-2">
+                                <input type="text" id="new-looking-input" placeholder="e.g. Language Exchange" class="flex-1 px-3 py-2 rounded-xl border border-gray-300 text-xs">
+                                <button onclick="addLookingItem()" class="px-4 py-2 bg-coral text-white font-bold text-xs rounded-xl shadow">Add</button>
+                            </div>
+                            <ul id="settings-looking-list" class="divide-y divide-gray-100 text-sm"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-navy text-gray-400 text-xs py-8 border-t border-navy-light mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p id="footer-text">&copy; 2026 EnrollDesk Portal. Designed with strict privacy standards.</p>
+            <p>Admin password default: <code class="bg-navy-dark px-2 py-0.5 rounded text-gold">admin123</code></p>
+        </div>
+    </footer>
+
+    <script>
+        // ================= APP INITIALIZATION & LOCALSTORAGE STATE =================
+        const DEFAULT_STATE = {
+            settings: {
+                siteName: "EnrollDesk",
+                tagline: "Smart College Enrollment & Matchmaking Portal",
+                adminPassword: "admin123", // In real production, this is hashed on backend
+                departments: ["Computer Science", "Electrical Eng", "Mechanical Eng", "Business Admin", "Biotechnology"],
+                years: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
+                hobbyOptions: ["Coding", "Basketball", "Gaming", "Photography", "Music & Guitar", "Reading", "Gym & Fitness", "Graphic Design"],
+                lookingForOptions: ["Study buddy", "Project partner", "Gym buddy", "New friends", "Hackathon team"],
+                customEnrollFields: [
+                    { id: "field_1", label: "Emergency Contact Phone", type: "tel", required: false }
+                ]
+            },
+            students: [
+                {
+                    id: "stu_1",
+                    name: "Alex Johnson",
+                    photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+                    department: "Computer Science",
+                    year: "3rd Year",
+                    instagram: "alex_j",
+                    whatsapp: "+15550192834",
+                    customAnswers: {},
+                    timestamp: new Date().toISOString()
+                },
+                {
+                    id: "stu_2",
+                    name: "Sophia Chen",
+                    photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
+                    department: "Electrical Eng",
+                    year: "2nd Year",
+                    instagram: "sophia_tech",
+                    whatsapp: "+15550192835",
+                    customAnswers: {},
+                    timestamp: new Date().toISOString()
+                }
+            ],
+            notices: [
+                {
+                    id: "not_1",
+                    title: "Fall Semester Registration Open",
+                    message: "All students are requested to complete department self-enrollment before the end of the month.",
+                    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500&auto=format&fit=crop&q=80",
+                    target: "All Departments",
+                    timestamp: new Date().toISOString()
+                },
+                {
+                    id: "not_2",
+                    title: "Annual Hackathon 2026 Registration",
+                    message: "Join the inter-department hackathon! Form teams using the Matchmaker tab.",
+                    image: null,
+                    target: "Computer Science",
+                    timestamp: new Date(Date.now() - 86400000).toISOString()
+                }
+            ],
+            forms: [
+                {
+                    id: "form_1",
+                    title: "Lab Equipment Request",
+                    description: "Request specific hardware or lab kits for senior projects.",
+                    fields: [
+                        { label: "Lab Kit ID", type: "text", required: true },
+                        { label: "Needed Duration (Days)", type: "number", required: true }
+                    ],
+                    responses: []
+                }
+            ],
+            matches: [
+                {
+                    id: "mat_1",
+                    name: "David Kim",
+                    gender: "Male", // PRIVATE - ADMIN ONLY
+                    department: "Computer Science",
+                    year: "3rd Year",
+                    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+                    hobbies: ["Coding", "Gaming", "Gym & Fitness"],
+                    lookingFor: "Hackathon team",
+                    instagram: "dkim_dev",
+                    whatsapp: "+15559876543", // PRIVATE - ADMIN ONLY
+                    timestamp: new Date().toISOString()
+                },
+                {
+                    id: "mat_2",
+                    name: "Emma Watson",
+                    gender: "Female", // PRIVATE - ADMIN ONLY
+                    department: "Computer Science",
+                    year: "3rd Year",
+                    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+                    hobbies: ["Coding", "Graphic Design", "Music & Guitar"],
+                    lookingFor: "Study buddy",
+                    instagram: "emma_w",
+                    whatsapp: "+15558765432", // PRIVATE - ADMIN ONLY
+                    timestamp: new Date().toISOString()
+                }
+            ]
+        };
+
+        // Load application state from localStorage or initialize defaults
+        let appState = JSON.parse(localStorage.getItem('ENROLLDESK_STATE')) || DEFAULT_STATE;
+
+        function saveState() {
+            localStorage.setItem('ENROLLDESK_STATE', JSON.stringify(appState));
+            updateHeaderAndStats();
+        }
+
+        let isAdminAuthenticated = false;
+        let builderFieldsTemp = [];
+
+        // ================= NAVIGATION ROUTER =================
+        function navigateTo(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            // Update Nav Button Styles
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.target === viewId) {
+                    btn.classList.add('bg-navy-light', 'text-white');
+                } else {
+                    btn.classList.remove('bg-navy-light');
+                }
+            });
+
+            // Trigger specific render functions
+            if (viewId === 'home') renderHomeView();
+            if (viewId === 'enroll') renderEnrollView();
+            if (viewId === 'notices') renderNoticesView();
+            if (viewId === 'forms') renderFormsView();
+            if (viewId === 'matches') renderMatchesView();
+            if (viewId === 'admin') renderAdminView();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bg = type === 'success' ? 'bg-navy text-white' : 'bg-red-600 text-white';
+            toast.className = `px-4 py-3 rounded-xl shadow-xl text-sm font-semibold ${bg} flex items-center gap-2 pointer-events-auto transition transform duration-300`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function updateHeaderAndStats() {
+            document.getElementById('nav-site-name').innerText = appState.settings.siteName;
+            document.getElementById('nav-site-tagline').innerText = appState.settings.tagline;
+            document.getElementById('hero-title').innerText = appState.settings.siteName;
+            document.getElementById('hero-tagline').innerText = appState.settings.tagline;
+            document.getElementById('footer-text').innerHTML = `&copy; 2026 ${appState.settings.siteName}. Designed with strict privacy standards.`;
+
+            document.getElementById('stat-students').innerText = appState.students.length;
+            document.getElementById('stat-departments').innerText = appState.settings.departments.length;
+            document.getElementById('stat-notices').innerText = appState.notices.length;
+            document.getElementById('stat-matches').innerText = appState.matches.length;
+        }
+
+        // Helper image converter
+        function handleImagePreview(event, previewId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const container = document.getElementById(previewId);
+                container.classList.remove('hidden');
+                container.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                container.dataset.base64 = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ================= HOME VIEW =================
+        function renderHomeView() {
+            updateHeaderAndStats();
+            const container = document.getElementById('home-notices-preview');
+            const recent = [...appState.notices].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 3);
+            
+            if (recent.length === 0) {
+                container.innerHTML = `<p class="text-sm text-gray-500 col-span-3">No notices posted yet.</p>`;
+                return;
+            }
+
+            container.innerHTML = recent.map(not => `
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+                    ${not.image ? `<img src="${not.image}" class="h-40 w-full object-cover">` : ''}
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-gold/20 text-gold-hover px-2.5 py-1 rounded-md">${not.target || 'General'}</span>
+                            <h3 class="font-bold text-navy text-lg mt-2">${not.title}</h3>
+                            <p class="text-xs text-gray-600 line-clamp-3 mt-1">${not.message}</p>
+                        </div>
+                        <div class="text-[11px] text-gray-400 pt-2 border-t border-gray-100">${new Date(not.timestamp).toLocaleDateString()}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ================= ENROLL VIEW =================
+        function renderEnrollView() {
+            // Populate Dept dropdown
+            const deptSelect = document.getElementById('enroll-dept');
+            deptSelect.innerHTML = '<option value="">Select Department...</option>' + 
+                appState.settings.departments.map(d => `<option value="${d}">${d}</option>`).join('');
+
+            // Populate Year dropdown
+            const yearSelect = document.getElementById('enroll-year');
+            yearSelect.innerHTML = '<option value="">Select Year...</option>' + 
+                appState.settings.years.map(y => `<option value="${y}">${y}</option>`).join('');
+
+            // Render custom fields
+            const customContainer = document.getElementById('enroll-custom-fields-container');
+            if (appState.settings.customEnrollFields.length > 0) {
+                customContainer.innerHTML = appState.settings.customEnrollFields.map(f => `
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">${f.label} ${f.required ? '<span class="text-red-500">*</span>' : ''}</label>
+                        <input type="${f.type}" data-custom-id="${f.id}" ${f.required ? 'required' : ''} class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm">
+                    </div>
+                `).join('');
+            } else {
+                customContainer.innerHTML = '';
+            }
+        }
+
+        function handleEnrollmentSubmit(e) {
+            e.preventDefault();
+            const photoContainer = document.getElementById('enroll-photo-preview');
+            const photoSrc = photoContainer.dataset.base64 || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80";
+
+            // Collect custom field answers
+            const customAnswers = {};
+            document.querySelectorAll('#enroll-custom-fields-container input').forEach(input => {
+                customAnswers[input.dataset.customId] = input.value;
+            });
+
+            const newStudent = {
+                id: 'stu_' + Date.now(),
+                name: document.getElementById('enroll-fullname').value,
+                photo: photoSrc,
+                department: document.getElementById('enroll-dept').value,
+                year: document.getElementById('enroll-year').value,
+                instagram: document.getElementById('enroll-insta').value,
+                whatsapp: document.getElementById('enroll-whatsapp').value,
+                customAnswers,
+                timestamp: new Date().toISOString()
+            };
+
+            appState.students.unshift(newStudent);
+            saveState();
+            showToast('Enrollment submitted successfully!');
+            document.getElementById('enrollment-form').reset();
+            photoContainer.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>`;
+            delete photoContainer.dataset.base64;
+            navigateTo('home');
+        }
+
+        // ================= NOTICES VIEW =================
+        function renderNoticesView() {
+            const deptFilterSelect = document.getElementById('notice-filter-dept');
+            deptFilterSelect.innerHTML = '<option value="">All Departments</option>' + 
+                appState.settings.departments.map(d => `<option value="${d}">${d}</option>`).join('');
+
+            const selectedDept = deptFilterSelect.value;
+            const container = document.getElementById('notices-grid');
+
+            let filtered = appState.notices;
+            if (selectedDept) {
+                filtered = filtered.filter(n => n.target === selectedDept || n.target === 'All Departments' || !n.target);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500 text-sm bg-white rounded-2xl border border-gray-200">No notices found for this selection.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(not => {
+                const shareText = encodeURIComponent(`📢 *${not.title}*\n${not.message}\n\nShared via EnrollDesk Campus Portal`);
+                const waUrl = `https://wa.me/?text=${shareText}`;
+                return `
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                    <div>
+                        ${not.image ? `<img src="${not.image}" class="h-48 w-full object-cover">` : ''}
+                        <div class="p-5 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-gold/20 text-gold-hover px-2.5 py-1 rounded-md">${not.target || 'General'}</span>
+                                <span class="text-xs text-gray-400">${new Date(not.timestamp).toLocaleDateString()}</span>
+                            </div>
+                            <h3 class="font-bold text-navy text-lg">${not.title}</h3>
+                            <p class="text-sm text-gray-600 whitespace-pre-line leading-relaxed">${not.message}</p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <a href="${waUrl}" target="_blank" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs py-2.5 rounded-xl border border-emerald-200 flex items-center justify-center gap-2 transition">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                            Share on WhatsApp
+                        </a>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // ================= FORMS VIEW =================
+        function renderFormsView() {
+            const container = document.getElementById('forms-list-container');
+            if (appState.forms.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-sm text-gray-500 py-12 bg-white rounded-2xl border border-gray-200">No active forms available at the moment.</p>`;
+                return;
+            }
+
+            container.innerHTML = appState.forms.map(form => `
+                <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <span class="text-[10px] font-bold uppercase bg-navy/10 text-navy px-2.5 py-1 rounded-md">Interactive Form</span>
+                        <h3 class="font-bold text-navy text-xl">${form.title}</h3>
+                        <p class="text-sm text-gray-600">${form.description || 'No description provided.'}</p>
+                    </div>
+                    <button onclick="openFormFillerModal('${form.id}')" class="w-full bg-navy hover:bg-navy-light text-white font-bold text-sm py-2.5 rounded-xl shadow transition">Fill Form</button>
+                </div>
+            `).join('');
+        }
+
+        let currentActiveFormId = null;
+
+        function openFormFillerModal(formId) {
+            const form = appState.forms.find(f => f.id === formId);
+            if (!form) return;
+            currentActiveFormId = formId;
+
+            document.getElementById('form-filler-header').innerHTML = `
+                <h3 class="text-2xl font-bold text-navy font-heading">${form.title}</h3>
+                <p class="text-xs text-gray-500 mt-1">${form.description || ''}</p>
+            `;
+
+            const fieldsContainer = document.getElementById('form-filler-fields');
+            fieldsContainer.innerHTML = form.fields.map((f, idx) => `
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">${f.label} ${f.required ? '<span class="text-red-500">*</span>' : ''}</label>
+                    <input type="${f.type || 'text'}" data-field-index="${idx}" ${f.required ? 'required' : ''} class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                </div>
+            `).join('');
+
+            document.getElementById('form-filler-modal').classList.remove('hidden');
+        }
+
+        function closeFormFillerModal() {
+            document.getElementById('form-filler-modal').classList.add('hidden');
+            currentActiveFormId = null;
+        }
+
+        function handleDynamicFormSubmit(e) {
+            e.preventDefault();
+            const form = appState.forms.find(f => f.id === currentActiveFormId);
+            if (!form) return;
+
+            const answers = [];
+            document.querySelectorAll('#form-filler-fields input').forEach(input => {
+                const fieldIdx = input.dataset.fieldIndex;
+                answers.push({
+                    label: form.fields[fieldIdx].label,
+                    value: input.value
+                });
+            });
+
+            form.responses.push({
+                id: 'resp_' + Date.now(),
+                timestamp: new Date().toISOString(),
+                answers
+            });
+
+            saveState();
+            showToast('Form response submitted successfully!');
+            closeFormFillerModal();
+        }
+
+        // ================= FIND MATCHES VIEW & PRIVACY MATCHMAKING =================
+        function renderMatchesView() {
+            // Populate Dept dropdown
+            const deptSelect = document.getElementById('match-dept');
+            deptSelect.innerHTML = '<option value="">Select Department...</option>' + 
+                appState.settings.departments.map(d => `<option value="${d}">${d}</option>`).join('');
+
+            // Populate Year dropdown
+            const yearSelect = document.getElementById('match-year');
+            yearSelect.innerHTML = '<option value="">Select Year...</option>' + 
+                appState.settings.years.map(y => `<option value="${y}">${y}</option>`).join('');
+
+            // Populate Hobbies Checklist
+            const hobbiesContainer = document.getElementById('match-hobbies-container');
+            hobbiesContainer.innerHTML = appState.settings.hobbyOptions.map(h => `
+                <label class="flex items-center gap-2 p-2 bg-gray-50 border border-gray-200 rounded-xl text-xs cursor-pointer hover:bg-gray-100">
+                    <input type="checkbox" name="match-hobby" value="${h}" class="rounded text-coral focus:ring-coral">
+                    <span>${h}</span>
+                </label>
+            `).join('');
+
+            // Populate Looking For dropdown
+            const lookingSelect = document.getElementById('match-lookingfor');
+            lookingSelect.innerHTML = '<option value="">Select Option...</option>' + 
+                appState.settings.lookingForOptions.map(l => `<option value="${l}">${l}</option>`).join('');
+        }
+
+        function handleMatchSubmit(e) {
+            e.preventDefault();
+            const photoContainer = document.getElementById('match-photo-preview');
+            const photoSrc = photoContainer.dataset.base64 || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80";
+
+            const selectedHobbies = Array.from(document.querySelectorAll('input[name="match-hobby"]:checked')).map(cb => cb.value);
+
+            if (selectedHobbies.length === 0) {
+                showToast('Please select at least one hobby!', 'error');
+                return;
+            }
+
+            const currentUserProfile = {
+                id: 'mat_' + Date.now(),
+                name: document.getElementById('match-fullname').value,
+                gender: document.getElementById('match-gender').value, // PRIVATE
+                department: document.getElementById('match-dept').value,
+                year: document.getElementById('match-year').value,
+                photo: photoSrc,
+                hobbies: selectedHobbies,
+                lookingFor: document.getElementById('match-lookingfor').value,
+                instagram: document.getElementById('match-insta').value,
+                whatsapp: document.getElementById('match-whatsapp').value, // PRIVATE
+                timestamp: new Date().toISOString()
+            };
+
+            // Save to state
+            appState.matches.unshift(currentUserProfile);
+            saveState();
+
+            // Compute Matches
+            computeAndDisplayMatches(currentUserProfile);
+            showToast('Match profile created! Here are your top matches.');
+        }
+
+        function computeAndDisplayMatches(currentUser) {
+            // MATCHING ALGORITHM SPECIFICATION:
+            // Score = (shared hobbies * 2) + (same "looking for" * 3) + (same dept * 1) + (same year * 1)
+            const otherProfiles = appState.matches.filter(p => p.id !== currentUser.id);
+
+            const scored = otherProfiles.map(profile => {
+                let score = 0;
+                
+                // Shared hobbies * 2
+                const sharedHobbies = profile.hobbies.filter(h => currentUser.hobbies.includes(h));
+                score += (sharedHobbies.length * 2);
+
+                // Same looking for * 3
+                if (profile.lookingFor === currentUser.lookingFor) {
+                    score += 3;
+                }
+
+                // Same department * 1
+                if (profile.department === currentUser.department) {
+                    score += 1;
+                }
+
+                // Same year * 1
+                if (profile.year === currentUser.year) {
+                    score += 1;
+                }
+
+                return { profile, score, sharedHobbies };
+            });
+
+            // Sort by score descending and pick top 6-10
+            scored.sort((a,b) => b.score - a.score);
+            const topMatches = scored.slice(0, 9);
+
+            const resultsWrapper = document.getElementById('match-results-wrapper');
+            const resultsGrid = document.getElementById('match-results-grid');
+            resultsWrapper.classList.remove('hidden');
+
+            if (topMatches.length === 0) {
+                resultsGrid.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10 bg-white rounded-2xl border border-gray-200">You are the first match profile! Check back soon as more classmates join.</div>`;
+                return;
+            }
+
+            // STRICT PRIVACY GUARANTEE: Match cards display ONLY Name, Photo, Dept, Year, Hobbies, Instagram handle.
+            // NEVER display or expose WhatsApp number or Gender.
+            resultsGrid.innerHTML = topMatches.map(m => `
+                <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-4 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <img src="${m.profile.photo}" class="w-14 h-14 rounded-full object-cover border-2 border-coral">
+                            <div>
+                                <h4 class="font-bold text-navy text-base">${m.profile.name}</h4>
+                                <p class="text-xs text-gray-500">${m.profile.department} • ${m.profile.year}</p>
+                                <span class="inline-block mt-1 bg-coral/10 text-coral text-[10px] font-bold px-2 py-0.5 rounded-md">Match Score: ${m.score} pts</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase">Looking For:</span>
+                            <p class="text-xs font-semibold text-navy">${m.profile.lookingFor}</p>
+                        </div>
+
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase">Hobbies & Interests:</span>
+                            <div class="flex flex-wrap gap-1">
+                                ${m.profile.hobbies.map(h => `<span class="bg-gray-100 text-gray-700 text-[10px] px-2 py-0.5 rounded-full">${h}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    ${m.profile.instagram ? `
+                        <div class="pt-3 border-t border-gray-100">
+                            <a href="https://instagram.com/${m.profile.instagram.replace('@','')}" target="_blank" class="w-full bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-bold py-2 rounded-xl border border-pink-200 flex items-center justify-center gap-2 transition">
+                                Connect on Instagram (@${m.profile.instagram.replace('@','')})
+                            </a>
+                        </div>
+                    ` : '<div class="text-[11px] text-gray-400 italic text-center pt-2">No social handle provided</div>'}
+                </div>
+            `).join('');
+
+            // Scroll down to results
+            resultsWrapper.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ================= ADMIN PANEL LOGIC =================
+        function renderAdminView() {
+            if (!isAdminAuthenticated) {
+                document.getElementById('admin-login-card').classList.remove('hidden');
+                document.getElementById('admin-dashboard').classList.add('hidden');
+            } else {
+                document.getElementById('admin-login-card').classList.add('hidden');
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+                switchAdminTab('overview');
+            }
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('admin-password-input').value;
+            if (pass === appState.settings.adminPassword) {
+                isAdminAuthenticated = true;
+                showToast('Authenticated as Admin');
+                renderAdminView();
+            } else {
+                showToast('Incorrect password!', 'error');
+            }
+        }
+
+        function handleAdminLogout() {
+            isAdminAuthenticated = false;
+            renderAdminView();
+            showToast('Logged out of Admin Session');
+        }
+
+        function switchAdminTab(tabId) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`admin-tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                if (btn.dataset.tab === tabId) {
+                    btn.className = 'admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap bg-white border border-gray-200 text-navy shadow-sm';
+                } else {
+                    btn.className = 'admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap text-gray-600 hover:bg-gray-100';
+                }
+            });
+
+            if (tabId === 'overview') renderAdminOverview();
+            if (tabId === 'students') renderAdminStudentsTable();
+            if (tabId === 'matches') renderAdminMatchesTable();
+            if (tabId === 'notices') renderAdminNoticesList();
+            if (tabId === 'forms') renderAdminFormsList();
+            if (tabId === 'settings') renderAdminSettings();
+        }
+
+        // --- Admin Overview ---
+        function renderAdminOverview() {
+            document.getElementById('admin-stat-students').innerText = appState.students.length;
+            document.getElementById('admin-stat-depts').innerText = appState.settings.departments.length;
+            document.getElementById('admin-stat-notices').innerText = appState.notices.length;
+            document.getElementById('admin-stat-matches').innerText = appState.matches.length;
+
+            // Department distribution chart calculation
+            const deptCounts = {};
+            appState.settings.departments.forEach(d => deptCounts[d] = 0);
+            appState.students.forEach(s => {
+                if (deptCounts[s.department] !== undefined) deptCounts[s.department]++;
+            });
+
+            const breakdownContainer = document.getElementById('admin-dept-breakdown');
+            const total = appState.students.length || 1;
+            breakdownContainer.innerHTML = appState.settings.departments.map(d => {
+                const count = deptCounts[d] || 0;
+                const pct = Math.round((count / total) * 100);
+                return `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span>${d}</span>
+                            <span>${count} students (${pct}%)</span>
+                        </div>
+                        <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                            <div class="bg-navy h-full" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Recent Enrollments
+            const recentContainer = document.getElementById('admin-recent-enrollments');
+            const recents = appState.students.slice(0, 4);
+            if (recents.length === 0) {
+                recentContainer.innerHTML = '<p class="text-xs text-gray-400">No student enrollments yet.</p>';
+            } else {
+                recentContainer.innerHTML = recents.map(s => `
+                    <div class="flex items-center justify-between p-2 rounded-xl bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <img src="${s.photo}" class="w-8 h-8 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-bold text-xs text-navy">${s.name}</h4>
+                                <p class="text-[10px] text-gray-500">${s.department} • ${s.year}</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] text-gray-400">${new Date(s.timestamp).toLocaleDateString()}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // --- Admin Students Table ---
+        function renderAdminStudentsTable() {
+            // Filters
+            const deptFilterSelect = document.getElementById('admin-student-dept-filter');
+            deptFilterSelect.innerHTML = '<option value="">All Departments</option>' + 
+                appState.settings.departments.map(d => `<option value="${d}">${d}</option>`).join('');
+
+            const yearFilterSelect = document.getElementById('admin-student-year-filter');
+            yearFilterSelect.innerHTML = '<option value="">All Years</option>' + 
+                appState.settings.years.map(y => `<option value="${y}">${y}</option>`).join('');
+
+            const search = document.getElementById('admin-student-search').value.toLowerCase();
+            const dept = deptFilterSelect.value;
+            const year = yearFilterSelect.value;
+
+            let filtered = appState.students.filter(s => {
+                const matchSearch = s.name.toLowerCase().includes(search) || (s.instagram && s.instagram.toLowerCase().includes(search));
+                const matchDept = !dept || s.department === dept;
+                const matchYear = !year || s.year === year;
+                return matchSearch && matchDept && matchYear;
+            });
+
+            const tbody = document.getElementById('admin-students-tbody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-gray-400 text-xs">No matching students found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(s => `
+                <tr class="hover:bg-gray-50">
+                    <td class="p-3"><input type="checkbox" class="student-row-cb" data-phone="${s.whatsapp || ''}"></td>
+                    <td class="p-3"><img src="${s.photo}" class="w-8 h-8 rounded-full object-cover"></td>
+                    <td class="p-3 font-semibold text-navy">${s.name}</td>
+                    <td class="p-3">${s.department}</td>
+                    <td class="p-3">${s.year}</td>
+                    <td class="p-3">${s.instagram ? `@${s.instagram.replace('@','')}` : '-'}</td>
+                    <td class="p-3 font-mono">${s.whatsapp || '-'}</td>
+                    <td class="p-3">
+                        <button onclick="deleteStudent('${s.id}')" class="text-red-600 hover:text-red-800 font-semibold text-xs">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function toggleSelectAllStudents(master) {
+            document.querySelectorAll('.student-row-cb').forEach(cb => cb.checked = master.checked);
+        }
+
+        function deleteStudent(id) {
+            appState.students = appState.students.filter(s => s.id !== id);
+            saveState();
+            renderAdminStudentsTable();
+            showToast('Student deleted.');
+        }
+
+        function handleBulkWhatsAppSend() {
+            const selectedCbs = Array.from(document.querySelectorAll('.student-row-cb:checked'));
+            const phones = selectedCbs.map(cb => cb.dataset.phone).filter(p => p && p.trim() !== '');
+
+            if (phones.length === 0) {
+                showToast('Please select at least one student with a valid WhatsApp number!', 'error');
+                return;
+            }
+
+            // Trigger WhatsApp chat window for first contact or confirm action
+            const message = encodeURIComponent("Hello! Announcement from college administration.");
+            const waUrl = `https://wa.me/${phones[0].replace(/[^0-9]/g, '')}?text=${message}`;
+            window.open(waUrl, '_blank');
+            showToast(`Opening WhatsApp chat for selected student (${phones.length} selected in bulk list).`);
+        }
+
+        // --- Admin Matches Table ---
+        function renderAdminMatchesTable() {
+            const deptFilterSelect = document.getElementById('admin-match-dept-filter');
+            deptFilterSelect.innerHTML = '<option value="">All Departments</option>' + 
+                appState.settings.departments.map(d => `<option value="${d}">${d}</option>`).join('');
+
+            const lookingFilterSelect = document.getElementById('admin-match-looking-filter');
+            lookingFilterSelect.innerHTML = '<option value="">All Looking For</option>' + 
+                appState.settings.lookingForOptions.map(l => `<option value="${l}">${l}</option>`).join('');
+
+            const search = document.getElementById('admin-match-search').value.toLowerCase();
+            const dept = deptFilterSelect.value;
+            const looking = lookingFilterSelect.value;
+
+            let filtered = appState.matches.filter(m => {
+                const matchSearch = m.name.toLowerCase().includes(search);
+                const matchDept = !dept || m.department === dept;
+                const matchLooking = !looking || m.lookingFor === looking;
+                return matchSearch && matchDept && matchLooking;
+            });
+
+            const tbody = document.getElementById('admin-matches-tbody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-gray-400 text-xs">No match submissions.</td></tr>`;
+                return;
+            }
+
+            // Note: Admin gets FULL access to private fields (Gender and WhatsApp)
+            tbody.innerHTML = filtered.map(m => `
+                <tr class="hover:bg-gray-50">
+                    <td class="p-3"><img src="${m.photo}" class="w-8 h-8 rounded-full object-cover"></td>
+                    <td class="p-3 font-semibold text-navy">${m.name}</td>
+                    <td class="p-3 bg-red-50/50 font-bold text-red-700">${m.gender}</td>
+                    <td class="p-3">${m.department} (${m.year})</td>
+                    <td class="p-3 font-medium">${m.lookingFor}</td>
+                    <td class="p-3 text-[11px]">${m.hobbies.join(', ')}</td>
+                    <td class="p-3 bg-red-50/50 font-mono font-bold text-red-700">${m.whatsapp}</td>
+                    <td class="p-3">
+                        <button onclick="deleteMatchProfile('${m.id}')" class="text-red-600 hover:text-red-800 font-semibold text-xs">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteMatchProfile(id) {
+            appState.matches = appState.matches.filter(m => m.id !== id);
+            saveState();
+            renderAdminMatchesTable();
+            showToast('Match profile deleted.');
+        }
+
+        // --- Admin Notices CRUD ---
+        function renderAdminNoticesList() {
+            const container = document.getElementById('admin-notices-list');
+            container.innerHTML = appState.notices.map(n => `
+                <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs">
+                    <div>
+                        <h4 class="font-bold text-navy">${n.title}</h4>
+                        <p class="text-gray-500">${n.target || 'General'} • ${new Date(n.timestamp).toLocaleDateString()}</p>
+                    </div>
+                    <button onclick="deleteNotice('${n.id}')" class="text-red-600 hover:text-red-800 font-bold">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function handleCreateNotice(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('admin-notice-image-file');
+            
+            const createAndSave = (imageSrc) => {
+                const notice = {
+                    id: 'not_' + Date.now(),
+                    title: document.getElementById('admin-notice-title').value,
+                    target: document.getElementById('admin-notice-target').value || 'All Departments',
+                    message: document.getElementById('admin-notice-msg').value,
+                    image: imageSrc,
+                    timestamp: new Date().toISOString()
+                };
+                appState.notices.unshift(notice);
+                saveState();
+                renderAdminNoticesList();
+                showToast('Notice published successfully!');
+                e.target.reset();
+            };
+
+            if (fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (ev) => createAndSave(ev.target.result);
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                createAndSave(null);
+            }
+        }
+
+        function deleteNotice(id) {
+            appState.notices = appState.notices.filter(n => n.id !== id);
+            saveState();
+            renderAdminNoticesList();
+            showToast('Notice removed.');
+        }
+
+        // --- Admin Dynamic Form Builder & Responses ---
+        function renderAdminFormsList() {
+            const container = document.getElementById('admin-forms-list');
+            if (appState.forms.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-400">No dynamic forms created.</p>';
+                return;
+            }
+
+            container.innerHTML = appState.forms.map(f => `
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-navy text-sm">${f.title}</h4>
+                            <p class="text-xs text-gray-500">${f.responses.length} responses recorded</p>
+                        </div>
+                        <button onclick="deleteForm('${f.id}')" class="text-xs text-red-600 hover:text-red-800 font-bold">Delete Form</button>
+                    </div>
+
+                    ${f.responses.length > 0 ? `
+                        <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 p-2">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="border-b text-navy font-bold">
+                                        <th class="p-1">Date</th>
+                                        ${f.fields.map(field => `<th class="p-1">${field.label}</th>`).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${f.responses.map(r => `
+                                        <tr class="border-b border-gray-100">
+                                            <td class="p-1 text-gray-400">${new Date(r.timestamp).toLocaleDateString()}</td>
+                                            ${r.answers.map(ans => `<td class="p-1">${ans.value}</td>`).join('')}
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function addBuilderField() {
+            builderFieldsTemp.push({ label: 'New Question', type: 'text', required: true });
+            renderBuilderFieldsUI();
+        }
+
+        function renderBuilderFieldsUI() {
+            const container = document.getElementById('builder-fields-list');
+            container.innerHTML = builderFieldsTemp.map((f, i) => `
+                <div class="flex items-center gap-2 bg-gray-50 p-2 rounded-xl border border-gray-200 text-xs">
+                    <input type="text" value="${f.label}" onchange="builderFieldsTemp[${i}].label = this.value" placeholder="Label" class="px-2 py-1 border rounded w-1/2">
+                    <select onchange="builderFieldsTemp[${i}].type = this.value" class="px-2 py-1 border rounded text-xs bg-white">
+                        <option value="text" ${f.type === 'text' ? 'selected' : ''}>Text</option>
+                        <option value="number" ${f.type === 'number' ? 'selected' : ''}>Number</option>
+                        <option value="date" ${f.type === 'date' ? 'selected' : ''}>Date</option>
+                        <option value="tel" ${f.type === 'tel' ? 'selected' : ''}>Phone</option>
+                    </select>
+                    <label class="flex items-center gap-1 text-[10px]">
+                        <input type="checkbox" ${f.required ? 'checked' : ''} onchange="builderFieldsTemp[${i}].required = this.checked"> Req
+                    </label>
+                    <button type="button" onclick="builderFieldsTemp.splice(${i},1); renderBuilderFieldsUI()" class="text-red-500 font-bold ml-auto">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function handleCreateForm(e) {
+            e.preventDefault();
+            if (builderFieldsTemp.length === 0) {
+                showToast('Add at least one field to your form!', 'error');
+                return;
+            }
+
+            const newForm = {
+                id: 'form_' + Date.now(),
+                title: document.getElementById('builder-form-title').value,
+                description: document.getElementById('builder-form-desc').value,
+                fields: [...builderFieldsTemp],
+                responses: []
+            };
+
+            appState.forms.push(newForm);
+            saveState();
+            builderFieldsTemp = [];
+            renderBuilderFieldsUI();
+            e.target.reset();
+            renderAdminFormsList();
+            showToast('Dynamic form published!');
+        }
+
+        function deleteForm(id) {
+            appState.forms = appState.forms.filter(f => f.id !== id);
+            saveState();
+            renderAdminFormsList();
+            showToast('Form deleted.');
+        }
+
+        // --- Admin Settings ---
+        function renderAdminSettings() {
+            document.getElementById('settings-site-name').value = appState.settings.siteName;
+            document.getElementById('settings-tagline').value = appState.settings.tagline;
+
+            // Departments
+            document.getElementById('settings-depts-list').innerHTML = appState.settings.departments.map((d, i) => `
+                <li class="py-2 flex justify-between items-center">
+                    <span>${d}</span>
+                    <button onclick="removeSettingItem('departments', ${i})" class="text-red-500 text-xs font-bold">Remove</button>
+                </li>
+            `).join('');
+
+            // Years
+            document.getElementById('settings-years-list').innerHTML = appState.settings.years.map((y, i) => `
+                <li class="py-2 flex justify-between items-center">
+                    <span>${y}</span>
+                    <button onclick="removeSettingItem('years', ${i})" class="text-red-500 text-xs font-bold">Remove</button>
+                </li>
+            `).join('');
+
+            // Hobbies
+            document.getElementById('settings-hobbies-list').innerHTML = appState.settings.hobbyOptions.map((h, i) => `
+                <li class="py-2 flex justify-between items-center">
+                    <span>${h}</span>
+                    <button onclick="removeSettingItem('hobbyOptions', ${i})" class="text-red-500 text-xs font-bold">Remove</button>
+                </li>
+            `).join('');
+
+            // Looking for
+            document.getElementById('settings-looking-list').innerHTML = appState.settings.lookingForOptions.map((l, i) => `
+                <li class="py-2 flex justify-between items-center">
+                    <span>${l}</span>
+                    <button onclick="removeSettingItem('lookingForOptions', ${i})" class="text-red-500 text-xs font-bold">Remove</button>
+                </li>
+            `).join('');
+        }
+
+        function handleSaveGeneralSettings(e) {
+            e.preventDefault();
+            appState.settings.siteName = document.getElementById('settings-site-name').value;
+            appState.settings.tagline = document.getElementById('settings-tagline').value;
+            saveState();
+            showToast('Brand settings updated!');
+        }
+
+        function handleChangePassword(e) {
+            e.preventDefault();
+            const curr = document.getElementById('pass-current').value;
+            const newP = document.getElementById('pass-new').value;
+
+            if (curr !== appState.settings.adminPassword) {
+                showToast('Current password does not match!', 'error');
+                return;
+            }
+
+            appState.settings.adminPassword = newP;
+            saveState();
+            showToast('Admin password updated successfully!');
+            e.target.reset();
+        }
+
+        function addDepartmentItem() {
+            const input = document.getElementById('new-dept-input');
+            if (!input.value) return;
+            appState.settings.departments.push(input.value);
+            input.value = '';
+            saveState();
+            renderAdminSettings();
+        }
+
+        function addYearItem() {
+            const input = document.getElementById('new-year-input');
+            if (!input.value) return;
+            appState.settings.years.push(input.value);
+            input.value = '';
+            saveState();
+            renderAdminSettings();
+        }
+
+        function addHobbyItem() {
+            const input = document.getElementById('new-hobby-input');
+            if (!input.value) return;
+            appState.settings.hobbyOptions.push(input.value);
+            input.value = '';
+            saveState();
+            renderAdminSettings();
+        }
+
+        function addLookingItem() {
+            const input = document.getElementById('new-looking-input');
+            if (!input.value) return;
+            appState.settings.lookingForOptions.push(input.value);
+            input.value = '';
+            saveState();
+            renderAdminSettings();
+        }
+
+        function removeSettingItem(key, index) {
+            appState.settings[key].splice(index, 1);
+            saveState();
+            renderAdminSettings();
+        }
+
+        // ================= WINDOW ONLOAD INITIALIZATION =================
+        window.onload = function() {
+            updateHeaderAndStats();
+            navigateTo('home');
+        };
+    </script>
+</body>
+</html>

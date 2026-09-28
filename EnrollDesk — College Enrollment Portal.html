@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EnrollDesk — College Enrollment Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy: { DEFAULT:'#182449', 50:'#EEF0F7', 100:'#D7DBEA', 400:'#3E4C82', 500:'#233163', 600:'#182449', 700:'#101A38', 900:'#0A1226' },
+          gold: { DEFAULT:'#C9982F', 50:'#FBF3E1', 100:'#F3DFAE', 400:'#D6A93F', 500:'#C9982F', 600:'#A97C1F' },
+          ink: '#1A1D29',
+          mute: '#69707F',
+          canvas: '#F5F6F9',
+          line: '#E3E6EE'
+        },
+        fontFamily: {
+          head: ['"Space Grotesk"','sans-serif'],
+          body: ['"Inter"','sans-serif']
+        },
+        borderRadius: { xl2: '14px' }
+      }
+    }
+  }
+</script>
+<style>
+  :root{
+    color-scheme: light;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html{ scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html,body{ height:100%; }
+  body{ font-family:'Inter',sans-serif; background:#F5F6F9; color:#1A1D29; }
+  h1,h2,h3,h4,.font-head{ font-family:'Space Grotesk',sans-serif; }
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb{ background:#D7DBEA; border-radius:8px; }
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:.5rem; font-weight:600; font-size:.9rem; padding:.65rem 1.15rem; border-radius:10px; transition:.15s ease; cursor:pointer; border:1px solid transparent; white-space:nowrap; }
+  .btn-primary{ background:#182449; color:#fff; }
+  .btn-primary:hover{ background:#101A38; }
+  .btn-gold{ background:#C9982F; color:#1A1D29; }
+  .btn-gold:hover{ background:#A97C1F; color:#fff; }
+  .btn-outline{ background:#fff; color:#182449; border-color:#E3E6EE; }
+  .btn-outline:hover{ border-color:#182449; }
+  .btn-danger{ background:#fff; color:#B4232C; border-color:#F1CBCE; }
+  .btn-danger:hover{ background:#FDEEEF; }
+  .btn-sm{ padding:.4rem .75rem; font-size:.8rem; border-radius:8px; }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .card{ background:#fff; border:1px solid #E3E6EE; border-radius:14px; }
+  .field-label{ display:block; font-size:.78rem; font-weight:600; color:#3E4C82; margin-bottom:.35rem; }
+  .field-input{ width:100%; border:1px solid #E3E6EE; border-radius:9px; padding:.6rem .75rem; font-size:.9rem; background:#fff; color:#1A1D29; }
+  .field-input:focus{ outline:2px solid #182449; outline-offset:1px; border-color:#182449; }
+  .tab-btn{ padding:.6rem 1rem; border-radius:9px; font-size:.87rem; font-weight:600; color:#69707F; cursor:pointer; }
+  .tab-btn.active{ background:#182449; color:#fff; }
+  .tab-btn:not(.active):hover{ background:#EEF0F7; }
+  .nav-link{ font-size:.9rem; font-weight:600; color:#3E4C82; padding:.4rem .2rem; border-bottom:2px solid transparent; }
+  .nav-link.active,.nav-link:hover{ color:#182449; border-color:#C9982F; }
+  .chip{ font-size:.72rem; font-weight:600; padding:.2rem .55rem; border-radius:999px; background:#EEF0F7; color:#233163; }
+  table{ border-collapse:collapse; width:100%; }
+  th{ text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.03em; color:#69707F; padding:.6rem .75rem; border-bottom:1px solid #E3E6EE; }
+  td{ padding:.6rem .75rem; border-bottom:1px solid #EEF0F7; font-size:.87rem; vertical-align:middle; }
+  .upload-box{ border:1.5px dashed #D7DBEA; border-radius:12px; padding:1.25rem; text-align:center; cursor:pointer; background:#FAFBFD; }
+  .upload-box:hover{ border-color:#182449; }
+  @media (prefers-reduced-motion: no-preference){ .fade-in{ animation: fadein .35s ease both; } }
+  @keyframes fadein{ from{ opacity:0; transform:translateY(4px);} to{ opacity:1; transform:none;} }
+  .scrollx{ overflow-x:auto; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ---------------- storage ---------------- */
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ console.error('storage full', e); } }
+};
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function todayStr(){ return new Date().toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }
+function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const DEFAULT_SETTINGS = {
+  adminPassword: 'admin123',
+  siteName: 'EnrollDesk',
+  tagline: 'One portal to enroll, get noticed, and stay in the loop.',
+  departments: ['Computer Science','Commerce','Mechanical Engg.','Electrical Engg.','Arts & Humanities'],
+  years: [
+    {id:'y1', label:'1st Year'},
+    {id:'y2', label:'2nd Year'},
+    {id:'y3', label:'3rd Year'},
+    {id:'y4', label:'4th Year'}
+  ],
+  fields: [
+    {id:'insta', label:'Instagram handle', type:'text', required:false},
+    {id:'phone', label:'WhatsApp number', type:'tel', required:true}
+  ]
+};
+
+function loadSettings(){ return LS.get('ed_settings', DEFAULT_SETTINGS); }
+function saveSettings(s){ LS.set('ed_settings', s); }
+function loadStudents(){ return LS.get('ed_students', []); }
+function saveStudents(s){ LS.set('ed_students', s); }
+function loadNotices(){ return LS.get('ed_notices', []); }
+function saveNotices(n){ LS.set('ed_notices', n); }
+function loadForms(){ return LS.get('ed_forms', []); }
+function saveForms(f){ LS.set('ed_forms', f); }
+function loadResponses(){ return LS.get('ed_responses', []); }
+function saveResponses(r){ LS.set('ed_responses', r); }
+
+/* ---------------- state ---------------- */
+const state = {
+  route: 'home',
+  admin: sessionStorage.getItem('ed_admin') === '1',
+  adminTab: 'overview',
+  loginError: '',
+  filters: { dept:'', year:'', q:'' },
+  selected: new Set(),
+  toast: null,
+  photoData: null,
+  noticeImage: null,
+  formImage: null,
+  formDraftFields: [],
+  activeFormId: null,
+  editingNoticeTargeted: false
+};
+
+function setRoute(r){ state.route = r; state.selected = new Set(); window.scrollTo({top:0,behavior:'smooth'}); render(); }
+function toast(msg){ state.toast = msg; render(); setTimeout(()=>{ state.toast=null; const t=document.getElementById('toast'); if(t) t.remove(); }, 2600); }
+
+/* ---------------- icons (inline svg, no external assets) ---------------- */
+const ICONS = {
+  wa: `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.87.5 3.62 1.44 5.13L2 22l5.13-1.55a9.87 9.87 0 0 0 4.91 1.3h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.05.92.92-3-.2-.32a8.16 8.16 0 0 1-1.26-4.36c0-4.51 3.67-8.18 8.19-8.18 4.52 0 8.19 3.67 8.19 8.18 0 4.51-3.67 8.18-8.19 8.18Zm4.49-6.13c-.25-.13-1.47-.72-1.7-.8-.23-.09-.39-.13-.56.13-.16.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.16 0-.44.06-.66.31-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.02 2.56.13.16 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.55.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.3Z"/></svg>`,
+  photo: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-4 4-2-2-5 5"/></svg>`,
+  bell: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>`,
+  lock: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>`,
+  trash: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0 1 13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1l1-13"/></svg>`,
+  plus: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>`,
+  link: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 14a4 4 0 0 0 5.66 0l2.83-2.83a4 4 0 1 0-5.66-5.66l-1.41 1.4M14 10a4 4 0 0 0-5.66 0L5.5 12.83a4 4 0 1 0 5.66 5.66l1.41-1.4"/></svg>`
+};
+
+/* ---------------- root render ---------------- */
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    ${Header()}
+    <main class="fade-in">${RouteView()}</main>
+    ${state.route==='home' ? Footer() : ''}
+    ${state.toast ? Toast(state.toast) : ''}
+  `;
+  bindEvents();
+}
+
+function RouteView(){
+  if(state.admin && state.route==='admin') return AdminPanel();
+  switch(state.route){
+    case 'home': return Home();
+    case 'enroll': return EnrollPage();
+    case 'notices': return NoticesPage();
+    case 'forms': return FormsPage();
+    case 'form': return FormFillPage();
+    case 'admin': return AdminLogin();
+    default: return Home();
+  }
+}
+
+/* ---------------- shared chrome ---------------- */
+function Header(){
+  const s = loadSettings();
+  const link = (r,label) => `<button data-nav="${r}" class="nav-link ${state.route===r?'active':''}">${label}</button>`;
+  return `
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
+    <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+      <button data-nav="home" class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-lg bg-navy text-white grid place-items-center font-head font-bold text-sm">${esc((s.siteName||'ED').slice(0,1))}</span>
+        <span class="font-head font-semibold text-navy text-[1.05rem]">${esc(s.siteName)}</span>
+      </button>
+      <nav class="hidden md:flex items-center gap-6">
+        ${link('home','Home')}${link('enroll','Enroll')}${link('notices','Notices')}${link('forms','Forms')}
+      </nav>
+      <div class="flex items-center gap-2">
+        ${state.admin ? `<button data-nav="admin" class="btn btn-gold btn-sm">${ICONS.lock} Admin Panel</button>`
+                      : `<button data-nav="admin" class="btn btn-outline btn-sm">${ICONS.lock} Admin</button>`}
+      </div>
+    </div>
+    <nav class="md:hidden flex items-center gap-4 px-5 pb-3 overflow-x-auto">
+      ${link('home','Home')}${link('enroll','Enroll')}${link('notices','Notices')}${link('forms','Forms')}
+    </nav>
+  </header>`;
+}
+
+function Footer(){
+  const s = loadSettings();
+  return `
+  <footer class="border-t border-line mt-16">
+    <div class="max-w-6xl mx-auto px-5 py-10 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-mute">
+      <p>© ${new Date().getFullYear()} ${esc(s.siteName)}. Built for students, run by admins.</p>
+      <button data-nav="admin" class="text-navy font-semibold hover:underline">Admin login</button>
+    </div>
+  </footer>`;
+}
+
+function Toast(msg){
+  return `<div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-navy text-white text-sm font-medium px-4 py-2.5 rounded-full shadow-lg z-50 fade-in">${esc(msg)}</div>`;
+}
+
+/* ---------------- HOME ---------------- */
+function Home(){
+  const s = loadSettings();
+  const students = loadStudents();
+  const notices = loadNotices().slice().reverse().slice(0,3);
+  return `
+  <section class="max-w-6xl mx-auto px-5 pt-14 pb-16 grid md:grid-cols-[1.15fr,0.85fr] gap-10 items-center">
+    <div>
+      <span class="chip">${s.departments.length} departments · ${s.years.length} years open</span>
+      <h1 class="font-head text-4xl sm:text-[2.75rem] leading-[1.08] font-semibold text-navy mt-4">Enroll for your year, your department — in a few minutes.</h1>
+      <p class="text-mute text-[1.02rem] mt-4 max-w-lg">${esc(s.tagline)}</p>
+      <div class="flex flex-wrap gap-3 mt-7">
+        <button data-nav="enroll" class="btn btn-primary">Start Enrollment</button>
+        <button data-nav="notices" class="btn btn-outline">${ICONS.bell} View Notices</button>
+      </div>
+      <div class="flex gap-8 mt-10 pt-8 border-t border-line">
+        <div><div class="font-head text-2xl font-semibold text-navy">${students.length}</div><div class="text-xs text-mute mt-0.5">Students enrolled</div></div>
+        <div><div class="font-head text-2xl font-semibold text-navy">${s.departments.length}</div><div class="text-xs text-mute mt-0.5">Departments</div></div>
+        <div><div class="font-head text-2xl font-semibold text-navy">${loadNotices().length}</div><div class="text-xs text-mute mt-0.5">Notices posted</div></div>
+      </div>
+    </div>
+    <div class="card p-5">
+      <div class="text-xs font-semibold text-mute uppercase tracking-wide mb-3">Recently enrolled</div>
+      <div class="space-y-3">
+        ${students.slice().reverse().slice(0,4).map(st => `
+          <div class="flex items-center gap-3">
+            <img src="${st.photo || placeholderAvatar(st.name)}" class="w-10 h-10 rounded-full object-cover border border-line"/>
+            <div class="min-w-0">
+              <div class="text-sm font-semibold text-ink truncate">${esc(st.name)}</div>
+              <div class="text-xs text-mute truncate">${esc(st.department)} · ${esc(yearLabel(st.year))}</div>
+            </div>
+          </div>`).join('') || `<p class="text-sm text-mute">No one has enrolled yet — be the first.</p>`}
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-5 py-10">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="font-head text-xl font-semibold text-navy">How enrollment works</h2>
+    </div>
+    <div class="grid sm:grid-cols-3 gap-5">
+      ${[
+        ['1','Pick your year & department','Choose where you belong from the options the admin has set up.'],
+        ['2','Fill in your details','Add your name, a photo, and anything else the college asks for — Instagram included.'],
+        ['3','Stay in the loop','Get notices the moment they are posted, right here or on WhatsApp.']
+      ].map(([n,t,d])=>`
+        <div class="card p-5">
+          <div class="w-8 h-8 rounded-full bg-navy-50 text-navy font-head font-semibold text-sm grid place-items-center mb-3">${n}</div>
+          <h3 class="font-semibold text-ink mb-1">${t}</h3>
+          <p class="text-sm text-mute leading-relaxed">${d}</p>
+        </div>`).join('')}
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-5 py-10">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="font-head text-xl font-semibold text-navy">Latest notices</h2>
+      <button data-nav="notices" class="text-sm font-semibold text-navy hover:underline">View all →</button>
+    </div>
+    ${notices.length ? `<div class="grid sm:grid-cols-3 gap-5">${notices.map(NoticeCard).join('')}</div>`
+      : `<div class="card p-8 text-center text-mute text-sm">Nothing posted yet. Notices from the admin will show up here.</div>`}
+  </section>`;
+}
+
+function placeholderAvatar(name){
+  const initial = (name||'?').trim().charAt(0).toUpperCase() || '?';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="#182449"/><text x="50%" y="54%" font-family="Space Grotesk, sans-serif" font-size="34" fill="#C9982F" text-anchor="middle">${initial}</text></svg>`;
+  return 'data:image/svg+xml;base64,' + btoa(svg);
+}
+function yearLabel(id){ const y = loadSettings().years.find(y=>y.id===id); return y ? y.label : '—'; }
+
+function NoticeCard(n){
+  return `
+  <div class="card overflow-hidden flex flex-col">
+    ${n.image ? `<img src="${n.image}" class="w-full h-36 object-cover border-b border-line"/>` : ''}
+    <div class="p-4 flex flex-col gap-1.5 flex-1">
+      ${n.target ? `<span class="chip self-start">${esc(n.target)}</span>` : ''}
+      <h3 class="font-semibold text-ink text-[0.95rem]">${esc(n.title)}</h3>
+      <p class="text-sm text-mute leading-relaxed flex-1">${esc(n.message)}</p>
+      <div class="flex items-center justify-between pt-2 mt-1 border-t border-line">
+        <span class="text-xs text-mute">${esc(n.date)}</span>
+        <a href="https://wa.me/?text=${encodeURIComponent(n.title+' — '+n.message)}" target="_blank" rel="noopener" class="btn btn-sm btn-outline text-[#1F8A70] border-[#1F8A70]">${ICONS.wa} Share</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------------- ENROLL ---------------- */
+function EnrollPage(){
+  const s = loadSettings();
+  return `
+  <section class="max-w-2xl mx-auto px-5 py-12">
+    <h1 class="font-head text-2xl font-semibold text-navy mb-1">Enroll now</h1>
+    <p class="text-mute text-sm mb-7">Fill this in once — the admin reviews new enrollments from their panel.</p>
+    <form id="enroll-form" class="card p-6 space-y-5">
+      <div>
+        <span class="field-label">Your photo</span>
+        <div id="photo-upload" class="upload-box">
+          ${state.photoData
+            ? `<img src="${state.photoData}" class="w-20 h-20 rounded-full object-cover mx-auto border border-line"/><p class="text-xs text-navy font-semibold mt-2">Change photo</p>`
+            : `<div class="text-navy mx-auto w-fit">${ICONS.photo}</div><p class="text-sm font-medium text-ink mt-2">Click to upload your photo</p><p class="text-xs text-mute mt-0.5">JPG or PNG, uploaded directly — no links</p>`}
+        </div>
+        <input type="file" id="photo-input" accept="image/*" class="hidden"/>
+      </div>
+      <div>
+        <label class="field-label" for="f-name">Full name</label>
+        <input required id="f-name" class="field-input" placeholder="e.g. Ananya Sharma"/>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="field-label" for="f-dept">Department</label>
+          <select required id="f-dept" class="field-input">
+            <option value="" disabled selected>Choose department</option>
+            ${s.departments.map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="f-year">Year</label>
+          <select required id="f-year" class="field-input">
+            <option value="" disabled selected>Choose year</option>
+            ${s.years.map(y=>`<option value="${y.id}">${esc(y.label)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      ${s.fields.map(f => DynamicFieldInput(f, 'ef_'+f.id)).join('')}
+      <button type="submit" class="btn btn-primary w-full">Submit enrollment</button>
+    </form>
+  </section>`;
+}
+
+function DynamicFieldInput(f, inputId){
+  const req = f.required ? 'required' : '';
+  if(f.type === 'textarea'){
+    return `<div><label class="field-label" for="${inputId}">${esc(f.label)}</label><textarea ${req} id="${inputId}" rows="3" class="field-input"></textarea></div>`;
+  }
+  if(f.type === 'select'){
+    const opts = (f.options||[]);
+    return `<div><label class="field-label" for="${inputId}">${esc(f.label)}</label>
+      <select ${req} id="${inputId}" class="field-input">
+        <option value="" disabled selected>Choose one</option>
+        ${opts.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('')}
+      </select></div>`;
+  }
+  if(f.type === 'image'){
+    return `<div>
+      <span class="field-label">${esc(f.label)}</span>
+      <div class="upload-box" data-dyn-upload="${inputId}">
+        <div class="text-navy mx-auto w-fit">${ICONS.photo}</div>
+        <p class="text-xs text-mute mt-1">Click to upload an image</p>
+        <div data-dyn-preview="${inputId}"></div>
+      </div>
+      <input type="file" accept="image/*" class="hidden" id="${inputId}"/>
+    </div>`;
+  }
+  const type = ({text:'text',tel:'tel',email:'email',number:'number'})[f.type] || 'text';
+  return `<div><label class="field-label" for="${inputId}">${esc(f.label)}</label><input ${req} type="${type}" id="${inputId}" class="field-input"/></div>`;
+}
+
+/* ---------------- NOTICES (public) ---------------- */
+function NoticesPage(){
+  const notices = loadNotices().slice().reverse();
+  return `
+  <section class="max-w-6xl mx-auto px-5 py-12">
+    <h1 class="font-head text-2xl font-semibold text-navy mb-1">Notices</h1>
+    <p class="text-mute text-sm mb-7">Everything the admin has posted, newest first.</p>
+    ${notices.length ? `<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">${notices.map(NoticeCard).join('')}</div>`
+      : `<div class="card p-10 text-center text-mute text-sm">No notices yet.</div>`}
+  </section>`;
+}
+
+/* ---------------- FORMS (public list) ---------------- */
+function FormsPage(){
+  const forms = loadForms().slice().reverse();
+  return `
+  <section class="max-w-4xl mx-auto px-5 py-12">
+    <h1 class="font-head text-2xl font-semibold text-navy mb-1">Forms</h1>
+    <p class="text-mute text-sm mb-7">Forms shared by the admin for you to fill.</p>
+    ${forms.length ? `<div class="space-y-4">${forms.map(f => `
+      <div class="card p-5 flex items-center justify-between gap-4 flex-wrap">
+        <div class="min-w-0">
+          <h3 class="font-semibold text-ink">${esc(f.title)}</h3>
+          <p class="text-sm text-mute mt-0.5">${esc(f.description||'')}</p>
+        </div>
+        <button data-nav="form" data-form-id="${f.id}" class="btn btn-primary btn-sm shrink-0">Fill form</button>
+      </div>`).join('')}</div>`
+      : `<div class="card p-10 text-center text-mute text-sm">No forms have been shared yet.</div>`}
+  </section>`;
+}
+
+function FormFillPage(){
+  const forms = loadForms();
+  const f = forms.find(x=>x.id===state.activeFormId);
+  if(!f) return `<section class="max-w-2xl mx-auto px-5 py-16 text-center"><p class="text-mute">That form isn't available.</p><button data-nav="forms" class="btn btn-outline mt-4">Back to forms</button></section>`;
+  return `
+  <section class="max-w-2xl mx-auto px-5 py-12">
+    <button data-nav="forms" class="text-sm text-navy font-semibold mb-5">← All forms</button>
+    ${f.image ? `<img src="${f.image}" class="w-full h-40 object-cover rounded-xl2 border border-line mb-5"/>` : ''}
+    <h1 class="font-head text-2xl font-semibold text-navy mb-1">${esc(f.title)}</h1>
+    <p class="text-mute text-sm mb-7">${esc(f.description||'')}</p>
+    <form id="fill-form" class="card p-6 space-y-5">
+      <div>
+        <label class="field-label" for="resp-name">Your name</label>
+        <input required id="resp-name" class="field-input"/>
+      </div>
+      ${f.fields.map((fd,i) => DynamicFieldInput(fd, 'rf_'+i)).join('')}
+      <button type="submit" class="btn btn-primary w-full">Submit response</button>
+    </form>
+  </section>`;
+}
+
+/* ---------------- ADMIN LOGIN ---------------- */
+function AdminLogin(){
+  return `
+  <section class="max-w-sm mx-auto px-5 py-20">
+    <div class="card p-7 text-center">
+      <div class="w-11 h-11 rounded-full bg-navy text-white grid place-items-center mx-auto mb-4">${ICONS.lock}</div>
+      <h1 class="font-head text-xl font-semibold text-navy mb-1">Admin login</h1>
+      <p class="text-sm text-mute mb-6">Enter the admin password to manage the portal.</p>
+      <form id="admin-login-form" class="space-y-3 text-left">
+        <div>
+          <label class="field-label" for="admin-pass">Password</label>
+          <input type="password" id="admin-pass" class="field-input" required autofocus/>
+        </div>
+        ${state.loginError ? `<p class="text-xs text-red-600 font-medium">${esc(state.loginError)}</p>` : ''}
+        <button type="submit" class="btn btn-primary w-full">Unlock panel</button>
+      </form>
+      <p class="text-xs text-mute mt-5">First time here? Default password is <code class="px-1 py-0.5 bg-canvas rounded">admin123</code> — change it from Settings once inside.</p>
+    </div>
+  </section>`;
+}
+
+/* ---------------- ADMIN PANEL ---------------- */
+function AdminPanel(){
+  const tabs = [['overview','Overview'],['students','Students'],['notices','Notices'],['forms','Forms'],['settings','Settings']];
+  return `
+  <section class="max-w-6xl mx-auto px-5 py-8">
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+      <div>
+        <h1 class="font-head text-2xl font-semibold text-navy">Admin panel</h1>
+        <p class="text-sm text-mute">Manage enrollment, notices and forms.</p>
+      </div>
+      <button data-action="logout" class="btn btn-outline btn-sm">Log out</button>
+    </div>
+    <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
+      ${tabs.map(([id,label]) => `<button data-admin-tab="${id}" class="tab-btn ${state.adminTab===id?'active':''}">${label}</button>`).join('')}
+    </div>
+    <div class="fade-in">${AdminTabContent()}</div>
+  </section>`;
+}
+
+function AdminTabContent(){
+  switch(state.adminTab){
+    case 'overview': return AdminOverview();
+    case 'students': return AdminStudents();
+    case 'notices': return AdminNotices();
+    case 'forms': return AdminForms();
+    case 'settings': return AdminSettings();
+    default: return AdminOverview();
+  }
+}
+
+function AdminOverview(){
+  const s = loadSettings(), students = loadStudents(), notices = loadNotices(), forms = loadForms();
+  const byDept = {};
+  students.forEach(st => byDept[st.department] = (byDept[st.department]||0)+1);
+  const stat = (label,val) => `<div class="card p-5"><div class="font-head text-2xl font-semibold text-navy">${val}</div><div class="text-xs text-mute mt-1">${label}</div></div>`;
+  return `
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    ${stat('Total students', students.length)}
+    ${stat('Departments', s.departments.length)}
+    ${stat('Notices posted', notices.length)}
+    ${stat('Forms shared', forms.length)}
+  </div>
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="card p-5">
+      <h3 class="font-semibold text-ink mb-3">Students by department</h3>
+      ${s.departments.map(d => `
+        <div class="flex items-center gap-3 mb-2.5">
+          <span class="text-sm text-ink w-40 truncate">${esc(d)}</span>
+          <div class="flex-1 h-2 bg-canvas rounded-full overflow-hidden"><div class="h-full bg-gold" style="width:${students.length? (100*(byDept[d]||0)/students.length):0}%"></div></div>
+          <span class="text-xs text-mute w-6 text-right">${byDept[d]||0}</span>
+        </div>`).join('')}
+    </div>
+    <div class="card p-5">
+      <h3 class="font-semibold text-ink mb-3">Recent enrollments</h3>
+      <div class="space-y-3">
+        ${students.slice().reverse().slice(0,6).map(st => `
+          <div class="flex items-center gap-3">
+            <img src="${st.photo || placeholderAvatar(st.name)}" class="w-9 h-9 rounded-full object-cover border border-line"/>
+            <div class="min-w-0 flex-1"><div class="text-sm font-medium text-ink truncate">${esc(st.name)}</div><div class="text-xs text-mute">${esc(st.department)} · ${esc(yearLabel(st.year))}</div></div>
+            <span class="text-xs text-mute shrink-0">${esc(st.date)}</span>
+          </div>`).join('') || `<p class="text-sm text-mute">No students yet.</p>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function AdminStudents(){
+  const s = loadSettings();
+  let students = loadStudents();
+  const { dept, year, q } = state.filters;
+  if(dept) students = students.filter(st=>st.department===dept);
+  if(year) students = students.filter(st=>st.year===year);
+  if(q) students = students.filter(st=>st.name.toLowerCase().includes(q.toLowerCase()));
+  const selectedStudents = students.filter(st=>state.selected.has(st.id));
+
+  return `
+  <div class="card p-5 mb-5">
+    <div class="grid sm:grid-cols-4 gap-3">
+      <input id="filter-q" placeholder="Search by name…" value="${esc(q)}" class="field-input sm:col-span-2"/>
+      <select id="filter-dept" class="field-input">
+        <option value="">All departments</option>
+        ${s.departments.map(d=>`<option ${dept===d?'selected':''} value="${esc(d)}">${esc(d)}</option>`).join('')}
+      </select>
+      <select id="filter-year" class="field-input">
+        <option value="">All years</option>
+        ${s.years.map(y=>`<option ${year===y.id?'selected':''} value="${y.id}">${esc(y.label)}</option>`).join('')}
+      </select>
+    </div>
+  </div>
+
+  ${state.selected.size ? `
+  <div class="card p-4 mb-5 bg-navy-50 border-navy-100 flex items-center justify-between flex-wrap gap-3">
+    <span class="text-sm font-semibold text-navy">${state.selected.size} selected</span>
+    <div class="flex gap-2 flex-wrap">
+      <button data-action="wa-bulk" class="btn btn-sm btn-gold">${ICONS.wa} Message selected</button>
+      <button data-action="clear-selection" class="btn btn-sm btn-outline">Clear</button>
+    </div>
+  </div>` : ''}
+
+  <div class="card scrollx">
+    <table>
+      <thead><tr>
+        <th><input type="checkbox" id="select-all" ${students.length && students.every(st=>state.selected.has(st.id)) ? 'checked':''}/></th>
+        <th>Student</th><th>Department</th><th>Year</th><th>Contact</th><th>Enrolled</th><th></th>
+      </tr></thead>
+      <tbody>
+        ${students.map(st => `
+          <tr>
+            <td><input type="checkbox" class="row-check" data-id="${st.id}" ${state.selected.has(st.id)?'checked':''}/></td>
+            <td>
+              <div class="flex items-center gap-2.5">
+                <img src="${st.photo || placeholderAvatar(st.name)}" class="w-8 h-8 rounded-full object-cover border border-line"/>
+                <div>
+                  <div class="font-medium text-ink">${esc(st.name)}</div>
+                  ${st.custom.insta ? `<div class="text-xs text-mute">@${esc(st.custom.insta.replace(/^@/,''))}</div>` : ''}
+                </div>
+              </div>
+            </td>
+            <td>${esc(st.department)}</td>
+            <td>${esc(yearLabel(st.year))}</td>
+            <td>${st.custom.phone ? `<a class="text-[#1F8A70] font-medium hover:underline" target="_blank" rel="noopener" href="https://wa.me/${st.custom.phone.replace(/[^\d]/g,'')}">${esc(st.custom.phone)}</a>` : '<span class="text-mute">—</span>'}</td>
+            <td class="text-mute">${esc(st.date)}</td>
+            <td><button data-action="del-student" data-id="${st.id}" class="btn btn-sm btn-danger">${ICONS.trash}</button></td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    ${!students.length ? `<p class="text-center text-sm text-mute py-10">No students match these filters.</p>` : ''}
+  </div>`;
+}
+
+function AdminNotices(){
+  const notices = loadNotices().slice().reverse();
+  const s = loadSettings();
+  return `
+  <div class="grid lg:grid-cols-[1fr,1.3fr] gap-6">
+    <div class="card p-5 h-fit">
+      <h3 class="font-semibold text-ink mb-4">Post a notice</h3>
+      <form id="notice-form" class="space-y-4">
+        <div><label class="field-label" for="n-title">Title</label><input required id="n-title" class="field-input" placeholder="e.g. Fee submission deadline"/></div>
+        <div><label class="field-label" for="n-msg">Message</label><textarea required id="n-msg" rows="4" class="field-input" placeholder="Write the notice…"></textarea></div>
+        <div>
+          <span class="field-label">Image (optional)</span>
+          <div id="notice-upload" class="upload-box">
+            ${state.noticeImage ? `<img src="${state.noticeImage}" class="h-24 mx-auto rounded-lg object-cover"/><p class="text-xs text-navy font-semibold mt-2">Change image</p>`
+              : `<div class="text-navy mx-auto w-fit">${ICONS.photo}</div><p class="text-xs text-mute mt-1">Click to upload an image — no links</p>`}
+          </div>
+          <input type="file" id="notice-image-input" accept="image/*" class="hidden"/>
+        </div>
+        <div>
+          <label class="field-label" for="n-target">Target audience (optional)</label>
+          <select id="n-target" class="field-input">
+            <option value="">Everyone</option>
+            ${s.departments.map(d=>`<option value="Dept: ${esc(d)}">Dept: ${esc(d)}</option>`).join('')}
+            ${s.years.map(y=>`<option value="Year: ${esc(y.label)}">Year: ${esc(y.label)}</option>`).join('')}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Publish notice</button>
+      </form>
+    </div>
+    <div>
+      <h3 class="font-semibold text-ink mb-4">Published notices</h3>
+      <div class="space-y-3">
+        ${notices.map(n => `
+          <div class="card p-4">
+            <div class="flex items-start gap-3">
+              ${n.image ? `<img src="${n.image}" class="w-16 h-16 rounded-lg object-cover border border-line shrink-0"/>` : ''}
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="font-semibold text-ink">${esc(n.title)}</h4>
+                  ${n.target ? `<span class="chip">${esc(n.target)}</span>` : ''}
+                </div>
+                <p class="text-sm text-mute mt-1">${esc(n.message)}</p>
+                <div class="flex items-center justify-between mt-2.5">
+                  <span class="text-xs text-mute">${esc(n.date)}</span>
+                  <div class="flex gap-2">
+                    <a href="https://wa.me/?text=${encodeURIComponent(n.title+' — '+n.message)}" target="_blank" rel="noopener" class="btn btn-sm btn-outline text-[#1F8A70] border-[#1F8A70]">${ICONS.wa}</a>
+                    <button data-action="del-notice" data-id="${n.id}" class="btn btn-sm btn-danger">${ICONS.trash}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>`).join('') || `<div class="card p-8 text-center text-mute text-sm">No notices yet — post your first one.</div>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function AdminForms(){
+  const forms = loadForms().slice().reverse();
+  const responses = loadResponses();
+  const typeOptions = [['text','Short text'],['textarea','Long text'],['tel','Phone number'],['email','Email'],['number','Number'],['select','Dropdown'],['image','Image upload']];
+  return `
+  <div class="grid lg:grid-cols-[1fr,1.3fr] gap-6">
+    <div class="card p-5 h-fit">
+      <h3 class="font-semibold text-ink mb-4">Build a form</h3>
+      <form id="form-builder-form" class="space-y-4">
+        <div><label class="field-label" for="fb-title">Form title</label><input required id="fb-title" class="field-input" placeholder="e.g. Hostel Application"/></div>
+        <div><label class="field-label" for="fb-desc">Description</label><input id="fb-desc" class="field-input" placeholder="One line about this form"/></div>
+        <div>
+          <span class="field-label">Cover image (optional)</span>
+          <div id="form-upload" class="upload-box">
+            ${state.formImage ? `<img src="${state.formImage}" class="h-20 mx-auto rounded-lg object-cover"/><p class="text-xs text-navy font-semibold mt-2">Change image</p>`
+              : `<div class="text-navy mx-auto w-fit">${ICONS.photo}</div><p class="text-xs text-mute mt-1">Click to upload — no links</p>`}
+          </div>
+          <input type="file" id="form-image-input" accept="image/*" class="hidden"/>
+        </div>
+
+        <div class="border-t border-line pt-4">
+          <span class="field-label mb-2">Fields</span>
+          <div class="space-y-2 mb-3">
+            ${state.formDraftFields.map((f,i) => `
+              <div class="flex items-center justify-between bg-canvas rounded-lg px-3 py-2">
+                <span class="text-sm text-ink">${esc(f.label)} <span class="text-mute">(${typeOptions.find(t=>t[0]===f.type)[1]})</span></span>
+                <button type="button" data-action="rm-field" data-idx="${i}" class="text-mute hover:text-red-600">${ICONS.trash}</button>
+              </div>`).join('') || `<p class="text-xs text-mute">No fields added yet.</p>`}
+          </div>
+          <div class="grid grid-cols-[1fr,auto,auto] gap-2">
+            <input id="fb-field-label" placeholder="Field label" class="field-input"/>
+            <select id="fb-field-type" class="field-input">${typeOptions.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select>
+            <button type="button" data-action="add-field" class="btn btn-outline btn-sm">${ICONS.plus}</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Publish form</button>
+      </form>
+    </div>
+    <div>
+      <h3 class="font-semibold text-ink mb-4">Shared forms</h3>
+      <div class="space-y-3">
+        ${forms.map(f => {
+          const count = responses.filter(r=>r.formId===f.id).length;
+          const link = location.href.split('#')[0] + '#form-' + f.id;
+          return `
+          <div class="card p-4">
+            <div class="flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <h4 class="font-semibold text-ink">${esc(f.title)}</h4>
+                <p class="text-sm text-mute mt-0.5">${esc(f.description||'')}</p>
+                <p class="text-xs text-mute mt-1.5">${count} response${count===1?'':'s'} · ${f.fields.length} field${f.fields.length===1?'':'s'}</p>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <a href="https://wa.me/?text=${encodeURIComponent('Please fill this form: '+f.title+' '+link)}" target="_blank" rel="noopener" class="btn btn-sm btn-outline text-[#1F8A70] border-[#1F8A70]">${ICONS.wa}</a>
+                <button data-action="view-responses" data-id="${f.id}" class="btn btn-sm btn-outline">View</button>
+                <button data-action="del-form" data-id="${f.id}" class="btn btn-sm btn-danger">${ICONS.trash}</button>
+              </div>
+            </div>
+            ${state.viewingResponsesFor === f.id ? FormResponsesTable(f, responses.filter(r=>r.formId===f.id)) : ''}
+          </div>`;
+        }).join('') || `<div class="card p-8 text-center text-mute text-sm">No forms shared yet.</div>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function FormResponsesTable(f, resp){
+  if(!resp.length) return `<p class="text-sm text-mute mt-3 pt-3 border-t border-line">No responses yet.</p>`;
+  return `
+  <div class="mt-3 pt-3 border-t border-line scrollx">
+    <table>
+      <thead><tr><th>Name</th>${f.fields.map(fd=>`<th>${esc(fd.label)}</th>`).join('')}<th>Date</th></tr></thead>
+      <tbody>
+        ${resp.map(r => `<tr><td class="font-medium">${esc(r.name)}</td>${f.fields.map((fd,i)=>`<td>${fd.type==='image' && r.answers[i] ? `<img src="${r.answers[i]}" class="w-8 h-8 rounded object-cover"/>` : esc(r.answers[i]||'—')}</td>`).join('')}<td class="text-mute">${esc(r.date)}</td></tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function AdminSettings(){
+  const s = loadSettings();
+  const typeOptions = [['text','Short text'],['textarea','Long text'],['tel','Phone number'],['email','Email'],['number','Number'],['select','Dropdown']];
+  return `
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="card p-5">
+      <h3 class="font-semibold text-ink mb-4">Change admin password</h3>
+      <form id="pw-form" class="space-y-3">
+        <div><label class="field-label" for="pw-cur">Current password</label><input required type="password" id="pw-cur" class="field-input"/></div>
+        <div><label class="field-label" for="pw-new">New password</label><input required type="password" id="pw-new" class="field-input" minlength="4"/></div>
+        <button type="submit" class="btn btn-primary">Update password</button>
+      </form>
+    </div>
+
+    <div class="card p-5">
+      <h3 class="font-semibold text-ink mb-4">Site name & tagline</h3>
+      <form id="site-form" class="space-y-3">
+        <div><label class="field-label" for="site-name">Site name</label><input id="site-name" class="field-input" value="${esc(s.siteName)}"/></div>
+        <div><label class="field-label" for="site-tag">Tagline</label><input id="site-tag" class="field-input" value="${esc(s.tagline)}"/></div>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </form>
+    </div>
+
+    <div class="card p-5">
+      <h3 class="font-semibold text-ink mb-4">Departments</h3>
+      <div class="flex flex-wrap gap-2 mb-4">
+        ${s.departments.map(d => `<span class="chip flex items-center gap-1.5">${esc(d)}<button data-action="rm-dept" data-val="${esc(d)}" class="hover:text-red-600">×</button></span>`).join('')}
+      </div>
+      <form id="dept-form" class="flex gap-2">
+        <input id="dept-input" class="field-input" placeholder="Add a department"/>
+        <button class="btn btn-outline btn-sm shrink-0">${ICONS.plus} Add</button>
+      </form>
+    </div>
+
+    <div class="card p-5">
+      <h3 class="font-semibold text-ink mb-4">Years offered</h3>
+      <div class="flex flex-wrap gap-2 mb-4">
+        ${s.years.map(y => `<span class="chip flex items-center gap-1.5">${esc(y.label)}<button data-action="rm-year" data-val="${y.id}" class="hover:text-red-600">×</button></span>`).join('')}
+      </div>
+      <form id="year-form" class="flex gap-2">
+        <input id="year-input" class="field-input" placeholder="e.g. 5th Year"/>
+        <button class="btn btn-outline btn-sm shrink-0">${ICONS.plus} Add</button>
+      </form>
+    </div>
+
+    <div class="card p-5 lg:col-span-2">
+      <h3 class="font-semibold text-ink mb-1">Student enrollment fields</h3>
+      <p class="text-xs text-mute mb-4">Decide what students fill in besides name, photo, department and year.</p>
+      <div class="space-y-2 mb-4">
+        ${s.fields.map(f => `
+          <div class="flex items-center justify-between bg-canvas rounded-lg px-3 py-2">
+            <span class="text-sm text-ink">${esc(f.label)} <span class="text-mute">(${(typeOptions.find(t=>t[0]===f.type)||['','Short text'])[1]})</span> ${f.required?'<span class="text-gold-600">· required</span>':''}</span>
+            <button data-action="rm-cfield" data-val="${esc(f.id)}" class="text-mute hover:text-red-600">${ICONS.trash}</button>
+          </div>`).join('')}
+      </div>
+      <form id="cfield-form" class="grid sm:grid-cols-[1fr,auto,auto,auto] gap-2">
+        <input id="cfield-label" placeholder="Field label, e.g. LinkedIn" class="field-input"/>
+        <select id="cfield-type" class="field-input">${typeOptions.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select>
+        <label class="flex items-center gap-1.5 text-sm text-mute px-2"><input type="checkbox" id="cfield-req"/> Required</label>
+        <button class="btn btn-outline btn-sm">${ICONS.plus} Add field</button>
+      </form>
+    </div>
+  </div>`;
+}
+
+/* ---------------- events ---------------- */
+function bindEvents(){
+  const app = document.getElementById('app');
+
+  app.querySelectorAll('[data-nav]').forEach(el => el.addEventListener('click', () => {
+    const r = el.dataset.nav;
+    if(r === 'form'){ state.activeFormId = el.dataset.formId; }
+    if(r === 'admin' && state.admin){ setRoute('admin'); return; }
+    setRoute(r);
+  }));
+
+  app.querySelectorAll('[data-admin-tab]').forEach(el => el.addEventListener('click', () => {
+    state.adminTab = el.dataset.adminTab; state.viewingResponsesFor = null; render();
+  }));
+
+  const logoutBtn = app.querySelector('[data-action="logout"]');
+  if(logoutBtn) logoutBtn.addEventListener('click', () => {
+    state.admin = false; sessionStorage.removeItem('ed_admin'); setRoute('home');
+  });
+
+  /* admin login */
+  const loginForm = app.querySelector('#admin-login-form');
+  if(loginForm) loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const pass = document.getElementById('admin-pass').value;
+    const s = loadSettings();
+    if(pass === s.adminPassword){
+      state.admin = true; state.loginError=''; sessionStorage.setItem('ed_admin','1'); state.route='admin'; state.adminTab='overview'; render();
+    } else { state.loginError = 'Incorrect password. Try again.'; render(); }
+  });
+
+  /* enroll form + photo upload */
+  const photoBox = document.getElementById('photo-upload');
+  const photoInput = document.getElementById('photo-input');
+  if(photoBox && photoInput){
+    photoBox.addEventListener('click', () => photoInput.click());
+    photoInput.addEventListener('change', () => readFileAsData(photoInput.files[0], data => { state.photoData = data; render(); }));
+  }
+  document.querySelectorAll('[data-dyn-upload]').forEach(box => {
+    const inputId = box.dataset.dynUpload;
+    const input = document.getElementById(inputId);
+    box.addEventListener('click', () => input.click());
+    input.addEventListener('change', () => readFileAsData(input.files[0], data => {
+      input.dataset.value = data;
+      box.querySelector('[data-dyn-preview]').innerHTML = `<img src="${data}" class="h-14 mx-auto mt-2 rounded object-cover"/>`;
+    }));
+  });
+
+  const enrollForm = document.getElementById('enroll-form');
+  if(enrollForm) enrollForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const s = loadSettings();
+    const custom = {};
+    s.fields.forEach(f => {
+      const el = document.getElementById('ef_'+f.id);
+      custom[f.id] = el.dataset.value !== undefined ? el.dataset.value : el.value;
+    });
+    const student = {
+      id: uid(),
+      name: document.getElementById('f-name').value.trim(),
+      department: document.getElementById('f-dept').value,
+      year: document.getElementById('f-year').value,
+      photo: state.photoData || '',
+      custom,
+      date: todayStr()
+    };
+    const students = loadStudents(); students.push(student); saveStudents(students);
+    state.photoData = null;
+    toast('Enrollment submitted — welcome aboard!');
+    setRoute('home');
+  });
+
+  /* public form fill */
+  const fillForm = document.getElementById('fill-form');
+  if(fillForm) fillForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const f = loadForms().find(x=>x.id===state.activeFormId);
+    const answers = f.fields.map((fd,i) => {
+      const el = document.getElementById('rf_'+i);
+      return el.dataset.value !== undefined ? el.dataset.value : el.value;
+    });
+    const responses = loadResponses();
+    responses.push({ id: uid(), formId: f.id, name: document.getElementById('resp-name').value.trim(), answers, date: todayStr() });
+    saveResponses(responses);
+    toast('Response submitted — thank you!');
+    setRoute('forms');
+  });
+
+  /* admin: students filters & selection */
+  const fq = document.getElementById('filter-q'), fd = document.getElementById('filter-dept'), fy = document.getElementById('filter-year');
+  if(fq) fq.addEventListener('input', () => { state.filters.q = fq.value; render(); refocus('filter-q'); });
+  if(fd) fd.addEventListener('change', () => { state.filters.dept = fd.value; render(); });
+  if(fy) fy.addEventListener('change', () => { state.filters.year = fy.value; render(); });
+
+  app.querySelectorAll('.row-check').forEach(cb => cb.addEventListener('change', () => {
+    cb.checked ? state.selected.add(cb.dataset.id) : state.selected.delete(cb.dataset.id);
+    render();
+  }));
+  const selectAll = document.getElementById('select-all');
+  if(selectAll) selectAll.addEventListener('change', () => {
+    app.querySelectorAll('.row-check').forEach(cb => selectAll.checked ? state.selected.add(cb.dataset.id) : state.selected.delete(cb.dataset.id));
+    render();
+  });
+  const clearSel = app.querySelector('[data-action="clear-selection"]');
+  if(clearSel) clearSel.addEventListener('click', () => { state.selected = new Set(); render(); });
+  const waBulk = app.querySelector('[data-action="wa-bulk"]');
+  if(waBulk) waBulk.addEventListener('click', () => {
+    const students = loadStudents().filter(st => state.selected.has(st.id));
+    const withPhone = students.filter(st => st.custom.phone);
+    if(!withPhone.length){ toast('None of the selected students have a WhatsApp number on file.'); return; }
+    withPhone.forEach((st,i) => setTimeout(() => window.open(`https://wa.me/${st.custom.phone.replace(/[^\d]/g,'')}`, '_blank'), i*300));
+    toast(`Opening WhatsApp chats for ${withPhone.length} student(s)…`);
+  });
+  app.querySelectorAll('[data-action="del-student"]').forEach(b => b.addEventListener('click', () => {
+    if(!confirm('Remove this student?')) return;
+    saveStudents(loadStudents().filter(st=>st.id!==b.dataset.id)); render();
+  }));
+
+  /* admin: notices */
+  const noticeBox = document.getElementById('notice-upload'), noticeInput = document.getElementById('notice-image-input');
+  if(noticeBox && noticeInput){
+    noticeBox.addEventListener('click', () => noticeInput.click());
+    noticeInput.addEventListener('change', () => readFileAsData(noticeInput.files[0], data => { state.noticeImage = data; render(); }));
+  }
+  const noticeForm = document.getElementById('notice-form');
+  if(noticeForm) noticeForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const n = {
+      id: uid(),
+      title: document.getElementById('n-title').value.trim(),
+      message: document.getElementById('n-msg').value.trim(),
+      image: state.noticeImage || '',
+      target: document.getElementById('n-target').value,
+      date: todayStr()
+    };
+    const notices = loadNotices(); notices.push(n); saveNotices(notices);
+    state.noticeImage = null;
+    toast('Notice published.');
+    render();
+  });
+  app.querySelectorAll('[data-action="del-notice"]').forEach(b => b.addEventListener('click', () => {
+    saveNotices(loadNotices().filter(n=>n.id!==b.dataset.id)); render();
+  }));
+
+  /* admin: forms builder */
+  const formBox = document.getElementById('form-upload'), formInput = document.getElementById('form-image-input');
+  if(formBox && formInput){
+    formBox.addEventListener('click', () => formInput.click());
+    formInput.addEventListener('change', () => readFileAsData(formInput.files[0], data => { state.formImage = data; render(); }));
+  }
+  const addFieldBtn = app.querySelector('[data-action="add-field"]');
+  if(addFieldBtn) addFieldBtn.addEventListener('click', () => {
+    const label = document.getElementById('fb-field-label').value.trim();
+    const type = document.getElementById('fb-field-type').value;
+    if(!label) return;
+    state.formDraftFields.push({ label, type });
+    render();
+  });
+  app.querySelectorAll('[data-action="rm-field"]').forEach(b => b.addEventListener('click', () => {
+    state.formDraftFields.splice(+b.dataset.idx,1); render();
+  }));
+  const formBuilder = document.getElementById('form-builder-form');
+  if(formBuilder) formBuilder.addEventListener('submit', e => {
+    e.preventDefault();
+    const title = document.getElementById('fb-title').value.trim();
+    if(!title){ return; }
+    const f = { id: uid(), title, description: document.getElementById('fb-desc').value.trim(), image: state.formImage||'', fields: state.formDraftFields.slice(), date: todayStr() };
+    const forms = loadForms(); forms.push(f); saveForms(forms);
+    state.formDraftFields = []; state.formImage = null;
+    toast('Form published.');
+    render();
+  });
+  app.querySelectorAll('[data-action="del-form"]').forEach(b => b.addEventListener('click', () => {
+    if(!confirm('Delete this form and its responses?')) return;
+    saveForms(loadForms().filter(f=>f.id!==b.dataset.id));
+    saveResponses(loadResponses().filter(r=>r.formId!==b.dataset.id));
+    render();
+  }));
+  app.querySelectorAll('[data-action="view-responses"]').forEach(b => b.addEventListener('click', () => {
+    state.viewingResponsesFor = state.viewingResponsesFor === b.dataset.id ? null : b.dataset.id; render();
+  }));
+
+  /* admin: settings */
+  const pwForm = document.getElementById('pw-form');
+  if(pwForm) pwForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const s = loadSettings();
+    if(document.getElementById('pw-cur').value !== s.adminPassword){ toast('Current password is incorrect.'); return; }
+    s.adminPassword = document.getElementById('pw-new').value;
+    saveSettings(s); toast('Password updated.'); pwForm.reset();
+  });
+  const siteForm = document.getElementById('site-form');
+  if(siteForm) siteForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const s = loadSettings();
+    s.siteName = document.getElementById('site-name').value.trim() || s.siteName;
+    s.tagline = document.getElementById('site-tag').value.trim();
+    saveSettings(s); toast('Saved.'); render();
+  });
+  const deptForm = document.getElementById('dept-form');
+  if(deptForm) deptForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const val = document.getElementById('dept-input').value.trim();
+    if(!val) return;
+    const s = loadSettings();
+    if(!s.departments.includes(val)) s.departments.push(val);
+    saveSettings(s); render();
+  });
+  app.querySelectorAll('[data-action="rm-dept"]').forEach(b => b.addEventListener('click', () => {
+    const s = loadSettings(); s.departments = s.departments.filter(d=>d!==b.dataset.val); saveSettings(s); render();
+  }));
+  const yearForm = document.getElementById('year-form');
+  if(yearForm) yearForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const val = document.getElementById('year-input').value.trim();
+    if(!val) return;
+    const s = loadSettings();
+    s.years.push({ id: uid(), label: val });
+    saveSettings(s); render();
+  });
+  app.querySelectorAll('[data-action="rm-year"]').forEach(b => b.addEventListener('click', () => {
+    const s = loadSettings(); s.years = s.years.filter(y=>y.id!==b.dataset.val); saveSettings(s); render();
+  }));
+  const cfieldForm = document.getElementById('cfield-form');
+  if(cfieldForm) cfieldForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const label = document.getElementById('cfield-label').value.trim();
+    if(!label) return;
+    const s = loadSettings();
+    s.fields.push({ id: uid(), label, type: document.getElementById('cfield-type').value, required: document.getElementById('cfield-req').checked });
+    saveSettings(s); render();
+  });
+  app.querySelectorAll('[data-action="rm-cfield"]').forEach(b => b.addEventListener('click', () => {
+    const s = loadSettings(); s.fields = s.fields.filter(f=>f.id!==b.dataset.val); saveSettings(s); render();
+  }));
+}
+
+function refocus(id){ const el = document.getElementById(id); if(el){ const v = el.value; el.focus(); el.setSelectionRange(v.length, v.length); } }
+
+function readFileAsData(file, cb){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => cb(reader.result);
+  reader.readAsDataURL(file);
+}
+
+/* ---------------- boot ---------------- */
+(function boot(){
+  if(!localStorage.getItem('ed_settings')) saveSettings(DEFAULT_SETTINGS);
+  const hash = location.hash;
+  if(hash.startsWith('#form-')){ state.activeFormId = hash.replace('#form-',''); state.route = 'form'; }
+  render();
+})();
+</script>
+</body>
+</html>
