@@ -45,6 +45,7 @@ export const SignUpPage: React.FC = () => {
     clearError();
     try {
       await loginWithGoogle();
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setLocalError((err as Error).message || 'Google sign-up failed.');
     }

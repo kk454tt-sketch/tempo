@@ -14,6 +14,17 @@ export const AuthCallbackPage: React.FC = () => {
           return;
         }
 
+        // Support Supabase PKCE flow with code query param
+        const searchParams = new URLSearchParams(window.location.search);
+        const code = searchParams.get('code');
+        if (code) {
+          try {
+            await supabase.auth.exchangeCodeForSession(code);
+          } catch (e) {
+            console.warn('PKCE exchange error, falling back to getSession:', e);
+          }
+        }
+
         const { data, error: sessionErr } = await supabase.auth.getSession();
         if (sessionErr) throw sessionErr;
 

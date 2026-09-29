@@ -44,6 +44,7 @@ export const SignInPage: React.FC = () => {
     clearError();
     try {
       await loginWithGoogle();
+      navigate(fromPath, { replace: true });
     } catch (err) {
       setLocalError((err as Error).message || 'Google sign-in failed.');
     }
