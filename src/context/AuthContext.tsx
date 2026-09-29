@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User as SupabaseUser, Session, AuthError } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '@/services/supabase';
+import { apiService } from '@/services/apiService';
 import { User, LoginCredentials, SignUpCredentials } from '@/types';
 import { mockCurrentUser } from '@/services/mockData';
 
@@ -71,12 +72,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let isMounted = true;
 
     if (!isSupabaseConfigured) {
-      // In unconfigured development preview, check for local mock session or default to demo user
+      // Check for stored active session and verify with database
       const stored = localStorage.getItem('tempo_auth_session');
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
-          setUser(parsed);
+          apiService
+            .getMe(parsed.id)
+            .then((dbUser) => {
+              if (dbUser && isMounted) setUser(dbUser);
+              else if (isMounted) setUser(parsed);
+            })
+            .catch(() => {
+              if (isMounted) setUser(parsed);
+            })
+            .finally(() => {
+              if (isMounted) setIsLoading(false);
+            });
+          return;
         } catch {
           setUser(mockCurrentUser);
         }
@@ -150,14 +163,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       if (!isSupabaseConfigured) {
-        const localUser: User = {
-          id: `usr_${Date.now()}`,
-          name: credentials.email.split('@')[0] || 'Tempo Creator',
+        // Authenticate directly against persistent database
+        const dbUser = await apiService.login({
           email: credentials.email,
-          createdAt: new Date().toISOString(),
-        };
-        setUser(localUser);
-        localStorage.setItem('tempo_auth_session', JSON.stringify(localUser));
+          password: credentials.password,
+        });
+        setUser(dbUser);
+        localStorage.setItem('tempo_auth_session', JSON.stringify(dbUser));
         return;
       }
 
@@ -183,15 +195,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
     try {
       if (!isSupabaseConfigured) {
-        const localUser: User = {
-          id: `usr_google_${Date.now()}`,
+        // Create or get user from database
+        const dbUser = await apiService.googleLogin({
+          email: 'creator@tempo.atelier',
           name: 'Google Creator',
-          email: 'creator@gmail.com',
-          avatarUrl: '',
-          createdAt: new Date().toISOString(),
-        };
-        setUser(localUser);
-        localStorage.setItem('tempo_auth_session', JSON.stringify(localUser));
+        });
+        setUser(dbUser);
+        localStorage.setItem('tempo_auth_session', JSON.stringify(dbUser));
         return;
       }
 
@@ -220,14 +230,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       if (!isSupabaseConfigured) {
-        const localUser: User = {
-          id: `usr_${Date.now()}`,
+        // Register directly into persistent database
+        const dbUser = await apiService.register({
           name: credentials.name.trim(),
           email: credentials.email.trim(),
-          createdAt: new Date().toISOString(),
-        };
-        setUser(localUser);
-        localStorage.setItem('tempo_auth_session', JSON.stringify(localUser));
+          password: credentials.password,
+        });
+        setUser(dbUser);
+        localStorage.setItem('tempo_auth_session', JSON.stringify(dbUser));
         return { confirmationRequired: false };
       }
 

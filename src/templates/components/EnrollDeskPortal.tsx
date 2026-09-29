@@ -316,6 +316,39 @@ export const EnrollDeskPortal: React.FC<EnrollDeskPortalProps> = ({
     eventService.savePersistentHubData(portalId, hubPayload);
   }, [portalSettings, departments, hobbiesList, activeFunctions, students, notices, shoutouts, forms, portalId, initialHub.academicYears, defaultHub.academicYears]);
 
+  // Load fresh hub data directly from database backend
+  useEffect(() => {
+    let isSubscribed = true;
+    eventService.fetchHubDataAsync(portalId).then((fresh) => {
+      if (fresh && isSubscribed) {
+        if (fresh.students && Array.isArray(fresh.students) && fresh.students.length > 0) {
+          setStudents(fresh.students as any);
+        }
+        if (fresh.notices && Array.isArray(fresh.notices)) {
+          setNotices(fresh.notices as any);
+        }
+        if (fresh.shoutouts && Array.isArray(fresh.shoutouts)) {
+          setShoutouts(fresh.shoutouts as any);
+        }
+        if (fresh.departments && Array.isArray(fresh.departments)) {
+          setDepartments(fresh.departments as any);
+        }
+        if (fresh.hobbiesList && Array.isArray(fresh.hobbiesList)) {
+          setHobbiesList(fresh.hobbiesList as any);
+        }
+        if (fresh.forms && Array.isArray(fresh.forms)) {
+          setForms(fresh.forms as any);
+        }
+        if (fresh.activeFunctions) {
+          setActiveFunctions((prev) => ({ ...prev, ...(fresh.activeFunctions as any) }));
+        }
+      }
+    });
+    return () => {
+      isSubscribed = false;
+    };
+  }, [portalId]);
+
   const triggerToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 3000);
