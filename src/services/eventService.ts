@@ -406,23 +406,29 @@ class EventService {
   ): Promise<{ success: boolean; message: string }> {
     const site = await this.getWebsiteBySlug(slug);
 
-    if (isSupabaseConfigured && site) {
+    if (isSupabaseConfigured) {
       try {
-        await supabase.from('rsvps').insert({
-          website_id: site.id,
+        const { error } = await supabase.from('rsvps').insert({
+          website_id: site?.id || null,
+          slug: slug.toLowerCase().trim(),
           guest_name: rsvpData.guestName || 'Guest',
-          guest_email: rsvpData.guestEmail || '',
+          guest_email: rsvpData.guestEmail || null,
           attendance: rsvpData.attendance || 'accept',
           meal_preference: rsvpData.mealPreference || null,
           dietary_notes: rsvpData.dietaryNotes || null,
           song_request: rsvpData.songRequest || null,
+          plus_ones: Number(rsvpData.plusOnes) || 0,
+          custom_fields: rsvpData.customFields || {},
         });
+        if (error) {
+          console.warn('Supabase RSVP insert error:', error.message);
+        }
       } catch (e) {
         console.warn('Supabase RSVP insert warning:', e);
       }
     }
 
-    // Persist into SQLite backend database
+    // Also persist into SQLite backend database
     return await apiService.recordRsvp(slug, {
       ...rsvpData,
       websiteId: site?.id,
