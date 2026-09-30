@@ -197,6 +197,7 @@ export interface EventWebsite {
   updatedAt: string;
   expiresAt: string | null;
   isLifetime: boolean;
+  proInteractiveEnabled?: boolean;
   tier?: 'free' | 'pro';
   metrics: {
     rsvpsCount: number;

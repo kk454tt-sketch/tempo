@@ -21,6 +21,9 @@ class EventService {
    */
   public async getUserWebsites(userId: string): Promise<EventWebsite[]> {
     if (!userId) return [];
+    if (import.meta.env.PROD && !isSupabaseConfigured) {
+      throw new Error('Website storage is not configured. Set the Supabase browser URL and anon key before using the live site.');
+    }
 
     // 1. Try Supabase PostgreSQL first if configured
     if (isSupabaseConfigured) {
@@ -39,10 +42,14 @@ class EventService {
           }
           return list;
         }
+        if (import.meta.env.PROD && error) throw error;
       } catch (err) {
+        if (import.meta.env.PROD) throw new Error('Could not load your websites from Supabase. Check the database connection and access policies.');
         console.warn('[EventService] Supabase fetch error, trying backend API:', err);
       }
     }
+
+    if (import.meta.env.PROD) return [];
 
     // 2. Query our persistent SQLite database backend via /api/websites
     try {
@@ -68,16 +75,23 @@ class EventService {
    * Get a single website by ID from the database
    */
   public async getWebsiteById(id: string, userId?: string): Promise<EventWebsite | null> {
+    if (import.meta.env.PROD && !isSupabaseConfigured) {
+      throw new Error('Website storage is not configured. Set the Supabase browser URL and anon key before using the live site.');
+    }
     if (isSupabaseConfigured) {
       try {
         let query = supabase.from('event_websites').select('*').eq('id', id);
         if (userId) query = query.eq('user_id', userId);
         const { data, error } = await query.single();
         if (!error && data) return this.mapDbToModel(data);
+        if (import.meta.env.PROD && error?.code === 'PGRST116') return null;
+        if (import.meta.env.PROD && error) throw error;
       } catch {
-        // continue
+        if (import.meta.env.PROD) throw new Error('Could not load this website from Supabase. Check the database connection and access policies.');
       }
     }
+
+    if (import.meta.env.PROD) return null;
 
     try {
       const site = await apiService.getWebsiteById(id);
@@ -98,6 +112,9 @@ class EventService {
    */
   public async getWebsiteBySlug(slug: string): Promise<EventWebsite | null> {
     const cleanSlug = slug.toLowerCase().trim();
+    if (import.meta.env.PROD && !isSupabaseConfigured) {
+      throw new Error('Website storage is not configured. Set the Supabase browser URL and anon key before using the live site.');
+    }
 
     if (isSupabaseConfigured) {
       try {
@@ -113,10 +130,14 @@ class EventService {
           this.memoryCache.set(cleanSlug, site);
           return site;
         }
+        if (import.meta.env.PROD && error?.code === 'PGRST116') return null;
+        if (import.meta.env.PROD && error) throw error;
       } catch {
-        // continue
+        if (import.meta.env.PROD) throw new Error('Could not load this website from Supabase. Check the database connection and access policies.');
       }
     }
+
+    if (import.meta.env.PROD) return null;
 
     // Query database backend
     try {
@@ -247,6 +268,9 @@ class EventService {
     slug: string;
     eventData: EventData;
   }): Promise<EventWebsite> {
+    if (import.meta.env.PROD && !isSupabaseConfigured) {
+      throw new Error('Website storage is not configured. Set the Supabase browser URL and anon key before creating a live website.');
+    }
     if (isSupabaseConfigured) {
       try {
         const { data, error } = await supabase
@@ -271,9 +295,12 @@ class EventService {
           return site;
         }
       } catch (err) {
+        if (import.meta.env.PROD) throw new Error('Could not save this website to Supabase. Check the database connection and access policies.');
         console.warn('Supabase create error, saving to SQLite backend:', err);
       }
     }
+
+    if (import.meta.env.PROD) throw new Error('Could not save this website to Supabase. Check the database connection and access policies.');
 
     // Save to SQLite database backend
     try {
@@ -294,6 +321,9 @@ class EventService {
     id: string,
     updates: Partial<EventWebsite> & { eventData?: Partial<EventData> }
   ): Promise<EventWebsite> {
+    if (import.meta.env.PROD && !isSupabaseConfigured) {
+      throw new Error('Website storage is not configured. Set the Supabase browser URL and anon key before editing a live website.');
+    }
     if (isSupabaseConfigured) {
       try {
         const updatePayload: Record<string, unknown> = {
@@ -319,9 +349,12 @@ class EventService {
           return site;
         }
       } catch (err) {
+        if (import.meta.env.PROD) throw new Error('Could not update this website in Supabase. Check the database connection and access policies.');
         console.warn('Supabase update error, saving to backend API:', err);
       }
     }
+
+    if (import.meta.env.PROD) throw new Error('Could not update this website in Supabase. Check the database connection and access policies.');
 
     const site = await apiService.updateWebsite(id, updates);
     this.memoryCache.set(site.id, site);
@@ -549,6 +582,7 @@ class EventService {
       updatedAt: row.updated_at as string,
       expiresAt: (row.expires_at as string) || null,
       isLifetime: Boolean(row.is_lifetime),
+      proInteractiveEnabled: Boolean(row.pro_interactive_enabled),
       metrics: {
         rsvpsCount: Number(row.rsvps_count || 0),
         viewsCount: Number(row.views_count || 0),

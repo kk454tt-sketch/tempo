@@ -14,6 +14,8 @@ import { PublicEventPage } from '@/pages/PublicEventPage';
 import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage';
 import { TermsOfServicePage } from '@/pages/TermsOfServicePage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
+import { PlansPage } from '@/pages/PlansPage';
+import { AdminPaymentsPage } from '@/pages/AdminPaymentsPage';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 export const App: React.FC = () => {
@@ -28,6 +30,8 @@ export const App: React.FC = () => {
             <Route path="/templates/:templateId" element={<TemplateDetailPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsOfServicePage />} />
+            <Route path="/plans" element={<PlansPage />} />
+            <Route path="/admin/payments" element={<ProtectedRoute><AdminPaymentsPage /></ProtectedRoute>} />
 
             {/* Authentication */}
             <Route path="/login" element={<SignInPage />} />

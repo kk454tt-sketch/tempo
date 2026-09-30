@@ -49,13 +49,16 @@ export const TemplateDetailPage: React.FC = () => {
             <span className="font-label-md text-on-surface font-semibold">{template.name}</span>
           </div>
 
-          <button
-            onClick={() => navigate(`/create/${template.id}`)}
-            className="inline-flex items-center gap-space-xs font-label-md bg-primary-container text-on-primary hover:bg-primary px-space-lg py-space-xs rounded-lg shadow-sm"
-          >
-            <span>Use this template</span>
-            <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {template.id === 'enrolldesk-01' && <Link to="/plans?product=pro-interactive" className="inline-flex items-center gap-space-xs font-label-md border border-primary text-primary hover:bg-primary/5 px-space-lg py-space-xs rounded-lg">Unlock Pro Interactive · ₹499</Link>}
+            <button
+              onClick={() => navigate(`/create/${template.id}`)}
+              className="inline-flex items-center gap-space-xs font-label-md bg-primary-container text-on-primary hover:bg-primary px-space-lg py-space-xs rounded-lg shadow-sm"
+            >
+              <span>Use this template</span>
+              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
         </div>
 
         {/* Live Template Preview Container */}

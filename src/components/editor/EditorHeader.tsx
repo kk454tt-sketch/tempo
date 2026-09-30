@@ -7,6 +7,8 @@ interface EditorHeaderProps {
   onSaveDraft: () => void;
   onPublish: () => void;
   isPublished?: boolean;
+  onUpgrade?: () => void;
+  showUpgrade?: boolean;
 }
 
 export const EditorHeader: React.FC<EditorHeaderProps> = ({
@@ -15,6 +17,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   onSaveDraft,
   onPublish,
   isPublished = false,
+  onUpgrade,
+  showUpgrade = false,
 }) => {
   return (
     <div className="w-full bg-surface-container-low px-margin md:px-margin-desktop py-space-sm shadow-sm flex flex-wrap items-center justify-between gap-space-md border-b border-surface-container">
@@ -36,6 +40,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-space-md">
+        {showUpgrade && onUpgrade && <button onClick={onUpgrade} type="button" className="px-space-md py-space-xs bg-amber-100 text-amber-950 hover:bg-amber-200 font-label-md text-label-md rounded-lg cursor-pointer">Unlock Pro Interactive · ₹499</button>}
         <div className="inline-flex items-center gap-space-xs text-on-surface-variant">
           <span className="material-symbols-outlined text-[16px] text-secondary">
             {isSaving ? 'sync' : 'check_circle'}

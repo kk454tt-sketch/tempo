@@ -22,12 +22,14 @@ export const WebsiteCreatorPage: React.FC = () => {
   const activeTemplateId = templateId || 'enrolldesk-01';
   const templateDef = getTemplateDefinition(activeTemplateId) || getTemplateDefinition('wedding-01');
   const templateMeta = getTemplateById(activeTemplateId) || getTemplateById('wedding-01');
-
   const [activeTab, setActiveTab] = useState<'details' | 'photos' | 'appearance' | 'sections'>('details');
   const [eventData, setEventData] = useState<EventData>(() => {
     return templateDef ? JSON.parse(JSON.stringify(templateDef.defaultData)) : ({} as EventData);
   });
   const [currentWebsite, setCurrentWebsite] = useState<EventWebsite | null>(null);
+  const isProInteractive = currentWebsite
+    ? currentWebsite.templateId === 'enrolldesk-01'
+    : !websiteId && activeTemplateId === 'enrolldesk-01';
   const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
@@ -88,6 +90,10 @@ export const WebsiteCreatorPage: React.FC = () => {
   };
 
   const handlePublish = async () => {
+    if (websiteId && !currentWebsite) {
+      triggerToast('Please wait while your website loads.');
+      return;
+    }
     setIsSaving(true);
     try {
       const slug = currentWebsite?.slug || slugify(eventData.title || 'event-moment');
@@ -104,6 +110,11 @@ export const WebsiteCreatorPage: React.FC = () => {
         });
         siteId = newSite.id;
         setCurrentWebsite(newSite);
+      }
+
+      if (isProInteractive && !currentWebsite?.proInteractiveEnabled) {
+        if (siteId) navigate(`/plans?websiteId=${encodeURIComponent(siteId)}`);
+        return;
       }
 
       if (siteId) {
@@ -139,6 +150,8 @@ export const WebsiteCreatorPage: React.FC = () => {
             onSaveDraft={handleSaveDraft}
             onPublish={handlePublish}
             isPublished={currentWebsite?.status === 'published'}
+            showUpgrade={isProInteractive && Boolean(currentWebsite) && !currentWebsite?.proInteractiveEnabled}
+            onUpgrade={() => currentWebsite && navigate(`/plans?websiteId=${encodeURIComponent(currentWebsite.id)}`)}
           />
 
           {/* Editor Workspace: Controls & Live Preview Split */}

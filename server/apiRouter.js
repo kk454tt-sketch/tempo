@@ -1,4 +1,5 @@
 import { db } from './db.js';
+import { handlePaymentRequest } from './paymentRoutes.js';
 
 // Helper to read JSON request body
 function parseBody(req) {
@@ -40,6 +41,10 @@ export async function handleApiRequest(req, res) {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.end();
     return;
+  }
+
+  if (pathname.startsWith('/api/payments/') || pathname === '/api/cron/payments') {
+    return handlePaymentRequest(req, res);
   }
 
   try {
