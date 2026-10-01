@@ -1,75 +1,96 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BrandLogo } from './BrandLogo';
-import { siteConfig } from '@/config/site';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="w-full bg-surface-container-low shadow-[0_-1px_0_rgba(0,0,0,0.03)] mt-space-xl">
-      <div className="max-w-[1280px] mx-auto px-margin md:px-margin-desktop py-space-xl">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter-desktop items-start pb-space-xl">
-          <div className="md:col-span-5 flex flex-col gap-space-sm">
-            <BrandLogo showTagline={false} />
-            <p className="font-body-md text-body-md text-on-surface-variant max-w-sm mt-space-xs">
-              Websites for your moments. Keepsake-grade digital invitations, living archives, and milestone commemorations.
+    <footer className="w-full bg-surface-container-low shadow-[0_-1px_6px_rgba(0,0,0,0.02)] border-t border-surface-container-high/60">
+      <div className="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg pt-space-xl pb-space-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter-lg pb-space-xl">
+          {/* Col 1: Brand */}
+          <div className="space-y-space-sm">
+            <div className="flex items-center gap-space-sm">
+              <BrandLogo />
+            </div>
+            <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed max-w-sm">
+              The curated creative template marketplace for creators, studios, and businesses. Discover templates crafted with uncompromising detail and architectural precision.
             </p>
           </div>
 
-          <div className="md:col-span-7 flex flex-wrap justify-between md:justify-end gap-gutter-desktop">
-            <div className="flex flex-col gap-space-sm">
-              <span className="font-label-sm text-label-sm text-on-surface tracking-wider uppercase">
-                Platform
-              </span>
-              <Link
-                className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"
-                to="/templates"
-              >
-                Templates
+          {/* Col 2: Browse */}
+          <div className="space-y-space-sm">
+            <p className="font-label-md text-label-md text-on-surface font-semibold">Browse</p>
+            <div className="flex flex-col space-y-space-xs font-body-sm text-body-sm">
+              <Link to="/templates" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Explore All
               </Link>
-              <a
-                className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"
-                href="/#how-it-works"
-              >
-                How it works
+              <Link to="/templates?price=free" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Free Templates
+              </Link>
+              <Link to="/templates?price=premium" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Premium Templates
+              </Link>
+              <a href="/#categories" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Category Index
               </a>
-              <Link
-                className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"
-                to="/create"
-              >
-                Create a site
+              <Link to="/templates?sort=newest" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                New Releases
               </Link>
             </div>
+          </div>
 
-            <div className="flex flex-col gap-space-sm">
-              <span className="font-label-sm text-label-sm text-on-surface tracking-wider uppercase">
-                Support &amp; Trust
-              </span>
-              <a
-                className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"
-                href="#help"
-              >
-                Help Center
+          {/* Col 3: Support & Resources */}
+          <div className="space-y-space-sm">
+            <p className="font-label-md text-label-md text-on-surface font-semibold">Support & Resources</p>
+            <div className="flex flex-col space-y-space-xs font-body-sm text-body-sm">
+              <a href="/#featured" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Curated Highlights
               </a>
-              <Link
-                className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"
-                to="/privacy"
-              >
+              <Link to="/privacy" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Licensing Guide
+              </Link>
+              <Link to="/plans" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Studio Plans
+              </Link>
+              <Link to="/dashboard" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Creator Dashboard
+              </Link>
+              <Link to="/terms" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Refunds & Guarantee
+              </Link>
+            </div>
+          </div>
+
+          {/* Col 4: Legal & Trust */}
+          <div className="space-y-space-sm">
+            <p className="font-label-md text-label-md text-on-surface font-semibold">Legal & Trust</p>
+            <div className="flex flex-col space-y-space-xs font-body-sm text-body-sm">
+              <Link to="/privacy" className="text-on-surface-variant hover:text-on-surface transition-colors">
                 Privacy Policy
               </Link>
-              <Link
-                className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"
-                to="/terms"
-              >
-                Terms of Service
+              <Link to="/terms" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                Terms & Conditions
               </Link>
+              <Link to="/terms" className="text-on-surface-variant hover:text-on-surface transition-colors">
+                License Agreement
+              </Link>
+              <div className="pt-2 flex items-center gap-2 text-on-surface-variant text-label-sm">
+                <span className="material-symbols-outlined text-[16px] text-on-tertiary-container">
+                  verified_user
+                </span>
+                <span>256-bit SSL Verified Architecture</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="pt-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md text-on-surface-variant/70 font-body-sm text-body-sm border-t border-surface-container">
-          <p>© {siteConfig.year} Tempo. All rights reserved.</p>
-          <p className="font-caption text-caption text-on-surface-variant/60">
-            Designed with mindful craft for personal memories.
+        {/* Bottom copyright line */}
+        <div className="pt-space-md border-t border-surface-container-high/60 flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+          <p className="font-body-sm text-body-sm text-on-surface-variant">
+            © {new Date().getFullYear()} tempo. Inc. All rights reserved. Designed for craft and clarity.
+          </p>
+          <p className="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase">
+            Curated Digital Artifacts
           </p>
         </div>
       </div>

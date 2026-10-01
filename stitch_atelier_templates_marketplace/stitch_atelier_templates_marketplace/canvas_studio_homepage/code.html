@@ -1,0 +1,711 @@
+<!DOCTYPE html><html lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&amp;family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"tertiary-fixed-dim":"#68dba9","surface-container-lowest":"#ffffff","error":"#ba1a1a","error-container":"#ffdad6","on-surface":"#1b1b1e","primary":"#000000","tertiary-container":"#002114","primary-fixed-dim":"#c8c6c8","on-tertiary-fixed":"#002114","surface-dim":"#dcd9dd","tertiary-fixed":"#85f8c4","surface":"#fbf8fc","on-secondary":"#ffffff","surface-container-high":"#eae7eb","on-primary-container":"#858386","outline-variant":"#c8c5ca","surface-container-low":"#f6f2f7","tertiary":"#000000","inverse-primary":"#c8c6c8","secondary-fixed-dim":"#c6c5cf","primary-container":"#1c1b1d","on-primary-fixed-variant":"#474649","surface-variant":"#e4e1e6","on-secondary-container":"#63646c","on-tertiary-container":"#069669","surface-bright":"#fbf8fc","on-surface-variant":"#47464a","surface-tint":"#5f5e60","on-primary":"#ffffff","outline":"#78767b","background":"#fbf8fc","on-tertiary-fixed-variant":"#005137","on-primary-fixed":"#1c1b1d","surface-container-highest":"#e4e1e6","on-tertiary":"#ffffff","on-error-container":"#93000a","primary-fixed":"#e5e1e4","secondary":"#5d5e66","on-background":"#1b1b1e","on-secondary-fixed":"#1a1b22","on-secondary-fixed-variant":"#46464e","secondary-fixed":"#e3e1ec","surface-container":"#f0edf1","secondary-container":"#e3e1ec","inverse-on-surface":"#f3f0f4","on-error":"#ffffff","inverse-surface":"#303033"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter-sm":"1rem","space-lg":"1.5rem","space-xs":"0.25rem","gutter":"1.5rem","space-sm":"0.5rem","gutter-lg":"2rem","margin-lg":"4rem","space-md":"1rem","space-xl":"2.5rem","margin":"1.5rem","margin-sm":"1rem"},"fontFamily":{"headline-xl-mobile":["Hanken Grotesk"],"body-md":["Inter"],"headline-lg":["Hanken Grotesk"],"body-sm":["Inter"],"headline-md":["Hanken Grotesk"],"label-sm":["Inter"],"body-lg":["Inter"],"display-hero":["Hanken Grotesk"],"display-hero-mobile":["Hanken Grotesk"],"headline-sm":["Hanken Grotesk"],"headline-xl":["Hanken Grotesk"],"label-md":["Inter"]},"fontSize":{"headline-xl-mobile":["28px",{"lineHeight":"34px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"22px","letterSpacing":"-0.006em","fontWeight":"400"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-sm":["13px",{"lineHeight":"18px","letterSpacing":"0em","fontWeight":"400"}],"headline-md":["22px",{"lineHeight":"28px","letterSpacing":"-0.015em","fontWeight":"500"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"600"}],"body-lg":["16px",{"lineHeight":"26px","letterSpacing":"-0.011em","fontWeight":"400"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.035em","fontWeight":"500"}],"display-hero-mobile":["36px",{"lineHeight":"42px","letterSpacing":"-0.025em","fontWeight":"500"}],"headline-sm":["18px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-xl":["40px",{"lineHeight":"48px","letterSpacing":"-0.03em","fontWeight":"500"}],"label-md":["13px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"500"}]}}}};</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-28"><div class="h-16 max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md shrink-0"><a class="flex items-center gap-space-sm" data-path="explore" href="#"><span class="font-headline-md text-headline-md text-on-surface tracking-tight font-medium">tempo.</span></a></div><div class="hidden md:flex flex-1 max-w-md items-center"><div class="relative w-full flex items-center"><span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-[18px]">search</span><input class="w-full h-10 pl-9 pr-14 bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] focus:outline-none focus:bg-surface-container-lowest" placeholder="Search templates by name, style, topic..." type="text"><span class="absolute right-2.5 px-1.5 py-0.5 bg-surface-container text-on-surface-variant font-label-sm text-label-sm rounded">⌘K</span></div></div><div class="flex items-center gap-space-lg shrink-0"><nav class="hidden xl:flex items-center gap-space-md" data-active-classes="bg-primary-container text-on-primary-container font-headline-sm rounded-lg"><a aria-current="page" class="px-2.5 py-1 transition-colors bg-primary-container text-on-primary-container font-headline-sm rounded-lg" data-path="explore" href="#">Explore</a><a class="px-2.5 py-1 text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" data-path="categories" href="#">Categories</a><a class="px-2.5 py-1 text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" data-path="free-templates" href="#">Free Templates</a><a class="px-2.5 py-1 text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" data-path="premium-templates" href="#">Premium</a></nav><div class="flex items-center gap-space-sm"><a class="hidden sm:inline-flex items-center px-3 py-1.5 bg-surface-container-lowest text-on-surface font-label-md text-label-md rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:bg-surface-container hover:text-on-surface transition-all" data-path="login" href="#">Log In</a><a aria-label="Saved Templates" class="w-9 h-9 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="saved-bookmarks" href="#"><span class="material-symbols-outlined text-[20px]">bookmark</span></a><div class="relative group shrink-0"><button class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center focus:outline-none"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANGvaAMrRAnWw-YPDmAqKMxuNfFSyEDshnSeopzgA206M0pg1sYYvGwihZOWIU3lKEp1P8YxR3pcnu0Q5kGKOqCKbVp3b55d3ZK5BqO5xE6N3zk96RCImZzGTSZuMiF-zoskIRlI-NQf0egkWGER78dHT3GkzzUvAlYaJr-NnDElbqz87pHywBkwZ9eZQGxi3EwuyHUIFH3bhlQLDBvvrUmeDbUb-4Gp4qLvQaalcFvCQt9O3onSA"></button><div class="absolute right-0 top-full mt-2 w-52 bg-surface-container-lowest rounded-xl shadow-[0_10px_25px_-5px_rgba(9,9,11,0.08)] py-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50"><div class="px-4 py-2 border-b border-surface-container-high/60"><p class="font-label-md text-label-md text-on-surface truncate">Creator Studio</p><p class="font-body-sm text-body-sm text-on-surface-variant truncate">studio@canvas.design</p></div><a class="flex items-center px-4 py-2 text-on-surface-variant font-body-sm text-body-sm hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="my-templates" href="#">My Templates</a><a class="flex items-center px-4 py-2 text-on-surface-variant font-body-sm text-body-sm hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="purchased-templates" href="#">Purchased</a><a class="flex items-center px-4 py-2 text-on-surface-variant font-body-sm text-body-sm hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="account-settings" href="#">Account Settings</a><div class="my-1 border-t border-surface-container-high/60"></div><a class="flex items-center px-4 py-2 text-on-surface-variant font-body-sm text-body-sm hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="login" href="#">Log out</a></div></div></div></div></div><div class="h-12 max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg flex items-center"><div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 w-full" data-active-classes="bg-primary text-on-primary"><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="explore" href="#">All</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-birthday" href="#">Birthday</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-wedding" href="#">Wedding</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-portfolio" href="#">Portfolio</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-business" href="#">Business</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-restaurant" href="#">Restaurant</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-events" href="#">Events</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-saas" href="#">SaaS</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-ecommerce" href="#">E-commerce</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-education" href="#">Education</a><a class="px-3.5 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.02)] whitespace-nowrap hover:bg-surface-container hover:text-on-surface transition-all" data-path="topic-personal" href="#">Personal</a></div></div></div></header><main class="w-full pt-28 bg-surface"><div class="flex flex-col w-full">
+<!-- SECTION 1: HERO (Asymmetric Architectural Gallery Montage) -->
+<section class="relative w-full overflow-hidden bg-surface pb-space-xl">
+<div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg pt-space-lg lg:pt-space-xl">
+<!-- Typographic Header Block -->
+<div class="max-w-3xl flex flex-col items-start gap-space-sm mb-space-xl">
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm tracking-widest uppercase">
+          Curated Web Artifacts
+        </div>
+<h1 class="font-display-hero text-display-hero text-on-surface tracking-tight leading-[1.05]">
+          Templates made to be yours.
+        </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl leading-relaxed">
+          Discover beautiful templates for every idea, occasion, and business. Impeccably crafted digital foundations engineered for effortless customization.
+        </p>
+<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+<a class="h-10 px-6 rounded-lg bg-primary text-on-primary font-label-md text-label-md inline-flex items-center justify-center hover:bg-on-surface-variant transition-colors shadow-sm" href="#featured">
+            Explore Templates
+          </a>
+<a class="h-10 px-5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md inline-flex items-center justify-center hover:bg-surface-container transition-all shadow-[0_1px_2px_rgba(0,0,0,0.05)]" href="#birthday-section">
+            Browse Free Templates
+          </a>
+</div>
+</div>
+<!-- Asymmetric Overlapping Montage Stage -->
+<div class="relative w-full h-[620px] lg:h-[700px] hidden md:block select-none">
+<!-- Card 4: Floating Top-Right (Studio 24 - Birthday Party) -->
+<div class="absolute right-4 top-2 w-[340px] z-10 rounded-xl overflow-hidden bg-surface-container-lowest shadow-md transition-transform duration-300 hover:scale-[1.02]">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Playful energetic website preview for a creative 30th birthday event party invitation, bold geometric shapes in lemon yellow and cobalt blue, clean sans serif layout, responsive viewport frame." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAWQkr4FFuZQ3Xl6IdvurpLP3ZcAUT1cCkUfFgQwbxDDDSH7jdbLldjU6dSe6xVdFfmWKc8VTFJzkJxWuYelHwUAGEeoXHtLqEXa2VcBK7YW6qrlmeMdz8XVTQYmspIzDszPp7BBBBopi6BvwZVVceRcRLYkJa7j9e0nfOJ8pKrUd9B5pkNFpsCjPGhxVXUMh5SmMf4AfsJHrQO1wx4v4Yobt_ITRPUfc_eHXok5VluYH_nECs6bo">
+<span class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">Birthday · RSVP</span>
+</div>
+<div class="p-3.5 flex items-center justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface leading-tight">Studio 24</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Party &amp; Gathering Hub</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$18</span>
+</div>
+</div>
+<!-- Card 2: Overlapping Left (Solstice & Sage - Wedding Celebration) -->
+<div class="absolute left-0 top-16 w-[410px] z-20 rounded-xl overflow-hidden bg-surface-container-lowest shadow-lg transition-transform duration-300 hover:scale-[1.02]">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Refined wedding celebration website template preview with warm ecru tones, delicate botanical sketches, elegant typography, RSVP interaction module and couple portrait banner." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmt5RIs_yPTnRUJB9sHcya3AfXqxgfwcjSW7zGr2e3p3GLMI1Zoxq4PnoI2IPJUH6Q5cKyfJo3Fb0-lNoLsjAEM3ssCE5z20YF74vEbUcDcncs259oPsDWuMokiyLPLCRQebSbJXbhIoB1_NhfFp7u7gnOojIfZlldKKHV2lXA9isJ7hmqzkyS82GVKZP5jctWFtz6AyWKnNI2wCPGbX0aJi7ZDyLrAEblaHfLLF7MvpwT63CdNTA">
+<span class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">Wedding · Ceremony</span>
+</div>
+<div class="p-4 flex items-center justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface leading-tight">Solstice &amp; Sage</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Editorial Wedding Suite</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$29</span>
+</div>
+</div>
+<!-- Card 1: CENTERPIECE (Atelier Nord - Minimal Architecture Portfolio) -->
+<div class="absolute left-1/2 -translate-x-1/2 top-4 w-[540px] z-30 rounded-xl overflow-hidden bg-surface-container-lowest shadow-2xl transition-transform duration-300 hover:scale-[1.01]">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Minimalist architectural monograph studio website mockup with sharp monochrome typography, stark brutalist concrete house photography, asymmetric grid, premium gallery layout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6d_r6FNo0j_g9-iXt4B1Gb-gBv-i7LBjIrgo1ykS-NE7hAyPYhcfTpgwZDzOY-Z4xx_26ZEY5kk2yIy0FLR3ELrSSAM7e8lpqTZUpx6n2iknHVs1BeDBkDpAjGjeR6sEQOpign2N-53iCDulP1g4hOUBvCCCXsIThi-1VuTenEZehqUYoslI6McRsgxMVLlOzS97z1l0zl_UgngHwEzdI2HlYacqJpLQudwNPYuAzIuhUmqILdFQ">
+<div class="absolute top-3 left-3 flex items-center gap-1.5">
+<span class="px-2.5 py-1 rounded-md bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-wider">Curator's Choice</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">Architecture &amp; Design</span>
+</div>
+</div>
+<div class="p-4 bg-surface-container-lowest flex items-center justify-between">
+<div>
+<p class="font-headline-md text-headline-md text-on-surface leading-snug">Atelier Nord</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Comprehensive Studio &amp; Archive Monograph</p>
+</div>
+<div class="text-right">
+<span class="font-label-md text-label-md text-on-surface font-semibold">$38</span>
+<p class="font-label-sm text-label-sm text-on-tertiary-container">Commercial Ready</p>
+</div>
+</div>
+</div>
+<!-- Card 3: Overlapping Right (Komorebi Eatery - Contemporary Japanese Culinary) -->
+<div class="absolute right-8 bottom-14 w-[430px] z-20 rounded-xl overflow-hidden bg-surface-container-lowest shadow-lg transition-transform duration-300 hover:scale-[1.02]">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Modern Japanese culinary website template with dark slate background, warm wood accents, ceramic dish presentation, omakase tasting menu list, table reservation widget." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi2XOK7vCTiCGviozLgg-AGlUOHngekg7Shx5BvmCyRh9bxu1BtR5VItHqNozogBCSE2PonNuR4i5O29F3xcCYS2uzb4McKLQLO_r72zJDPmWvN9uCxlje6tlvYf2sunCzGqtxYLjTXB42mUbzUd36BeDNTgTi5fuaaJGXq7QTCKjXqPDJ73aICLNisA11_0TxPbQpBUVREuzj32bQv4qbG0VNwGCHFSrltnfnIrHLrYw6oPLgBrE">
+<span class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">Culinary &amp; Hospitality</span>
+</div>
+<div class="p-4 flex items-center justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface leading-tight">Komorebi Eatery</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Editorial Dining &amp; Reservations</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$34</span>
+</div>
+</div>
+<!-- Card 5: Floating Bottom-Left (Vertex Studio - Modern Agency & Commerce) -->
+<div class="absolute left-16 bottom-4 w-[360px] z-10 rounded-xl overflow-hidden bg-surface-container-lowest shadow-md transition-transform duration-300 hover:scale-[1.02]">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Modern creative agency digital storefront template with clean layout, minimal black and white typography, product carousel preview, sleek design studio portfolio." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE4FvltJcAvmtJ4w8varSb8qt3AwF5g8NJDU_8J6_empDyOsooioWsqs7RCBTCCI9Cagl8bp9WWQHjlFBo1RDats8dcHG2lVxxpQ56DiTn5rvaiIaqDT992BpG-GeR4QKMwYuhD_y0zgXNym2qL5PJSmr_oFJU4YQQ1rI6hU7WHXubni5FhiUGxPb78rxnvI3CxZSXAhNJhQwZ_xIrOrjiATTV2_GWpuqt48hYS8a7yUYkOUBw2M4">
+<span class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">Agency · Commerce</span>
+</div>
+<div class="p-3.5 flex items-center justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface leading-tight">Vertex Studio</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Brand &amp; Product Showcase</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$24</span>
+</div>
+</div>
+</div>
+<!-- Mobile Fallback Single Hero Card -->
+<div class="block md:hidden w-full rounded-xl overflow-hidden bg-surface-container-lowest shadow-md">
+<div class="aspect-[16/10] w-full overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="Minimalist modern website template preview with clean architectural photography, elegant sans-serif typography, structured grid layout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAg3w57o5ByQ6dh4fBsfdt9h2lzQ0FirEvbvPaT2yxz_0qSdzl9r5zGqzSk8dqZScP-5EOeMlhP888ArCN9VIbTVSq4-9rCTfD7bs2hvni7C2QUJIRxwCgMAg1rEEANOnHeqIONqphzuQGGf4neF7sAzJifwQRgGGfnZDpBU6oLq_2oFwQwAEAm2CYUN2C4Mzw0CrOqFvko1bgYlIA4eEs27cxJRpxwQ1aovJp3h3FVc4F4CEafv7A">
+<span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-primary text-on-primary font-label-sm text-label-sm uppercase">Curator's Choice</span>
+</div>
+<div class="p-4 flex items-center justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Atelier Nord</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Architecture &amp; Portfolio</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$38</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: FEATURED / TRENDING (Large Visual Editorial Cards) -->
+<section class="w-full bg-surface-container-low py-space-xl" id="featured">
+<div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm mb-space-lg">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Weekly Selection</p>
+</div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Featured Releases</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Curated templates selected by our editorial team this week.</p>
+</div>
+<a class="font-label-md text-label-md text-on-surface flex items-center gap-1 hover:text-on-surface-variant transition-colors group" href="#categories">
+          View all 480+ items
+          <span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</a>
+</div>
+<!-- Grid of 3 Large Editorial Template Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Featured Card 1 -->
+<div class="group flex flex-col rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-xl transition-all duration-300">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Sophisticated editorial wedding celebration website template screenshot, ivory background, serif monogram, gallery of engagement photos, interactive schedule of events." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8h074Ykz9w-a5RBpXYOfWggEQCIwQinFud-ryYGa4_juNoaXIOrLfJEKZGChTH1ZAX7pJYgmGpI_IVNRpR7iWrXVQWTMKQ7HcUwimaB5MjRORiJy6q3w_59Mv5InQFLL5sxH990zZR_7Xo2dMxOB-UZkxqdi4a6b_iFdJiY5J7sgSwuk_x4aFu4_X4Afdb6nGIrgc-JCt90OMYSJ6tRQEAejyco3bGCrMKLSY56IJHUa3C6lzTjg">
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
+<span class="px-4 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-md">Open Live Preview</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+<div class="flex items-start justify-between gap-space-xs">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Solstice &amp; Sage</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Wedding &amp; Celebration · Website</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$29</span>
+</div>
+<div class="pt-space-xs flex items-center justify-between border-t border-transparent">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-semibold text-on-surface-variant">SS</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sylvan Studio</span>
+</div>
+<button class="h-8 px-3 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">
+                Preview
+              </button>
+</div>
+</div>
+</div>
+<!-- Featured Card 2 -->
+<div class="group flex flex-col rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-xl transition-all duration-300">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Contemporary Japanese izakaya and cocktail lounge website design showcase, moody cinematic lighting, minimalist menu layout, table reservation integration, responsive design preview." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6K2IDDPi-sIZYXsvqKRwkG4qonAd1XoVln-ouwc5Rm7VH0IoQdZlvQulmT7ukO58y87794rRJ3C8A5s_CHddlTcdbSHrgpPiNqlKU1pTDYdE3fsATwPD6D5KKDFaB893yaOqJbhhLV46Jn3cX7JdWzZ1YFtDXHZzmip9UstRKNrIOhf65mxBuJX7ZykS1aOGuJGk6mW2zDmmOPi0hxDLgXAgSC3FU8Q-aRsz0EVbwOr3DQDLOyMM">
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
+<span class="px-4 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-md">Open Live Preview</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+<div class="flex items-start justify-between gap-space-xs">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Komorebi</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Hospitality &amp; Dining · Web Template</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$34</span>
+</div>
+<div class="pt-space-xs flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-semibold text-on-surface-variant">KU</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Kuroda Lab</span>
+</div>
+<button class="h-8 px-3 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">
+                Preview
+              </button>
+</div>
+</div>
+</div>
+<!-- Featured Card 3 -->
+<div class="group flex flex-col rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-xl transition-all duration-300">
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Dark aesthetic creative direction portfolio template preview, high fashion portrait photography, clean typographic case studies, stark black layout with crisp white typography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1pGwDKrzPnftoWaHNjz-d8zM8Bid4okYIn_eLybNBw4SzKC0ai7hVtf_vrY7IymcwJEzRn-BL5AiV9YT6AtF6S_FxuZrHVsjNepFixuWGKi41k-6q_fA8L4cEVTq0JOEI5pf_8pQshS3vFkyJo5CdCb1zJjU1ZjW_gQtNaojnouSovjrAbpUXpqNaRH5zvLlCMgt6ZSq3F32LrOst3_wAsLbS7iUV6Y9AmzktKCJrijgaidTZSTk">
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
+<span class="px-4 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-md">Open Live Preview</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+<div class="flex items-start justify-between gap-space-xs">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Folio Noir</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Editorial Portfolio · Showcase</p>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">FREE</span>
+</div>
+<div class="pt-space-xs flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-semibold text-on-surface-variant">AN</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Atelier Noire</span>
+</div>
+<button class="h-8 px-3 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">
+                Preview
+              </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: BROWSE BY CATEGORY (Visual Rich Category Cards) -->
+<section class="w-full bg-surface py-space-xl" id="categories">
+<div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg">
+<div class="flex items-center justify-between mb-space-lg">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Explore by Discipline</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Architected layouts tailored precisely for your industry requirements.</p>
+</div>
+</div>
+<!-- 6 Visual Category Cards Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Cat 1: Birthday & Celebrations -->
+<a class="group relative h-48 rounded-xl overflow-hidden bg-surface-container shadow-sm flex flex-col justify-end p-space-md transition-all duration-300 hover:shadow-md" href="#birthday-section">
+<div class="absolute inset-0 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80" data-alt="Vibrant modern festive digital aesthetic with colorful confetti gradients and joyful layout preview snippets for birthday invitations and milestones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyHyi904IQ28ukMWNaUYpHK7BDS8wz0_YBxmSUx-02RJGuEOZrYXeyu8IQJ0c_03C0vwdRErSOepvcyHewxGtIkFI10f0wE9LjArQtg2C_bbJiiaDd2NSl1g4uj5oeQUXwrABwMPYA-nGsg-TuZwkjrEzKoRTDlM1wAIs7HiNhxwpPrDfAftkYdLzDJ-6O_bGIlsDxg90Jl7NsRJWCYGRAb0X1RXd8J73YxawJNy3fH-MZrqMoaZw">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent"></div>
+</div>
+<div class="relative z-10 text-on-primary">
+<span class="font-label-sm text-label-sm tracking-wider uppercase opacity-80">42 Templates</span>
+<h3 class="font-headline-md text-headline-md font-semibold">Birthday &amp; Celebrations</h3>
+</div>
+</a>
+<!-- Cat 2: Weddings & RSVP -->
+<a class="group relative h-48 rounded-xl overflow-hidden bg-surface-container shadow-sm flex flex-col justify-end p-space-md transition-all duration-300 hover:shadow-md" href="#wedding-section">
+<div class="absolute inset-0 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80" data-alt="Refined warm ivory and botanical celebration setting with romantic typography, wedding suite layouts and RSVP cards on fine linen texture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABb0OgmvJGVh7ZP7es8WAU_TyN9O-cDu3cZZS8b4KG7ZUi_eWNBgcVhKHTwNyEy1NPGrKZ_oPoomuaiVoq4g--EdMMInrc_jBd4-OA_jozoQRs_o9s0APUH3ODLi3yBQP6_NyGhLaXPOIep1wEK0c7aInPUf8D40o39QoyPUtl_X4Le5IngnXjmGOu-2eiZfBYb3GaPWUOJaY2at3IrJVL3QumMvUT5NhZby9UWpFHU4N9SiR2yck">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent"></div>
+</div>
+<div class="relative z-10 text-on-primary">
+<span class="font-label-sm text-label-sm tracking-wider uppercase opacity-80">68 Templates</span>
+<h3 class="font-headline-md text-headline-md font-semibold">Weddings &amp; RSVP</h3>
+</div>
+</a>
+<!-- Cat 3: Portfolios & Creative -->
+<a class="group relative h-48 rounded-xl overflow-hidden bg-surface-container shadow-sm flex flex-col justify-end p-space-md transition-all duration-300 hover:shadow-md" href="#portfolio-section">
+<div class="absolute inset-0 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80" data-alt="Minimalist design studio moodboard with clean monochrome grid structure, art direction project cards and clean typography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFDfhDrFmBJrFzUm9Prq6fDvoQ-USUVZygGcPlJk1g5q69NRbWr3EvkUQxpJsm1zh8Q7zhY2PgT8wU2A-0s0YDBdWCeZ2v9r5KSBJjyDzR8HHe4KUagRsxVyOisNKpI2FDCqcOCfylMmfGrP6XiW-NiUBJPESFDA8yPgHg2Wy5yPjLdsXSqVMCN6iCCeBGMlVjFftpsETlIZ8bvcS1CiEJDBy1YBMuGN3LA8MmL_EXrusLcKjbl90">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent"></div>
+</div>
+<div class="relative z-10 text-on-primary">
+<span class="font-label-sm text-label-sm tracking-wider uppercase opacity-80">114 Templates</span>
+<h3 class="font-headline-md text-headline-md font-semibold">Portfolios &amp; Creative</h3>
+</div>
+</a>
+<!-- Cat 4: Restaurants & Culinary -->
+<a class="group relative h-48 rounded-xl overflow-hidden bg-surface-container shadow-sm flex flex-col justify-end p-space-md transition-all duration-300 hover:shadow-md" href="#restaurant-section">
+<div class="absolute inset-0 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80" data-alt="High-end gastronomy scene with artisanal sourdough, wine glasses, ambient candlelit table setting and modern restaurant menu preview." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOHMidfbDGd3NjV1tourlH_kcXqpNkB3weyIt3ZsY2AT2UhLsyzPBX4ROZUQpkMxdbLh0LbBgjtuCTaY6SXIX5jkiv-kNeorecOh6_9-knwLXBLhUocl90lCnHppP9MkNhuXet8T9s3Frt0Iv35viPe6PIwH2itLiCNgxCP0vb6qLn4XYtghusof61R7V1qcPJtRwJkJzMOqmMFX-CUwCmFbPJvmgGYbfmBC3m25cPOtCGS8BwnGs">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent"></div>
+</div>
+<div class="relative z-10 text-on-primary">
+<span class="font-label-sm text-label-sm tracking-wider uppercase opacity-80">54 Templates</span>
+<h3 class="font-headline-md text-headline-md font-semibold">Restaurants &amp; Culinary</h3>
+</div>
+</a>
+<!-- Cat 5: Business & Consultancies -->
+<a class="group relative h-48 rounded-xl overflow-hidden bg-surface-container shadow-sm flex flex-col justify-end p-space-md transition-all duration-300 hover:shadow-md" href="#">
+<div class="absolute inset-0 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80" data-alt="Sharp contemporary architectural consulting office with glass partitions, clean desk aesthetic and editorial business website preview." src="https://lh3.googleusercontent.com/aida-public/AB6AXuADKdSW1im5W0Oi1QAhHs7cdZOKvdRfKfhzZGYXBbgFsgPVAY9QfIjYqi7e7QAcLa31OyhaaBQy-sOvf6imraHwwFYLvjYsjTVrqeJfrDLTMdbUCWR0FScZBxArmcUHJyi2cQYffquknpdkmJGDjN_b_VmovL6CWAZcLOh5Ao7FiDE6REQsGlY6TYoe3nU7kUvlzpodY44z_NHZbD2EW0O7JEx2LrXSJeLifvbDQ0MargZ7dLQ6FII">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent"></div>
+</div>
+<div class="relative z-10 text-on-primary">
+<span class="font-label-sm text-label-sm tracking-wider uppercase opacity-80">89 Templates</span>
+<h3 class="font-headline-md text-headline-md font-semibold">Business &amp; Consultancies</h3>
+</div>
+</a>
+<!-- Cat 6: Events & Conferences -->
+<a class="group relative h-48 rounded-xl overflow-hidden bg-surface-container shadow-sm flex flex-col justify-end p-space-md transition-all duration-300 hover:shadow-md" href="#">
+<div class="absolute inset-0 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80" data-alt="Bold geometric festival and tech summit conference design stage, contemporary spatial typography and schedule preview UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANP0-AbR4lFTRTqqyERonZlGsyQ-I8a7SaqxkyxIuZdX4yM0-1rJKN4ERSqJZbtsIwlUnNhbXkYyu5b2FK-WPmPA9aY4wZD0W_8O8Z5aKbcX5L5eAx3ZLWTmqy0o2MNNs_pKXsZbE2yec6mmwCEcj2ULF_Wlqcz7qE22OqcHD4xWuzWwUVr_wvYcQSNzsy99gN--0JRb9f_HEMaWaD0f2MZiOhL_y9XGp0EzO_JsiN-HpKvH6tTmU">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent"></div>
+</div>
+<div class="relative z-10 text-on-primary">
+<span class="font-label-sm text-label-sm tracking-wider uppercase opacity-80">37 Templates</span>
+<h3 class="font-headline-md text-headline-md font-semibold">Events &amp; Conferences</h3>
+</div>
+</a>
+</div>
+</div>
+</section>
+<!-- SECTION 4: TOPIC-BASED TEMPLATE GROUPS -->
+<div class="w-full flex flex-col gap-space-xl bg-surface-container-low/50 py-space-xl">
+<!-- Group 1: Birthday Templates -->
+<section class="w-full" id="birthday-section">
+<div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-xs mb-space-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Birthday Templates</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Celebrate milestone birthdays with vibrant, personalized digital invitations and event hubs.</p>
+</div>
+<a class="font-label-md text-label-md text-on-surface flex items-center gap-1 hover:text-on-surface-variant transition-colors whitespace-nowrap" href="#">
+            View all Birthday Templates →
+          </a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Card 1 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Festive modern birthday invitation template with pastel confetti accents, clean typography, countdown clock and RSVP form preview." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQ3fZgSOEFQx955WRyyGLZ5ZRSE53436nRNF06D7QP-zoOvaiqJSoj6-C9AWQ_L04cE2PGWnunOBvO47-KvLvgaKiz6Odx-L2J8L00AtKsnlmBV8bXOCVedsUrYspr9f1XSfPNHM9vXKTKuc3M0cTzPtGFezBUBE5ZTL9vuteyKijSxAjNn4THvusjSRFZm3W_YSUr84mC9pP0ySkU8ycY-wZfR4NKRf_G5d5DIYWVn0VHuZ5MvfM">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Confetti &amp; Co.</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Birthday · Invitation</p>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">FREE</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Studio Joy</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Chic sunset rooftop cocktail birthday party landing page design with warm amber photography and sleek digital guestbook." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZCLbUyRxjkKtzHe8HIS9qk8mZ9fxVxggnctL2lUXM4XRTccVcvQSLMjAWbAH19DjNJ80aYm24R_lJV5A5Exwxj9P3UgVXGWZp7atFE8rVOf3o-FBrHZIfL4OpwSR7lqI8qYqVnFJDt7HWYoKUiggcQGUT2B9AX4qRHsDCSsGUeH-wwzs2MQ2g2IbgW39WBFfIHZy_yJZCFY8n2GO1rjrvhJYw1ylUqD7uaOIshnMMaUrAfAtQBmw">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Golden Hour Bash</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Milestone · Event Page</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$14</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Ember Design</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Whimsical illustrated adventure theme children birthday invitation website with fun interactive map and party details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlliQBVsDTJwn862W6Owk-__qOTLEGEup7lT1aJvKDAeEYILcbBCHHFtfl8Mv2V3BxilS9axWVOhKyByNPHRTaaQMpRPg0WVg7hiihHATdARmW40tDpEetJ50y5bzeZysDhORfOCrrEKZuSpgkzX3cqYq3_JDK2DyAwVhKRUTp9WvmPBpMbwaes2Fbt_Ch9SFPXM5eLS2xqvJGcKpXRGiw-k1bjlukMDEdjgXOjD92LIxtG7Jr470">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Little Explorer</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Kids Birthday · Invitation Hub</p>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">FREE</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Papercut</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Electric modern dark mode party invitation for 30th birthday celebration with vivid neon accents, DJ lineup and music player widget." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUtuxACK7eaAa3LhoR3Ux2orToUHlCNuXZp9ESVyDeMg_UJXbzeStgWBeYkLjnYUuNCErMwB0A7AlAwCRgYkmvFZEwEsGiO9unkv41zKWFogXbJLQYjFLO3CedXfSQoFc10kLyN0JNww7ty8FqfygzvDX9Q_jDOGt3kg6Kw4j2RHmK-TSJ_vUwu6QtAqzk_14LpsYA2PHvyVsVLzEI-Sq841Sfth2y5X92XwZcmuT0C_c4GYbL4SI">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Studio Neon 30th</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Birthday Party · Digital RSVP</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$18</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Waveform</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Group 2: Wedding Templates -->
+<section class="w-full" id="wedding-section">
+<div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-xs mb-space-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Wedding &amp; Union Templates</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Timeless digital invitations, gift registries, and story pages designed for unforgettable moments.</p>
+</div>
+<a class="font-label-md text-label-md text-on-surface flex items-center gap-1 hover:text-on-surface-variant transition-colors whitespace-nowrap" href="#">
+            View all Wedding Templates →
+          </a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Card 1 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Classic botanical wedding website template preview with sage green accents, registry links, ceremony directions and photo gallery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3qxWuvaW6FHREnHFEI58rW3LH5kYFyrnzFnKlg6wu16ceL_sIKz9xGCIZjvqCoQyqcVYQOJ9CVANZRCe9FleCyByxz8vZAL7NDO0zU1WJpQJWg7YTEjEEOkd5nJd40ocNLFP5xteqsCt4gINtkFt3JQL7ZAqNIx83C_OhNi-qVkdpry1yGLD3yDKTlPsLh-tvaq21OQqlnqEUMCrf60nzFaMRiDkUBBJvwUMz3pfGi11TJAbqqu0">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Botanica Suite</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Wedding · Invitation &amp; Registry</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$39</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Celine &amp; Co</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Minimalist modern wedding event site preview with airy whitespace, clean typography and subtle sand-colored aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTCvAcbnmbQkfl0QDV_fW8A8FjIXsy6-7ggha2UmMFGCi_CwNPBwt9Ag0lDUspsaUBFEY7SgvC0WWC8Aof2MVDF6T03REr2vyTI77A_FxHGrmo3KihgNbpj7LDwUsM_gQ8aqta0UIWsJyh2ZHLVI5Sn9eImkM9VHi5-oogleFeBnrY1hJcj_CsxxPiyZvr_ddj4H164uWNLNtq1jtR9_qKmMITbL__gAEJwpXLbsDaeq4agbRabT4">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Aethel &amp; Rose</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Minimalist Wedding · Event Site</p>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">FREE</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Atelier Sol</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Lake Como destination wedding invitation website mockup with Italian villa architecture, travel tips and multi-day itinerary." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDovzxOdVnRAQHr2PtflT4Hty3RTULt1-aB8hu2I8B8duN1qixS0L6Oss-wQT9kXrLOol9XjWtgS5KFQuODSefsF-9K_05VTRI7I6DGcOwX7ik7Y0mwhAQ8AX5pcYoZDHmjkG-cp0JBZz7_S3xNI3TTzG7nAddM35xYti1l8bvglKkFNFL_pyiGbf-L0NZ4hzJdkxnsQcJL8wps52Se7eoYK1DfMTwxDY1Jlbi02NtpOrLvZdxzOzM">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Villa Bellini</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Destination Wedding · RSVP</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$32</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Riva Studio</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Artistic architectural wedding story page with high fashion photo layouts, ceremony readings and couple biography timeline." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0w5rZ2Uf678VqKXhL980J2kt0EAq-WBok3wKFrm-Lu9mrn2jwpp3Mk9jb7VCUYAF4jrwXigGQB_WrnrKGQQY5JM9aXQ69nED8lcqsWqK94WRMogglFa4qeHtP-q4XrtqExQt2qwE1yG8ci4YxOBhM0KNcA4pip5NGgeqUvLhUXRh38ceanIJANHJH42h2ZYBo8m64-R2tiWp5i37on_XRJB5b4f2ES9bb-EqduLsRcjlTMsWJOVI">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Ceremony Monolith</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Contemporary Union · Full Story</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$28</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Monolith Work</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Group 3: Portfolio & Studio Templates -->
+<section class="w-full" id="portfolio-section">
+<div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-xs mb-space-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Portfolio &amp; Studio Templates</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Purpose-built websites to showcase creative direction, photography, and design work.</p>
+</div>
+<a class="font-label-md text-label-md text-on-surface flex items-center gap-1 hover:text-on-surface-variant transition-colors whitespace-nowrap" href="#">
+            View all Portfolio Templates →
+          </a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Card 1 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Monochrome black and white photography portfolio layout with full-width photo carousels and minimal metadata overlay." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeHY2DpHvmAidt4zEB9aHcmarwlS-Dhqn-wP16EbCCY8cXJfpBzIPdiwyjufarbPF8MoA2t6gI7u6ODxEo5ZYBaekDxRLQ7TS20yDwrXKUbynVjbYVkPQJ3cU72OL2rwtvkbz8CKvFbRa9eKO0WrurrKQEX2fW5Ka4P3ev23AKWT7E9aIjoehtmX8RnNFCFsNzn16R9kdf5PhwSbAx2eSWRQcNaQ3ndlqviOOIwbue3FqDtI63eJg">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Monochrome Archive</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Photography · Portfolio</p>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">FREE</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Arlo Vance</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Modern Swiss design agency site with structured grid, case study indices, and clean neutral aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABTgz7MaAPrXMZjsXP7ewD23YR8e60j3R8iQMzlhf_bKHsm60rMueSExKLuWleEYYe43bhcaoNZQri6oDMWsjd_gOzoU-r_P8AZfOjitVXdJzfCfIyqA0-WvpBtAZTUWRuwwmnlnVQ5ChOqwJ3Gan-y5Oc2KeMK6BmLtz1VnUtV7i_UcScUq7LC2iwTDeRuQNrtiQdEjWB69I8-Q6gYKD_ybcf7ssQbqXGhOPVCjQA9UkhDPJ3pqU">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Studio Forma</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Design Practice · Agency Site</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$38</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Forma Lab</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Creative direction portfolio website preview featuring oversized typography and interactive editorial project layouts." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdluaLGczzTlPXytwRz3U1w5PKvimDKdgypna5o_JJyyVwBQZfuXbUk2kWjFLG1labr4kdOQGdThKLmSK0r9ahl1EetHZj_GpdRh7t1_lejwFABN1Si9766hvZn9AnXaR132SpfGfKrRZaQg8ikMd8DXvw31n1hyoFZeOmbYmmnFEnOX1xwzBukUjaN--IQDC1htdf91qbnuQS8TivWtcrFTRlKW-syhzwY4wKedsuyR2lFVkyxw8">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Koto Typographic</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Creative Direction · Case Studies</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$24</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Koto Agency</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Clean artist gallery website preview showcasing contemporary painting exhibitions and high resolution artwork viewer." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWXRILmRWCoFNVIBNvvkYV0EHO_vQB108opSa4syKrmU3sWGPEdau9eah-9Lah0y8E0h1AuduUa8TgmoY0r0-iDenVSA_gA_EGk_rmgEBF09rVJUqOLR3m7VieGzQjz3YBip7Mr2usL2mKqmiGCgFxts5ErB2I8WBnAcTcTVL4-TWP_tt2He4eV4QkXyHqbBvaJN2isSkDj0iiiaAyD50LKyVeupDnPERiEV0bFY2dkwtxy3xpbJw">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Lens &amp; Light</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Visual Arts · Minimal Gallery</p>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">FREE</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By S. Lindqvist</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Group 4: Restaurant & Culinary Templates -->
+<section class="w-full" id="restaurant-section">
+<div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-xs mb-space-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Restaurant &amp; Culinary Templates</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Digital menus, online reservation pages, and culinary storytelling.</p>
+</div>
+<a class="font-label-md text-label-md text-on-surface flex items-center gap-1 hover:text-on-surface-variant transition-colors whitespace-nowrap" href="#">
+            View all Restaurant Templates →
+          </a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Card 1 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="French wine bar and brasserie website template featuring dark forest green aesthetic, vintage wine list and table booking." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL08xft5MM-cTlS4Y9Phua7v3fQA0c-Zcqk1MEV1RK3wXmv10p79V-5jgPGwW3N_funKMQ7JxEa9y6ndG3_36IoPyMBOP7UL2AwT4zwOOMq7bp4YJcy55DASBHPM2eRN-otXtaTrZtXWwasiJrWNsYTaBdAUrpOBivJjLftgUL0Rjmb9JM_Zir9Fb68IRD2dc-HoMtDdDeBMhqdAg0uPhk8HjCLM-u74xrYgt2SUXecc8SsSrZ5ig">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Bistro Verre</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Wine Bar &amp; Brasserie · Website</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$28</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Maison Studio</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Modern Japanese ramen shop website layout with vivid photography, pickup ordering integration and store locations." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABC7Xfggt1TpnCUQ9fMJDQS0lCFnUkhEXyfiZrxXVhcOdz3RuYul-g-WJO5w1RWpilmdkyiDsRYiWuPtdpkcrKudb78I1eJRskj417_Xt_2r8hjBFKR0s9wpeICpDjHvOz-kNnHO8MpnhH3nc9tBNLEX-0wwJxYel20KqJunsdFdUv8JDeIYOao0TIEioFEfdmkjXlRYshrg3Qi45VJf41aqemsCI_ZQ3JwnrZUVVoEHG5HcanECQ">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Oishii Ramen</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Fast Casual Dining · Menu &amp; Pickup</p>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">FREE</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Tokyo Noodle</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Artisanal Italian pastry shop and espresso cafe template with warm terracotta details and online pastry order catalog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_5Hbg99HzOaqquq6vW2LUf7-gR8vM_64REmBx1yeWDFLiqoZ0rPIEcagvgHCDndG8y4y2sH5dJzNTGAEk2KALyN4G7ctZ9Bc-4VuLeeEAvlNcT-fRHAwkLlUSq6XNaRiBWCE1QB-D3THrJz22cr5sAjLEnr3GbNXAZLKNMtCN2GhDtPBe-WjkMy6BoqWShQwBkKoC52P7WTG_kODREoczyUedpPIo9RP4jSh24pu-fM0MvvUkc8I">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Pasticceria Roma</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Artisan Bakery &amp; Cafe · Order Page</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$22</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Dolce Vita</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-200">
+<div class="aspect-[16/10] overflow-hidden bg-surface-container relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102" data-alt="Michelin star tasting menu website preview with intimate dark atmosphere, chef's seasonal dishes and integrated reservation system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0jc7YK80JbAMLR3l-0ThpY31_jCT3R57UT6Hv6CiPaLVBJUSkl2wzh6jvgx0uo03W2PjgAwtHJfdTuzgp-cy0NQ26tI7DdkgcVbZyrAD-IYfdn4XoYolKXxTj8Zr3txosangAWt5axSrE7cQXbZsQo1qoR6yilhhxjd_QOqENVL_GOd-oN4WEdeh4XHvfPLuzUhIFES_VgN65k89oEHvFgr8EaxFEsKY62jNNRVU-0LQRfJCoo_Q">
+</div>
+<div class="p-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Table 14</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Fine Dining · Reservations</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">$35</span>
+</div>
+<div class="pt-1 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">By Degustation</span>
+<button class="h-7 px-2.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors" type="button">Preview</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- SECTION 5: CURATED SUBMISSION BANNER (Editorial Aesthetic) -->
+<section class="w-full bg-surface py-space-xl">
+<div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg">
+<div class="rounded-2xl bg-surface-container p-space-lg md:p-space-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg">
+<div class="max-w-2xl">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Creator Partnerships</p>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Are you a creator or studio?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
+            Share your work with thousands of designers and teams worldwide. Earn fair revenue while remaining in complete control of your creative assets.
+          </p>
+</div>
+<div class="shrink-0 flex items-center gap-space-sm">
+<a class="h-11 px-6 rounded-full bg-primary text-on-primary font-label-md text-label-md inline-flex items-center justify-center hover:bg-on-surface-variant transition-colors shadow-sm" href="#">
+            Submit a Template
+          </a>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive script for dynamic micro-feedback on preview clicks -->
+<script>
+    document.querySelectorAll('button').forEach(btn => {
+      if (btn.innerText.trim() === 'Preview') {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const orig = btn.innerText;
+          btn.innerText = 'Opening...';
+          setTimeout(() => {
+            btn.innerText = orig;
+          }, 800);
+        });
+      }
+    });
+  </script>
+</div></main><footer class="w-full bg-surface-container-low shadow-[0_-1px_6px_rgba(0,0,0,0.02)]"><div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg pt-space-xl pb-space-lg"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter-lg pb-space-xl"><div class="space-y-space-sm"><div class="flex items-center gap-space-sm"><span class="font-headline-sm text-headline-sm text-on-surface">tempo.</span></div><p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">The curated creative template marketplace for creators, studios, and businesses. Discover templates crafted with uncompromising detail.</p></div><div class="space-y-space-sm"><p class="font-label-md text-label-md text-on-surface">Browse</p><div class="flex flex-col space-y-space-xs font-body-sm text-body-sm"><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="explore" href="#">Explore All</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="free-templates" href="#">Free Templates</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="premium-templates" href="#">Premium Templates</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="categories" href="#">Category Index</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="new-releases" href="#">New Releases</a></div></div><div class="space-y-space-sm"><p class="font-label-md text-label-md text-on-surface">Support &amp; Resources</p><div class="flex flex-col space-y-space-xs font-body-sm text-body-sm"><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="help-center" href="#">Help Center</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="licensing-guide" href="#">Licensing Guide</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="submission-guidelines" href="#">Submission Guidelines</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="creator-faq" href="#">Creator FAQ</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="refunds" href="#">Refunds</a></div></div><div class="space-y-space-sm"><p class="font-label-md text-label-md text-on-surface">Legal &amp; Trust</p><div class="flex flex-col space-y-space-xs font-body-sm text-body-sm"><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="privacy-policy" href="#">Privacy Policy</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="terms-conditions" href="#">Terms &amp; Conditions</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="refund-policy" href="#">Refund Policy</a><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="license-agreement" href="#">License Agreement</a></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-sm"><p class="font-body-sm text-body-sm text-on-surface-variant">© 2025 tempo. Inc. All rights reserved. Designed for craft and clarity.</p><p class="font-label-sm text-label-sm text-on-surface-variant">Curated Digital Artifacts</p></div></div></footer>
+
+</body></html>

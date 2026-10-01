@@ -19,10 +19,10 @@ export const DashboardPage: React.FC = () => {
   const [toastVisible, setToastVisible] = useState(false);
 
   const loadWebsites = async () => {
-    const effectiveUserId = user?.id || 'usr_tempo_demo_01';
+    if (!user?.id) { setWebsites([]); setLoadingWebsites(false); return; }
     setLoadingWebsites(true);
     try {
-      const list = await eventService.getUserWebsites(effectiveUserId);
+      const list = await eventService.getUserWebsites(user.id);
       setWebsites(list);
     } catch (e) {
       console.error('Failed to load user websites:', e);
@@ -56,8 +56,8 @@ export const DashboardPage: React.FC = () => {
   };
 
   const handleDuplicate = async (site: EventWebsite) => {
-    const effectiveUserId = user?.id || 'usr_tempo_demo_01';
-    const duplicate = await eventService.duplicateWebsite(site.id, effectiveUserId);
+    if (!user?.id) return;
+    const duplicate = await eventService.duplicateWebsite(site.id, user.id);
     if (duplicate) {
       await loadWebsites();
       triggerToast(`Duplicate created: ${duplicate.title}`);
@@ -65,8 +65,8 @@ export const DashboardPage: React.FC = () => {
   };
 
   const handleDelete = async (site: EventWebsite) => {
-    const effectiveUserId = user?.id || 'usr_tempo_demo_01';
-    const success = await eventService.deleteWebsite(site.id, effectiveUserId);
+    if (!user?.id) return;
+    const success = await eventService.deleteWebsite(site.id, user.id);
     if (success) {
       await loadWebsites();
       triggerToast(`Site deleted`);
