@@ -43,9 +43,9 @@ export interface TravelAccommodation {
 }
 
 export interface AppearanceSettings {
-  atmosphere: string;
-  palette: string;
-  typography: string;
+  atmosphere: 'classic-elegance' | 'modernist-warmth' | 'sunlit-botanical' | 'monochrome-pure' | 'campus-academic';
+  palette: 'terracotta-ivory-olive' | 'sage-cream' | 'midnight-gilding' | 'navy-gold-coral';
+  typography: 'playfair-sans' | 'modern-grotesque' | 'space-inter';
 }
 
 export interface ActiveSections {
@@ -71,10 +71,10 @@ export interface ActiveSections {
 export interface RsvpSettings {
   enabled: boolean;
   deadline?: string;
-  allowMealSelection?: boolean;
-  allowDietaryNotes?: boolean;
-  allowSongRequests?: boolean;
-  allowPlusOnes?: boolean;
+  allowMealSelection: boolean;
+  allowDietaryNotes: boolean;
+  allowSongRequests: boolean;
+  allowPlusOnes: boolean;
   mealOptions?: Array<{ id: string; label: string }>;
 }
 

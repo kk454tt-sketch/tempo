@@ -69,13 +69,6 @@ export const EditorPhotosTab: React.FC<EditorPhotosTabProps> = ({
   const handleAddUrl = (e: React.FormEvent) => {
     e.preventDefault();
     if (!urlInput.trim()) return;
-    try {
-      const parsed = new URL(urlInput.trim());
-      if (!['https:', 'http:'].includes(parsed.protocol)) throw new Error('Invalid URL');
-    } catch {
-      if (onToast) onToast('Enter a valid public image URL.');
-      return;
-    }
 
     const newPhoto = storageService.createPhotoFromUrl(urlInput.trim(), captionInput.trim() || 'Event Photo');
     const updated = [...(data.photos || []), newPhoto];
@@ -92,8 +85,7 @@ export const EditorPhotosTab: React.FC<EditorPhotosTabProps> = ({
     if (onToast) onToast(`Added preset: ${label}`);
   };
 
-  const handleRemovePhoto = async (photoId: string) => {
-    await storageService.deleteImage(photoId);
+  const handleRemovePhoto = (photoId: string) => {
     const updated = (data.photos || []).filter((p) => p.id !== photoId);
     onChange({ photos: updated });
     if (onToast) onToast('Photo removed');

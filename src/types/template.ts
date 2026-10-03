@@ -3,49 +3,31 @@ import { EventData } from './event';
 
 export type EventCategory =
   | 'all'
-  | 'birthday'
   | 'wedding'
-  | 'portfolio'
-  | 'business'
-  | 'restaurant'
-  | 'events'
-  | 'saas'
-  | 'ecommerce'
-  | 'education'
-  | 'personal'
-  | 'student'
+  | 'birthday'
   | 'party'
-  | 'opening'
   | 'anniversary'
+  | 'opening'
   | 'graduation'
+  | 'student'
   | 'baby'
   | 'housewarming'
   | 'memorial'
   | 'custom';
 
 export interface TemplateMetadata {
-  id: string;
-  name: string;
+  id: string; // e.g., 'wedding-01', 'birthday-01', 'opening-01', 'party-01', 'enrolldesk-01'
+  name: string; // e.g., 'Timeless', "Emma's 25th", 'The Coffee House', 'Evening With Friends', 'EnrollDesk'
   category: EventCategory;
-  categoryLabel: string;
-  subtitle?: string;
+  categoryLabel: string; // e.g., 'Wedding', 'Birthday', 'Dinner & Party', 'Student & Campus'
+  subtitle?: string; // e.g., 'Rahul & Priya', 'October 17', 'Classmate Hub & Portal'
   description: string;
   previewImage: string;
-  badge?: string;
-  author?: string;
-  authorAvatar?: string;
-  price?: number;
-  priceLabel?: string;
-  isFree?: boolean;
-  rating?: number;
-  reviewsCount?: number;
-  techStack?: string;
-  version?: string;
-  releaseDate?: string;
+  badge?: string; // e.g., 'Save the Date · RSVP', 'Intimate Gathering', 'Pro Functions Enabled'
+  accentColor?: string;
   isFeatured?: boolean;
   tier?: 'free' | 'pro';
-  galleryImages?: string[];
-  availableFunctions?: string[];
+  availableFunctions?: string[]; // list of modular built-in functions
   featuredDetails?: {
     headline: string;
     subheadline: string;
@@ -62,6 +44,6 @@ export interface TemplateDefinition extends TemplateMetadata {
 export interface TemplateProps {
   data: EventData;
   isLivePreview?: boolean;
-  onRsvpSubmit?: (rsvpData: Record<string, unknown>) => void | Promise<void>;
+  onRsvpSubmit?: (rsvpData: Record<string, unknown>) => void;
   onStudentSubmit?: (student: Record<string, unknown>) => void;
 }

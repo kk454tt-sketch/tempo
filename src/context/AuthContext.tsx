@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User as SupabaseUser, Session, AuthError } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '@/services/supabase';
+import { apiService } from '@/services/apiService';
 import { User, LoginCredentials, SignUpCredentials } from '@/types';
+import { mockCurrentUser } from '@/services/mockData';
 
 interface AuthContextType {
   user: User | null;
@@ -13,13 +15,10 @@ interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   signUp: (credentials: SignUpCredentials) => Promise<{ confirmationRequired?: boolean }>;
-  resetPassword: (email: string) => Promise<{ error: { message: string } | null }>;
   logout: () => Promise<void>;
   clearError: () => void;
   refreshProfile: () => Promise<void>;
 }
-
-const LOCAL_STORAGE_USER_KEY = 'tempo_local_user';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -40,38 +39,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .single();
 
         if (profile && !profileErr) {
-          const loadedUser: User = {
+          setUser({
             id: profile.id,
-            name: profile.full_name || sbUser.user_metadata?.full_name || sbUser.email?.split('@')[0] || 'Studio Director',
+            name: profile.full_name || sbUser.user_metadata?.full_name || sbUser.email?.split('@')[0] || 'Tempo Creator',
             email: sbUser.email || '',
             avatarUrl: profile.avatar_url || sbUser.user_metadata?.avatar_url || '',
             createdAt: profile.created_at,
-          };
-          setUser(loadedUser);
-          localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(loadedUser));
+          });
           return;
         }
       }
 
       // Fallback from metadata or defaults
-      const fallbackUser: User = {
+      setUser({
         id: sbUser.id,
-        name: sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || sbUser.email?.split('@')[0] || 'Studio Director',
+        name: sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || sbUser.email?.split('@')[0] || 'Tempo Creator',
         email: sbUser.email || '',
         avatarUrl: sbUser.user_metadata?.avatar_url || sbUser.user_metadata?.picture || '',
         createdAt: sbUser.created_at,
-      };
-      setUser(fallbackUser);
-      localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(fallbackUser));
+      });
     } catch {
-      const basicUser: User = {
+      setUser({
         id: sbUser.id,
-        name: sbUser.email?.split('@')[0] || 'Studio Director',
+        name: sbUser.email?.split('@')[0] || 'Tempo Creator',
         email: sbUser.email || '',
         createdAt: sbUser.created_at,
-      };
-      setUser(basicUser);
-      localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(basicUser));
+      });
     }
   };
 
@@ -79,22 +72,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let isMounted = true;
 
     if (!isSupabaseConfigured) {
-      // Check for local storage saved session
-      try {
-        const saved = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
-        if (saved) {
-          setUser(JSON.parse(saved));
-        } else {
-          setUser(null);
+      // Check for stored active session and verify with database
+      const stored = localStorage.getItem('tempo_auth_session');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          apiService
+            .getMe(parsed.id)
+            .then((dbUser) => {
+              if (dbUser && isMounted) setUser(dbUser);
+              else if (isMounted) setUser(parsed);
+            })
+            .catch(() => {
+              if (isMounted) setUser(parsed);
+            })
+            .finally(() => {
+              if (isMounted) setIsLoading(false);
+            });
+          return;
+        } catch {
+          setUser(mockCurrentUser);
         }
-      } catch {
-        setUser(null);
+      } else {
+        setUser(mockCurrentUser);
       }
       setIsLoading(false);
       return;
     }
 
-    // Get initial Supabase session
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!isMounted) return;
       setSession(session);
@@ -104,17 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (isMounted) setIsLoading(false);
         });
       } else {
-        // Check local storage fallback
-        try {
-          const saved = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
-          if (saved) {
-            setUser(JSON.parse(saved));
-          } else {
-            setUser(null);
-          }
-        } catch {
-          setUser(null);
-        }
+        setUser(null);
         setIsLoading(false);
       }
     });
@@ -130,16 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (session?.user) {
         await fetchProfile(session.user);
       } else {
-        try {
-          const saved = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
-          if (saved) {
-            setUser(JSON.parse(saved));
-          } else {
-            setUser(null);
-          }
-        } catch {
-          setUser(null);
-        }
+        setUser(null);
       }
       setIsLoading(false);
     });
@@ -175,31 +162,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
     setIsLoading(true);
     try {
-      if (isSupabaseConfigured) {
-        const { data, error: authErr } = await supabase.auth.signInWithPassword({
-          email: credentials.email.trim(),
-          password: credentials.password || '',
+      if (!isSupabaseConfigured) {
+        // Authenticate directly against persistent database
+        const dbUser = await apiService.login({
+          email: credentials.email,
+          password: credentials.password,
         });
-
-        if (!authErr && data.user) {
-          await fetchProfile(data.user);
-          return;
-        }
-        if (authErr && !authErr.message.includes('fetch')) {
-          throw authErr;
-        }
+        setUser(dbUser);
+        localStorage.setItem('tempo_auth_session', JSON.stringify(dbUser));
+        return;
       }
 
-      // Local / Offline fallback mode
-      const localUser: User = {
-        id: `usr_${Date.now()}`,
-        name: credentials.email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+      const { data, error: authErr } = await supabase.auth.signInWithPassword({
         email: credentials.email.trim(),
-        avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANGvaAMrRAnWw-YPDmAqKMxuNfFSyEDshnSeopzgA206M0pg1sYYvGwihZOWIU3lKEp1P8YxR3pcnu0Q5kGKOqCKbVp3b55d3ZK5BqO5xE6N3zk96RCImZzGTSZuMiF-zoskIRlI-NQf0egkWGER78dHT3GkzzUvAlYaJr-NnDElbqz87pHywBkwZ9eZQGxi3EwuyHUIFH3bhlQLDBvvrUmeDbUb-4Gp4qLvQaalcFvCQt9O3onSA',
-        createdAt: new Date().toISOString(),
-      };
-      setUser(localUser);
-      localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(localUser));
+        password: credentials.password || '',
+      });
+
+      if (authErr) throw authErr;
+      if (data.user) {
+        await fetchProfile(data.user);
+      }
     } catch (err) {
       const msg = formatAuthError(err);
       setError(msg);
@@ -212,33 +194,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async () => {
     setError(null);
     try {
-      if (isSupabaseConfigured) {
-        const redirectUrl = `${window.location.origin}/auth/callback`;
-        const { error: oauthErr } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: redirectUrl,
-            queryParams: {
-              access_type: 'offline',
-              prompt: 'consent',
-            },
-          },
+      if (!isSupabaseConfigured) {
+        // Create or get user from database
+        const dbUser = await apiService.googleLogin({
+          email: 'creator@tempo.atelier',
+          name: 'Google Creator',
         });
-
-        if (oauthErr) throw oauthErr;
+        setUser(dbUser);
+        localStorage.setItem('tempo_auth_session', JSON.stringify(dbUser));
         return;
       }
 
-      // Demo Google login
-      const googleUser: User = {
-        id: `goog_${Date.now()}`,
-        name: 'Evelyn Thorne',
-        email: 'evelyn.thorne@studio.design',
-        avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANGvaAMrRAnWw-YPDmAqKMxuNfFSyEDshnSeopzgA206M0pg1sYYvGwihZOWIU3lKEp1P8YxR3pcnu0Q5kGKOqCKbVp3b55d3ZK5BqO5xE6N3zk96RCImZzGTSZuMiF-zoskIRlI-NQf0egkWGER78dHT3GkzzUvAlYaJr-NnDElbqz87pHywBkwZ9eZQGxi3EwuyHUIFH3bhlQLDBvvrUmeDbUb-4Gp4qLvQaalcFvCQt9O3onSA',
-        createdAt: new Date().toISOString(),
-      };
-      setUser(googleUser);
-      localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(googleUser));
+      const redirectUrl = `${window.location.origin}/auth/callback`;
+      const { error: oauthErr } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
+
+      if (oauthErr) throw oauthErr;
     } catch (err) {
       const msg = formatAuthError(err);
       setError(msg);
@@ -250,46 +229,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
     setIsLoading(true);
     try {
-      if (isSupabaseConfigured) {
-        const { data, error: signErr } = await supabase.auth.signUp({
+      if (!isSupabaseConfigured) {
+        // Register directly into persistent database
+        const dbUser = await apiService.register({
+          name: credentials.name.trim(),
           email: credentials.email.trim(),
-          password: credentials.password || '',
-          options: {
-            data: {
-              full_name: credentials.name.trim(),
-            },
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
-          },
+          password: credentials.password,
         });
-
-        if (!signErr && data.user) {
-          if (!data.session) {
-            return { confirmationRequired: true };
-          }
-          await supabase.from('profiles').upsert({
-            id: data.user.id,
-            full_name: credentials.name.trim(),
-            avatar_url: '',
-            updated_at: new Date().toISOString(),
-          });
-          await fetchProfile(data.user);
-          return { confirmationRequired: false };
-        }
-        if (signErr && !signErr.message.includes('fetch')) {
-          throw signErr;
-        }
+        setUser(dbUser);
+        localStorage.setItem('tempo_auth_session', JSON.stringify(dbUser));
+        return { confirmationRequired: false };
       }
 
-      // Local / Offline fallback mode
-      const newUser: User = {
-        id: `usr_${Date.now()}`,
-        name: credentials.name.trim() || credentials.email.split('@')[0],
+      const { data, error: signErr } = await supabase.auth.signUp({
         email: credentials.email.trim(),
-        avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANGvaAMrRAnWw-YPDmAqKMxuNfFSyEDshnSeopzgA206M0pg1sYYvGwihZOWIU3lKEp1P8YxR3pcnu0Q5kGKOqCKbVp3b55d3ZK5BqO5xE6N3zk96RCImZzGTSZuMiF-zoskIRlI-NQf0egkWGER78dHT3GkzzUvAlYaJr-NnDElbqz87pHywBkwZ9eZQGxi3EwuyHUIFH3bhlQLDBvvrUmeDbUb-4Gp4qLvQaalcFvCQt9O3onSA',
-        createdAt: new Date().toISOString(),
-      };
-      setUser(newUser);
-      localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(newUser));
+        password: credentials.password || '',
+        options: {
+          data: {
+            full_name: credentials.name.trim(),
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (signErr) throw signErr;
+
+      if (data.user && !data.session) {
+        // Confirmation email required
+        return { confirmationRequired: true };
+      }
+
+      if (data.user) {
+        // Create or ensure profile
+        await supabase.from('profiles').upsert({
+          id: data.user.id,
+          full_name: credentials.name.trim(),
+          avatar_url: '',
+          updated_at: new Date().toISOString(),
+        });
+        await fetchProfile(data.user);
+      }
+
       return { confirmationRequired: false };
     } catch (err) {
       const msg = formatAuthError(err);
@@ -300,31 +280,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const resetPassword = async (email: string): Promise<{ error: { message: string } | null }> => {
-    try {
-      if (isSupabaseConfigured) {
-        const { error: resetErr } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/login`,
-        });
-        if (resetErr) return { error: { message: resetErr.message } };
-      }
-      return { error: null };
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Reset password failed';
-      return { error: { message: msg } };
-    }
-  };
-
   const logout = async () => {
     setIsLoading(true);
     try {
       if (isSupabaseConfigured) {
         await supabase.auth.signOut();
       }
-      localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
       setUser(null);
       setSession(null);
       setSupabaseUser(null);
+      localStorage.removeItem('tempo_auth_session');
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
@@ -350,7 +315,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     loginWithGoogle,
     signUp,
-    resetPassword,
     logout,
     clearError,
     refreshProfile,

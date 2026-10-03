@@ -1,10 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { fileURLToPath } from 'node:url';
 import { handleApiRequest } from './server/apiRouter.js';
-
-const projectDir = path.dirname(fileURLToPath(import.meta.url));
 
 function tempoBackendPlugin() {
   return {
@@ -35,7 +32,7 @@ export default defineConfig({
   plugins: [react(), tempoBackendPlugin()],
   resolve: {
     alias: {
-      '@': path.resolve(projectDir, './src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   server: {

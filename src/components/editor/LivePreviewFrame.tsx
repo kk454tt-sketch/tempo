@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { EventData } from '@/types';
 import { TemplateRenderer } from '@/templates/components/TemplateRenderer';
+import { eventService } from '@/services/eventService';
 
 interface LivePreviewFrameProps {
   templateId: string;
@@ -58,10 +59,18 @@ export const LivePreviewFrame: React.FC<LivePreviewFrameProps> = ({
 
           <a
             className="p-1 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
-            href={`/templates/${templateId}`}
+            href={`/e/${slug || 'preview'}`}
             target="_blank"
             rel="noreferrer"
             title="Open external preview"
+            onClick={() => {
+              eventService.ensureWebsiteExists({
+                slug: slug || 'preview',
+                templateId,
+                eventData: data,
+                title: data.title || slug || 'preview',
+              });
+            }}
           >
             <span className="material-symbols-outlined text-[18px]">open_in_new</span>
           </a>
