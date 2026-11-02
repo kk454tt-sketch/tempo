@@ -35,11 +35,11 @@ export const HomePage: React.FC = () => {
               </div>
 
               <h1 className="font-display-hero text-display-hero text-on-surface tracking-tight leading-[1.05]">
-                Portfolios made to command attention.
+                Portfolios built to stand out.
               </h1>
 
-              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl leading-relaxed">
-                Showcase your engineering craft, 3D character art, Minecraft worlds, and motion reels. Featuring interactive 3D avatars, tilt physics, and instant WhatsApp inquiry contact.
+              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg leading-relaxed">
+                Interactive 3D portfolios crafted to showcase your work and get you hired.
               </p>
 
               <div className="flex flex-wrap items-center gap-space-sm pt-space-xs">
