@@ -18,11 +18,14 @@ import { PlansPage } from '@/pages/PlansPage';
 import { AdminPaymentsPage } from '@/pages/AdminPaymentsPage';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
+import { ScrollToTop } from '@/components/common/ScrollToTop';
+
 export const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <AuthProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* Public Marketing */}
             <Route path="/" element={<HomePage />} />
