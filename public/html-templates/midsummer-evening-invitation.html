@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#0a0806]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>A Midsummer Evening • Invitation</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Cormorant Garamond', 'Playfair Display', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+            script: ['Great Vibes', 'cursive']
+          },
+          colors: {
+            gold: {
+              100: '#FDF7E7',
+              200: '#F8E9B8',
+              300: '#EED685',
+              400: '#D8B84E',
+              500: '#C59E33',
+              600: '#9E7B1D',
+              700: '#755712'
+            },
+            parchment: '#FBF8F2',
+            wax: '#8A181A'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* Film grain overlay */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.045;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Vignette */
+    .vignette-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 40;
+      background: radial-gradient(circle at 50% 45%, transparent 40%, rgba(5, 3, 2, 0.75) 85%, rgba(2, 1, 1, 0.95) 100%);
+    }
+
+    /* Gold foil shimmer animation */
+    @keyframes foilSweep {
+      0% { transform: translateX(-150%) rotate(25deg); opacity: 0; }
+      40% { opacity: 0.85; }
+      80% { transform: translateX(200%) rotate(25deg); opacity: 0; }
+      100% { transform: translateX(200%) rotate(25deg); opacity: 0; }
+    }
+    .foil-sheen {
+      position: relative;
+      overflow: hidden;
+    }
+    .foil-sheen::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(
+        90deg,
+        transparent 20%,
+        rgba(255, 235, 170, 0.4) 38%,
+        rgba(255, 255, 255, 0.85) 50%,
+        rgba(255, 235, 170, 0.4) 62%,
+        transparent 80%
+      );
+      transform: translateX(-150%) rotate(25deg);
+      pointer-events: none;
+    }
+    .foil-sheen.sweep-active::after {
+      animation: foilSweep 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+    }
+
+    /* 3D Envelope perspective */
+    .envelope-perspective {
+      perspective: 1400px;
+      perspective-origin: center center;
+    }
+
+    .envelope-flap {
+      transform-origin: top center;
+      transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+
+    .wax-seal-wrapper {
+      transition: transform 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+    }
+    .wax-seal-wrapper:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+      filter: drop-shadow(0 0 16px rgba(216, 184, 78, 0.6));
+    }
+
+    /* Smooth glow pulse */
+    @keyframes rsvpPulse {
+      0%, 100% { box-shadow: 0 0 15px rgba(216, 184, 78, 0.25), 0 0 35px rgba(216, 184, 78, 0.15); transform: translateY(0); }
+      50% { box-shadow: 0 0 25px rgba(216, 184, 78, 0.6), 0 0 50px rgba(216, 184, 78, 0.3); transform: translateY(-2px); }
+    }
+    .rsvp-glow {
+      animation: rsvpPulse 3s ease-in-out infinite;
+    }
+
+    /* Custom scrollbar hide for mobile feel */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="h-full w-full overflow-hidden text-stone-200 select-none antialiased bg-[#070503]">
+
+  <!-- Canvas Container for Three.js (Catenary Bulbs, Glass, Reflective Table, Fireflies) -->
+  <div id="webgl-canvas-container" class="fixed inset-0 w-full h-full pointer-events-none z-0"></div>
+
+  <!-- Atmospheric overlays -->
+  <div class="vignette-overlay"></div>
+  <div class="film-grain"></div>
+
+  <!-- Drifting Lens Flare (Follows brightest virtual bulb) -->
+  <div id="lens-flare" class="fixed pointer-events-none z-20 w-80 h-80 rounded-full opacity-60 mix-blend-screen transition-all duration-700 ease-out -translate-x-1/2 -translate-y-1/2"
+       style="background: radial-gradient(circle, rgba(255,225,140,0.45) 0%, rgba(216,140,40,0.15) 45%, transparent 70%); top: 18%; left: 38%;">
+  </div>
+
+  <!-- TOP BAR: Screen Navigation Switcher + Audio Controls -->
+  <header class="fixed top-0 left-0 right-0 z-40 px-5 py-4 flex items-center justify-between">
+    <!-- Brand / Event Monogram -->
+    <div class="flex items-center space-x-2.5">
+      <div class="w-8 h-8 rounded-full border border-gold-400/40 bg-black/40 backdrop-blur-md flex items-center justify-center text-gold-300 font-serif text-sm font-semibold tracking-wider">
+        M&E
+      </div>
+      <div class="hidden sm:block">
+        <span class="text-[11px] uppercase tracking-[0.25em] text-gold-200/80 font-medium">Midsummer Soirée</span>
+      </div>
+    </div>
+
+    <!-- Screen Navigator Indicator (3 Screens as requested) -->
+    <nav class="flex items-center gap-1.5 bg-black/50 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-full shadow-2xl">
+      <button id="nav-btn-envelope" onclick="switchScreen('envelope')" class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 bg-gold-500/20 text-gold-300 border border-gold-400/30">
+        1 • Envelope
+      </button>
+      <button id="nav-btn-invitation" onclick="switchScreen('invitation')" class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 text-stone-400 hover:text-stone-200">
+        2 • Card
+      </button>
+      <button id="nav-btn-rsvp" onclick="switchScreen('rsvp')" class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 text-stone-400 hover:text-stone-200">
+        3 • RSVP
+      </button>
+    </nav>
+
+    <!-- Audio Player & Gyro Tilt Controls -->
+    <div class="flex items-center gap-2">
+      <!-- Gyro/Motion status chip -->
+      <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-stone-900/60 border border-stone-800 text-[10px] text-stone-400 font-sans tracking-wide">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        60fps Engine
+      </div>
+      <!-- Audio Mute / Unmute -->
+      <button id="audio-toggle-btn" class="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-gold-400/30 flex items-center justify-center text-gold-300 hover:text-gold-200 hover:border-gold-400 transition-all shadow-lg group" title="Toggle Soundtrack & Atmosphere">
+        <svg id="icon-sound-on" class="w-4 h-4 text-gold-300 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+        </svg>
+        <svg id="icon-sound-off" class="w-4 h-4 text-stone-400 hidden group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT CONTAINER (Mobile-First Centered Frame with Desktop Elegance) -->
+  <main class="relative z-30 w-full h-full flex items-center justify-center p-4">
+    <div class="relative w-full max-w-[420px] h-[90vh] max-h-[780px] flex items-center justify-center">
+
+      <!-- ========================================== -->
+      <!-- SCREEN 1: INTERACTIVE 3D ENVELOPE -->
+      <!-- ========================================== -->
+      <div id="screen-envelope" class="envelope-perspective absolute inset-0 flex flex-col items-center justify-center transition-all duration-700">
+        
+        <!-- Prompt Hint -->
+        <div id="tap-instruction" class="mb-5 text-center transition-opacity duration-500">
+          <p class="text-xs uppercase tracking-[0.3em] text-gold-300/80 font-medium">Private Cordial Invitation</p>
+          <p class="text-[13px] text-stone-300 font-serif italic mt-0.5">Tap the crimson wax seal to break & open</p>
+        </div>
+
+        <!-- The 3D Envelope Container -->
+        <div id="envelope-box" class="relative w-[340px] h-[225px] bg-[#1a1410] rounded-xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_rgba(216,184,78,0.15)] border border-[#443324] overflow-visible cursor-pointer transition-transform duration-500 hover:scale-[1.015]">
+          
+          <!-- Back Interior Lining (Silk Damask pattern) -->
+          <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-[#2a1a12] to-[#120b08] overflow-hidden">
+            <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#D8B84E_1px,transparent_1px)] [background-size:16px_16px]"></div>
+          </div>
+
+          <!-- The Slide-Out Invitation Card Preview (Starts hidden inside) -->
+          <div id="embedded-card-peek" class="absolute inset-x-3.5 top-3 bottom-3 rounded-lg bg-[#FAF7F0] shadow-inner transition-transform duration-1000 ease-out z-10 flex flex-col items-center justify-center p-4 text-stone-900 border border-gold-300/50">
+            <div class="w-full h-full border border-gold-400/40 rounded flex flex-col items-center justify-center text-center p-2">
+              <span class="font-serif text-xs uppercase tracking-[0.2em] text-gold-600">You Are Invited</span>
+              <span class="font-serif text-xl font-bold text-stone-900 tracking-wide mt-1">Margaux & Eric</span>
+              <span class="text-[10px] uppercase tracking-widest text-stone-500 mt-0.5">June 21 • Florence</span>
+            </div>
+          </div>
+
+          <!-- Bottom Pocket Flap -->
+          <div class="absolute inset-0 z-20 pointer-events-none">
+            <svg class="w-full h-full drop-shadow-md" viewBox="0 0 340 225" fill="none">
+              <!-- Left Flap -->
+              <polygon points="0,0 170,120 0,225" fill="#1e1611" stroke="#3d2c1f" stroke-width="0.75"/>
+              <!-- Right Flap -->
+              <polygon points="340,0 170,120 340,225" fill="#1a130e" stroke="#3d2c1f" stroke-width="0.75"/>
+              <!-- Bottom Triangle Flap -->
+              <polygon points="0,225 170,110 340,225" fill="#241a13" stroke="#4a3626" stroke-width="0.85"/>
+            </svg>
+          </div>
+
+          <!-- Top Foldable Flap with 3D rotation -->
+          <div id="envelope-flap" class="envelope-flap absolute top-0 inset-x-0 h-[125px] z-30 origin-top">
+            <svg class="w-full h-full drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]" viewBox="0 0 340 125" fill="none">
+              <polygon points="0,0 170,125 340,0" fill="#281c15" stroke="#4e3928" stroke-width="0.8"/>
+              <!-- Subtle gold trim border on flap -->
+              <polyline points="10,0 170,118 330,0" stroke="#D8B84E" stroke-width="0.5" stroke-opacity="0.35"/>
+            </svg>
+          </div>
+
+          <!-- WAX SEAL (Centered on the point of the flap) -->
+          <div id="wax-seal" class="wax-seal-wrapper absolute z-40 top-[116px] left-[170px] -translate-x-1/2 -translate-y-1/2 w-16 h-16" onclick="breakSealAndOpen(event)">
+            
+            <!-- Spark / Crack Glow Burst -->
+            <div id="seal-spark" class="absolute -inset-4 rounded-full bg-gradient-to-r from-amber-300 via-gold-200 to-yellow-100 opacity-0 blur-md pointer-events-none transition-opacity duration-200"></div>
+
+            <!-- Left Seal Half -->
+            <div id="seal-half-left" class="absolute inset-0 transition-transform duration-700 origin-bottom-left">
+              <svg viewBox="0 0 64 64" class="w-full h-full drop-shadow-[0_6px_12px_rgba(0,0,0,0.85)]">
+                <defs>
+                  <radialGradient id="waxGradL" cx="35%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#ba2b2d"/>
+                    <stop offset="65%" stop-color="#801012"/>
+                    <stop offset="100%" stop-color="#4a0608"/>
+                  </radialGradient>
+                  <clipPath id="crackClipL">
+                    <polygon points="0,0 34,0 30,22 35,38 31,64 0,64"/>
+                  </clipPath>
+                </defs>
+                <g clip-path="url(#crackClipL)">
+                  <circle cx="32" cy="32" r="30" fill="url(#waxGradL)"/>
+                  <circle cx="32" cy="32" r="23" fill="none" stroke="#D8B84E" stroke-width="1" stroke-opacity="0.6" stroke-dasharray="2 1"/>
+                  <text x="32" y="38" font-family="'Cormorant Garamond', serif" font-size="20" font-weight="700" fill="#f8e9b8" text-anchor="middle" letter-spacing="1">M</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Right Seal Half -->
+            <div id="seal-half-right" class="absolute inset-0 transition-transform duration-700 origin-bottom-right">
+              <svg viewBox="0 0 64 64" class="w-full h-full drop-shadow-[0_6px_12px_rgba(0,0,0,0.85)]">
+                <defs>
+                  <radialGradient id="waxGradR" cx="35%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#ba2b2d"/>
+                    <stop offset="65%" stop-color="#801012"/>
+                    <stop offset="100%" stop-color="#4a0608"/>
+                  </radialGradient>
+                  <clipPath id="crackClipR">
+                    <polygon points="34,0 64,0 64,64 31,64 35,38 30,22"/>
+                  </clipPath>
+                </defs>
+                <g clip-path="url(#crackClipR)">
+                  <circle cx="32" cy="32" r="30" fill="url(#waxGradR)"/>
+                  <circle cx="32" cy="32" r="23" fill="none" stroke="#D8B84E" stroke-width="1" stroke-opacity="0.6" stroke-dasharray="2 1"/>
+                  <text x="32" y="38" font-family="'Cormorant Garamond', serif" font-size="20" font-weight="700" fill="#f8e9b8" text-anchor="middle" letter-spacing="1">M</text>
+                </g>
+              </svg>
+            </div>
+
+          </div><!-- /wax-seal -->
+
+        </div><!-- /envelope-box -->
+
+        <!-- Bottom details note -->
+        <p class="mt-8 text-[11px] tracking-wider text-stone-500 font-sans uppercase">
+          An intimate celebration under the Tuscan stars
+        </p>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- SCREEN 2: INVITATION CARD (EXPANDED STAGE) -->
+      <!-- ========================================== -->
+      <div id="screen-invitation" class="absolute inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-700 scale-95">
+        
+        <!-- The High-Fidelity Parchment Card -->
+        <div id="invitation-card" class="foil-sheen relative w-full h-full max-h-[680px] bg-[#FAF7F0] text-stone-900 rounded-2xl shadow-[0_30px_70px_rgba(0,0,0,0.85),0_0_60px_rgba(216,184,78,0.22)] border-[3px] border-[#D8B84E]/70 p-6 flex flex-col justify-between overflow-hidden">
+          
+          <!-- Outer Double Border Foil Trim -->
+          <div class="absolute inset-2 border border-gold-500/40 rounded-xl pointer-events-none"></div>
+          <div class="absolute inset-3 border border-gold-400/20 rounded-lg pointer-events-none"></div>
+
+          <!-- Subtle Paper Texture BG -->
+          <div class="absolute inset-0 opacity-[0.035] bg-[radial-gradient(#111_1px,transparent_1px)] [background-size:12px_12px] pointer-events-none"></div>
+
+          <!-- Corner Filigree Ornaments -->
+          <div class="absolute top-4 left-4 text-gold-600/60 font-serif text-lg pointer-events-none">❦</div>
+          <div class="absolute top-4 right-4 text-gold-600/60 font-serif text-lg pointer-events-none">❦</div>
+          <div class="absolute bottom-4 left-4 text-gold-600/60 font-serif text-lg pointer-events-none">❦</div>
+          <div class="absolute bottom-4 right-4 text-gold-600/60 font-serif text-lg pointer-events-none">❦</div>
+
+          <!-- CARD HEADER -->
+          <div class="text-center pt-3 relative z-10">
+            <span class="inv-reveal-line inline-block text-[11px] font-sans font-medium uppercase tracking-[0.35em] text-gold-700/90 filter blur-[4px] opacity-0">
+              Together With Their Families
+            </span>
+            <div class="w-12 h-[1px] bg-gradient-to-r from-transparent via-gold-400 to-transparent mx-auto my-2"></div>
+            <h1 class="inv-reveal-line font-serif text-4xl sm:text-5xl font-normal text-stone-900 tracking-tight leading-none mt-2 filter blur-[4px] opacity-0">
+              Margaux <span class="font-script text-3xl sm:text-4xl text-gold-600 mx-1">&amp;</span> Eric
+            </h1>
+            <p class="inv-reveal-line text-xs font-serif italic text-stone-600 mt-2 filter blur-[4px] opacity-0">
+              request the pleasure of your company at the celebration of their union
+            </p>
+          </div>
+
+          <!-- EVENT DETAILS (Date, Time, Venue) -->
+          <div class="relative z-10 my-auto py-4 border-y border-gold-300/40 text-center space-y-3">
+            <div class="inv-reveal-line flex items-center justify-center gap-3 text-stone-800 filter blur-[4px] opacity-0">
+              <span class="font-sans text-[11px] uppercase tracking-[0.25em] text-gold-700">Saturday</span>
+              <span class="w-1 h-1 rounded-full bg-gold-400"></span>
+              <span class="font-serif text-2xl font-semibold tracking-wide">June 21</span>
+              <span class="w-1 h-1 rounded-full bg-gold-400"></span>
+              <span class="font-sans text-[11px] uppercase tracking-[0.25em] text-gold-700">2025</span>
+            </div>
+
+            <p class="inv-reveal-line text-xs font-sans text-stone-600 tracking-widest uppercase filter blur-[4px] opacity-0">
+              Six O’Clock In The Evening
+            </p>
+
+            <div class="inv-reveal-line pt-1 filter blur-[4px] opacity-0">
+              <p class="font-serif text-base font-semibold text-stone-900 tracking-wide">Villa Gamberaia</p>
+              <p class="text-xs font-serif italic text-stone-600">Settignano • Florence, Italy</p>
+            </div>
+          </div>
+
+          <!-- RECEPTION & DRESS CODE -->
+          <div class="text-center relative z-10 space-y-1">
+            <p class="inv-reveal-line text-[11px] uppercase tracking-[0.2em] text-gold-800 font-sans font-medium filter blur-[4px] opacity-0">
+              Dinner, Dancing &amp; Starlight
+            </p>
+            <p class="inv-reveal-line text-[11px] font-serif italic text-stone-500 filter blur-[4px] opacity-0">
+              Black Tie Optional • Tuscan Garden Formal
+            </p>
+          </div>
+
+          <!-- RSVP TRIGGER BUTTON (Slow Glow Pulse) -->
+          <div class="pt-4 relative z-10">
+            <button id="card-rsvp-btn" onclick="openRsvpSheet()" class="rsvp-glow w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-stone-900 via-[#1e1711] to-stone-900 text-gold-200 font-sans text-xs uppercase tracking-[0.28em] font-medium border border-gold-400/50 hover:border-gold-300 transition-all flex items-center justify-center gap-2 group">
+              <span>Respond With RSVP</span>
+              <svg class="w-3.5 h-3.5 text-gold-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+              </svg>
+            </button>
+          </div>
+
+        </div><!-- /invitation-card -->
+
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- SCREEN 3: RSVP INTERACTIVE BOTTOM SHEET -->
+      <!-- ========================================== -->
+      <div id="screen-rsvp-sheet" class="absolute inset-x-0 bottom-0 z-50 transform translate-y-full transition-transform duration-600 ease-out">
+        
+        <!-- Sheet Card Surface -->
+        <div class="bg-[#14100c]/95 backdrop-blur-2xl border-t border-x border-gold-500/40 rounded-t-3xl p-6 shadow-[0_-20px_60px_rgba(0,0,0,0.9)] max-h-[85vh] overflow-y-auto no-scrollbar">
+          
+          <!-- Drag bar handle -->
+          <div class="w-12 h-1 bg-stone-700 rounded-full mx-auto mb-5 cursor-pointer" onclick="closeRsvpSheet()"></div>
+
+          <!-- Header -->
+          <div class="flex items-start justify-between mb-5">
+            <div>
+              <span class="text-[10px] uppercase tracking-[0.3em] text-gold-400 font-sans font-semibold">Kind Attention</span>
+              <h2 class="font-serif text-2xl font-normal text-stone-100 tracking-wide mt-0.5">Your Presence</h2>
+              <p class="text-xs text-stone-400 font-serif italic">Please reply by May 15, 2025</p>
+            </div>
+            <button onclick="closeRsvpSheet()" class="w-7 h-7 rounded-full bg-stone-800/80 border border-stone-700 flex items-center justify-center text-stone-400 hover:text-stone-200">
+              ✕
+            </button>
+          </div>
+
+          <!-- RSVP Form -->
+          <form id="rsvp-form" onsubmit="handleRsvpSubmit(event)" class="space-y-4">
+            
+            <!-- Attendance Toggle (Yes / No) -->
+            <div>
+              <label class="block text-[11px] uppercase tracking-wider text-stone-300 font-sans font-medium mb-1.5">
+                Will you be attending?
+              </label>
+              <div class="grid grid-cols-2 gap-2.5 p-1 bg-stone-900/90 rounded-xl border border-stone-800">
+                <button type="button" id="toggle-attending-yes" onclick="setAttending(true)" class="py-2.5 rounded-lg text-xs font-medium font-sans transition-all bg-gradient-to-r from-gold-500 to-gold-600 text-stone-950 font-semibold shadow-md">
+                  Joyfully Accepts ✦
+                </button>
+                <button type="button" id="toggle-attending-no" onclick="setAttending(false)" class="py-2.5 rounded-lg text-xs font-medium font-sans transition-all text-stone-400 hover:text-stone-200">
+                  Regretfully Declines
+                </button>
+              </div>
+            </div>
+
+            <!-- Guest Full Name Input -->
+            <div>
+              <label for="guest-name" class="block text-[11px] uppercase tracking-wider text-stone-300 font-sans font-medium mb-1">
+                Full Name(s)
+              </label>
+              <input type="text" id="guest-name" required placeholder="Lord & Lady Sterling"
+                     class="w-full bg-stone-900/80 border border-stone-800 focus:border-gold-400 rounded-xl px-3.5 py-2.5 text-sm text-stone-100 placeholder-stone-600 outline-none transition-colors">
+            </div>
+
+            <!-- Guests Stepper -->
+            <div id="guests-stepper-row">
+              <label class="block text-[11px] uppercase tracking-wider text-stone-300 font-sans font-medium mb-1">
+                Number of Guests
+              </label>
+              <div class="flex items-center justify-between bg-stone-900/80 border border-stone-800 rounded-xl px-4 py-2">
+                <span class="text-xs text-stone-400 font-sans">Total reserved seats</span>
+                <div class="flex items-center space-x-3">
+                  <button type="button" onclick="adjustGuests(-1)" class="w-7 h-7 rounded-lg bg-stone-800 border border-stone-700 flex items-center justify-center text-stone-200 hover:bg-stone-700 active:scale-95 transition-all text-base font-medium">
+                    -
+                  </button>
+                  <span id="guest-count" class="font-serif text-lg font-bold text-gold-300 w-5 text-center">2</span>
+                  <button type="button" onclick="adjustGuests(1)" class="w-7 h-7 rounded-lg bg-stone-800 border border-stone-700 flex items-center justify-center text-stone-200 hover:bg-stone-700 active:scale-95 transition-all text-base font-medium">
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dietary / Personal Note -->
+            <div>
+              <label for="guest-note" class="block text-[11px] uppercase tracking-wider text-stone-300 font-sans font-medium mb-1">
+                Dietary Preferences or Warm Wishes
+              </label>
+              <textarea id="guest-note" rows="2" placeholder="Vegetarian, favorite song for the string quartet..."
+                        class="w-full bg-stone-900/80 border border-stone-800 focus:border-gold-400 rounded-xl px-3.5 py-2 text-xs text-stone-100 placeholder-stone-600 outline-none transition-colors resize-none"></textarea>
+            </div>
+
+            <!-- Submit Button (Triggers glass tink audio, warm particles, and bulb pulse) -->
+            <button type="submit" id="submit-rsvp-btn" class="w-full mt-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-gold-400 via-gold-500 to-amber-500 text-stone-950 font-sans text-xs uppercase tracking-[0.25em] font-bold shadow-[0_10px_25px_rgba(216,184,78,0.4)] hover:brightness-110 active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+              <span>Send Reservation</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </button>
+
+            <!-- Dispatch Destination Note -->
+            <p class="text-[10px] text-center text-stone-500 font-sans">
+              Instant encrypted confirmation via WhatsApp &amp; Concierge Ledger
+            </p>
+          </form>
+
+          <!-- Success Confirmation Modal inside sheet -->
+          <div id="rsvp-success-view" class="hidden py-8 text-center space-y-3">
+            <div class="w-14 h-14 rounded-full bg-gold-500/20 border border-gold-400 mx-auto flex items-center justify-center text-gold-300 text-2xl">
+              ✓
+            </div>
+            <h3 class="font-serif text-2xl font-normal text-stone-100">Reservation Confirmed</h3>
+            <p class="text-xs text-stone-300 font-serif italic max-w-xs mx-auto">
+              We have saved your seats under the Tuscan arbor. A toast awaits your arrival in Florence!
+            </p>
+            <div class="pt-3">
+              <button onclick="closeRsvpSheet()" class="px-6 py-2 rounded-lg bg-stone-800 border border-stone-700 text-gold-300 text-xs font-sans uppercase tracking-wider">
+                Return To Invitation
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /screen-rsvp-sheet -->
+
+      <!-- Sheet Backdrop Blur Overlay -->
+      <div id="rsvp-backdrop" onclick="closeRsvpSheet()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-500"></div>
+
+    </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- LIGHT, SOUND & INTERACTIVITY JAVASCRIPT -->
+  <!-- ========================================== -->
+  <script>
+    /* -------------------------------------------------------------
+       AUDIO ENGINE: Web Audio API Synthesizer (Zero external dependency failures)
+       Ambient acoustic chords + cricket murmur + paper rustle + glass tink
+    ------------------------------------------------------------- */
+    let audioCtx = null;
+    let isMuted = false;
+    let isAudioPlaying = false;
+    let ambientGain = null;
+    let cricketGain = null;
+
+    function initAudio() {
+      if (audioCtx) return;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      audioCtx = new AudioContext();
+
+      // Master Ambient Bus
+      ambientGain = audioCtx.createGain();
+      ambientGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+      ambientGain.gain.exponentialRampToValueAtTime(0.35, audioCtx.currentTime + 2.0);
+      ambientGain.connect(audioCtx.destination);
+
+      // Start warm ambient acoustic guitar/piano harmonic pad (80 BPM feel)
+      startHarmonicPad();
+      startCricketMurmur();
+      isAudioPlaying = true;
+      document.getElementById('icon-sound-on').classList.remove('hidden');
+      document.getElementById('icon-sound-off').classList.add('hidden');
+    }
+
+    // Soft jazz / acoustic warm progression chords (Fmaj7 - Am7 - Dm7 - Cmaj7)
+    function startHarmonicPad() {
+      if (!audioCtx) return;
+      const freqs = [174.61, 220.00, 261.63, 329.63, 392.00]; // Warm F / A / C / E / G cluster
+      freqs.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        // Slow breathing LFO
+        const lfo = audioCtx.createOscillator();
+        const lfoGain = audioCtx.createGain();
+        lfo.frequency.setValueAtTime(0.12 + idx * 0.04, audioCtx.currentTime);
+        lfoGain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+        lfo.connect(g.gain);
+        lfo.start();
+
+        g.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        osc.connect(g);
+        g.connect(ambientGain);
+        osc.start();
+      });
+    }
+
+    // Soft Crickets & Garden Breeze noise
+    function startCricketMurmur() {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const bFilter = audioCtx.createBiquadFilter();
+      cricketGain = audioCtx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(4500, audioCtx.currentTime);
+      bFilter.type = 'bandpass';
+      bFilter.frequency.setValueAtTime(4500, audioCtx.currentTime);
+      bFilter.Q.setValueAtTime(15, audioCtx.currentTime);
+
+      cricketGain.gain.setValueAtTime(0.008, audioCtx.currentTime);
+
+      osc.connect(bFilter);
+      bFilter.connect(cricketGain);
+      cricketGain.connect(ambientGain);
+      osc.start();
+    }
+
+    // Envelope Paper Rustle Sound Effect
+    function playPaperRustle() {
+      if (!audioCtx) return;
+      try {
+        const bufferSize = audioCtx.sampleRate * 0.6;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(3200, audioCtx.currentTime + 0.3);
+
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.55);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        noise.start();
+      } catch (e) { console.warn(e); }
+    }
+
+    // Glass "Tink" Sound Effect on RSVP
+    function playGlassTink() {
+      if (!audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(2637, audioCtx.currentTime); // E7 crystal frequency
+        osc.frequency.exponentialRampToValueAtTime(2630, audioCtx.currentTime + 1.2);
+
+        // High crystal harmonic
+        const harmonic = audioCtx.createOscillator();
+        const harmGain = audioCtx.createGain();
+        harmonic.type = 'sine';
+        harmonic.frequency.setValueAtTime(5274, audioCtx.currentTime);
+        harmGain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        harmGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
+
+        gain.gain.setValueAtTime(0.28, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.6);
+
+        osc.connect(gain);
+        harmonic.connect(harmGain);
+        harmGain.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        harmonic.start();
+        osc.stop(audioCtx.currentTime + 1.7);
+        harmonic.stop(audioCtx.currentTime + 0.9);
+      } catch(e) { console.warn(e); }
+    }
+
+    // Audio Toggle Listener
+    document.getElementById('audio-toggle-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!audioCtx) {
+        initAudio();
+        return;
+      }
+      if (isMuted) {
+        ambientGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        isMuted = false;
+        document.getElementById('icon-sound-on').classList.remove('hidden');
+        document.getElementById('icon-sound-off').classList.add('hidden');
+      } else {
+        ambientGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        isMuted = true;
+        document.getElementById('icon-sound-on').classList.add('hidden');
+        document.getElementById('icon-sound-off').classList.remove('hidden');
+      }
+    });
+
+    /* -------------------------------------------------------------
+       THREE.JS LIGHT, CATENARY BULBS & REFLECTION ENGINE
+    ------------------------------------------------------------- */
+    let scene, camera, renderer;
+    let bulbs = [];
+    let firefliesParticles;
+    let floorMesh, causticPatch;
+    let baseBulbIntensity = 1.6;
+    let targetIntensity = 1.6;
+    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+    let isLowPower = false;
+
+    function initThreeScene() {
+      const container = document.getElementById('webgl-canvas-container');
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Detect low-end mobile devices to cap performance
+      const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x0a0806, 0.038);
+
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      camera.position.set(0, 1.2, 5.2);
+      camera.lookAt(0, 0.2, 0);
+
+      renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(pixelRatio);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.2;
+      container.appendChild(renderer.domElement);
+
+      // Ambient warm evening glow
+      const ambientLight = new THREE.AmbientLight(0x221308, 0.9);
+      scene.add(ambientLight);
+
+      // 1. REFLECTIVE TABLE / FLOOR
+      // Simulated blurred, distance-faded reflection
+      const floorGeo = new THREE.PlaneGeometry(16, 16);
+      const floorMat = new THREE.MeshStandardMaterial({
+        color: 0x140e0a,
+        roughness: 0.38,
+        metalness: 0.85
+      });
+      floorMesh = new THREE.Mesh(floorGeo, floorMat);
+      floorMesh.rotation.x = -Math.PI / 2;
+      floorMesh.position.y = -1.8;
+      scene.add(floorMesh);
+
+      // Caustic Light Patch on Table
+      const causticGeo = new THREE.RingGeometry(0.05, 1.4, 32);
+      const causticMat = new THREE.MeshBasicMaterial({
+        color: 0xffd375,
+        transparent: true,
+        opacity: 0.18,
+        blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide
+      });
+      causticPatch = new THREE.Mesh(causticGeo, causticMat);
+      causticPatch.rotation.x = -Math.PI / 2;
+      causticPatch.position.set(0.6, -1.78, 0.2);
+      scene.add(causticPatch);
+
+      // 2. FOUR CATENARY BULB STRINGS (Hanging overhead)
+      createBulbStrings();
+
+      // 3. FIREFLIES: 40 Soft Particles drifting upward
+      createFireflies(40);
+
+      // Resize and Motion listeners
+      window.addEventListener('resize', onWindowResize);
+      window.addEventListener('mousemove', onMouseMove);
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', onDeviceOrientation);
+      }
+
+      // Tab visibility pause to save battery
+      document.addEventListener('visibilitychange', () => {
+        isLowPower = document.hidden;
+      });
+
+      // Animate render loop
+      animate();
+    }
+
+    // Creates 4 catenary suspended bulb garlands
+    function createBulbStrings() {
+      const stringConfigs = [
+        { z: -1.2, yOffset: 2.1, sag: 0.45, count: 5, color: 0xffe299 },
+        { z: -0.2, yOffset: 2.4, sag: 0.55, count: 6, color: 0xffca60 },
+        { z: 0.9,  yOffset: 2.6, sag: 0.40, count: 5, color: 0xffd885 },
+        { z: 2.1,  yOffset: 2.9, sag: 0.60, count: 4, color: 0xffaa40 }
+      ];
+
+      stringConfigs.forEach((cfg) => {
+        // Wire spline curve
+        const curvePoints = [];
+        const numPoints = 20;
+        for (let i = 0; i <= numPoints; i++) {
+          const t = (i / numPoints) * 2 - 1; // -1 to 1
+          const x = t * 4.5;
+          const y = cfg.yOffset - cfg.sag * (1 - t * t);
+          curvePoints.push(new THREE.Vector3(x, y, cfg.z));
+        }
+        const curve = new THREE.CatmullRomCurve3(curvePoints);
+        const wireGeo = new THREE.TubeGeometry(curve, 32, 0.008, 6, false);
+        const wireMat = new THREE.MeshBasicMaterial({ color: 0x110c08 });
+        const wireMesh = new THREE.Mesh(wireGeo, wireMat);
+        scene.add(wireMesh);
+
+        // Hanging Edison Bulbs
+        for (let j = 1; j <= cfg.count; j++) {
+          const u = j / (cfg.count + 1);
+          const pos = curve.getPoint(u);
+
+          // Bulb Glass Outer Sphere
+          const bulbGlassGeo = new THREE.SphereGeometry(0.09, 16, 16);
+          const bulbGlassMat = new THREE.MeshPhysicalMaterial({
+            color: cfg.color,
+            emissive: cfg.color,
+            emissiveIntensity: 1.2,
+            roughness: 0.1,
+            metalness: 0.1,
+            transmission: 0.9,
+            ior: 1.45,
+            transparent: true,
+            opacity: 0.85
+          });
+          const bulbMesh = new THREE.Mesh(bulbGlassGeo, bulbGlassMat);
+          bulbMesh.position.copy(pos);
+          scene.add(bulbMesh);
+
+          // PointLight inside bulb
+          const light = new THREE.PointLight(cfg.color, baseBulbIntensity, 4.5, 2);
+          light.position.copy(pos);
+          scene.add(light);
+
+          bulbs.push({
+            mesh: bulbMesh,
+            light: light,
+            baseY: pos.y,
+            randOffset: Math.random() * 100,
+            flickerSpeed: 2 + Math.random() * 4
+          });
+        }
+      });
+    }
+
+    // Fireflies Soft Particle System
+    function createFireflies(count) {
+      const geo = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+      const speeds = new Float32Array(count);
+
+      for (let i = 0; i < count; i++) {
+        positions[i * 3 + 0] = (Math.random() - 0.5) * 7;
+        positions[i * 3 + 1] = -1.5 + Math.random() * 4.5;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 5;
+        speeds[i] = 0.004 + Math.random() * 0.008;
+      }
+
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('speed', new THREE.BufferAttribute(speeds, 1));
+
+      // Circular soft glow particle texture
+      const canvas = document.createElement('canvas');
+      canvas.width = 32;
+      canvas.height = 32;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+      grad.addColorStop(0, 'rgba(255, 230, 140, 1)');
+      grad.addColorStop(0.3, 'rgba(216, 184, 78, 0.6)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 32, 32);
+
+      const pTexture = new THREE.CanvasTexture(canvas);
+      const mat = new THREE.PointsMaterial({
+        size: 0.16,
+        map: pTexture,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+
+      firefliesParticles = new THREE.Points(geo, mat);
+      scene.add(firefliesParticles);
+    }
+
+    function onMouseMove(e) {
+      mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      // Subtle flare parallax
+      const flare = document.getElementById('lens-flare');
+      if (flare) {
+        flare.style.transform = `translate(${mouse.targetX * 25}px, ${-mouse.targetY * 20}px)`;
+      }
+    }
+
+    function onDeviceOrientation(e) {
+      if (!e.gamma) return;
+      mouse.targetX = Math.max(-1, Math.min(1, e.gamma / 30));
+      mouse.targetY = Math.max(-1, Math.min(1, e.beta / 40));
+    }
+
+    function onWindowResize() {
+      if (!camera || !renderer) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // Main 60fps Loop
+    let clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      if (isLowPower) return;
+
+      const time = clock.getElapsedTime();
+
+      // Smooth camera gyro / cursor tilt
+      mouse.x += (mouse.targetX - mouse.x) * 0.05;
+      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+      camera.position.x = mouse.x * 0.35;
+      camera.position.y = 1.2 + mouse.y * 0.22;
+      camera.lookAt(0, 0.2, 0);
+
+      // Bulb Subtle Flicker (2-4% intensity noise) + Warm shimmer
+      baseBulbIntensity += (targetIntensity - baseBulbIntensity) * 0.08;
+      bulbs.forEach((b) => {
+        const flicker = (Math.sin(time * b.flickerSpeed + b.randOffset) + Math.sin(time * 7.1)) * 0.025;
+        const currentI = baseBulbIntensity * (1 + flicker);
+        b.light.intensity = currentI;
+        b.mesh.material.emissiveIntensity = currentI * 0.85;
+      });
+
+      // Animate caustic light patch under glasses
+      if (causticPatch) {
+        causticPatch.material.opacity = 0.14 + Math.sin(time * 2.8) * 0.06;
+        causticPatch.rotation.z = time * 0.15;
+      }
+
+      // Fireflies slow upward drift & loop
+      if (firefliesParticles) {
+        const positions = firefliesParticles.geometry.attributes.position.array;
+        const speeds = firefliesParticles.geometry.attributes.speed.array;
+        for (let i = 0; i < speeds.length; i++) {
+          positions[i * 3 + 1] += speeds[i];
+          positions[i * 3 + 0] += Math.sin(time * 1.5 + i) * 0.002;
+          if (positions[i * 3 + 1] > 3.2) {
+            positions[i * 3 + 1] = -1.8;
+          }
+        }
+        firefliesParticles.geometry.attributes.position.needsUpdate = true;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    /* -------------------------------------------------------------
+       SEQUENCE 1-5: ENVELOPE OPENING & TEXT REVEAL
+    ------------------------------------------------------------- */
+    let isEnvelopeOpened = false;
+
+    function breakSealAndOpen(event) {
+      if (event) event.stopPropagation();
+      if (isEnvelopeOpened) return;
+      isEnvelopeOpened = true;
+
+      // Start audio ambient on first user gesture
+      initAudio();
+
+      const spark = document.getElementById('seal-spark');
+      const leftHalf = document.getElementById('seal-half-left');
+      const rightHalf = document.getElementById('seal-half-right');
+      const flap = document.getElementById('envelope-flap');
+      const tapNote = document.getElementById('tap-instruction');
+
+      // 1. Seal cracks into 2 pieces with a spark of light
+      gsap.to(spark, { opacity: 1, duration: 0.12, yoyo: true, repeat: 1 });
+      gsap.to(leftHalf, { x: -16, y: -8, rotation: -24, opacity: 0.9, duration: 0.45, ease: 'power2.out' });
+      gsap.to(rightHalf, { x: 16, y: 8, rotation: 24, opacity: 0.9, duration: 0.45, ease: 'power2.out' });
+      gsap.to(tapNote, { opacity: 0, duration: 0.3 });
+
+      // Play paper rustle sound
+      setTimeout(playPaperRustle, 250);
+
+      // 2. The flap opens in 3D (0.9s)
+      setTimeout(() => {
+        flap.style.transform = 'rotateX(180deg)';
+      }, 250);
+
+      // 3. Card slides out and scales up; bulbs brighten 30% and reflections intensify
+      setTimeout(() => {
+        // Brighten bulbs
+        targetIntensity = 2.3;
+        if (causticPatch) causticPatch.material.opacity = 0.35;
+
+        // Transition Screen 1 out, Screen 2 in
+        gsap.to('#screen-envelope', {
+          scale: 0.85,
+          y: -50,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.in',
+          onComplete: () => {
+            document.getElementById('screen-envelope').classList.add('pointer-events-none');
+            showInvitationScreen();
+          }
+        });
+      }, 850);
+    }
+
+    // 4. Reveal text line by line, blur to sharp, 150ms stagger + foil sweep
+    function showInvitationScreen() {
+      updateNavHighlight('invitation');
+      const invScreen = document.getElementById('screen-invitation');
+      invScreen.classList.remove('pointer-events-none');
+      invScreen.style.opacity = '1';
+      invScreen.style.transform = 'scale(1)';
+
+      const card = document.getElementById('invitation-card');
+
+      // GSAP stagger blur-to-sharp line reveals
+      gsap.to('.inv-reveal-line', {
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power2.out',
+        onComplete: () => {
+          // Trigger foil light sweep across gold border
+          card.classList.add('sweep-active');
+        }
+      });
+    }
+
+    /* -------------------------------------------------------------
+       SCREEN 3: RSVP SHEET INTERACTIONS
+    ------------------------------------------------------------- */
+    let guestCount = 2;
+    let isAttending = true;
+
+    function openRsvpSheet() {
+      initAudio();
+      updateNavHighlight('rsvp');
+      const sheet = document.getElementById('screen-rsvp-sheet');
+      const backdrop = document.getElementById('rsvp-backdrop');
+
+      sheet.classList.remove('translate-y-full');
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      backdrop.classList.add('opacity-100');
+    }
+
+    function closeRsvpSheet() {
+      const sheet = document.getElementById('screen-rsvp-sheet');
+      const backdrop = document.getElementById('rsvp-backdrop');
+
+      sheet.classList.add('translate-y-full');
+      backdrop.classList.remove('opacity-100');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+      updateNavHighlight(isEnvelopeOpened ? 'invitation' : 'envelope');
+    }
+
+    function setAttending(val) {
+      isAttending = val;
+      const btnYes = document.getElementById('toggle-attending-yes');
+      const btnNo = document.getElementById('toggle-attending-no');
+      const guestRow = document.getElementById('guests-stepper-row');
+
+      if (val) {
+        btnYes.className = 'py-2.5 rounded-lg text-xs font-sans transition-all bg-gradient-to-r from-gold-500 to-gold-600 text-stone-950 font-semibold shadow-md';
+        btnNo.className = 'py-2.5 rounded-lg text-xs font-medium font-sans transition-all text-stone-400 hover:text-stone-200';
+        guestRow.style.display = 'block';
+      } else {
+        btnNo.className = 'py-2.5 rounded-lg text-xs font-sans transition-all bg-stone-800 text-stone-200 font-semibold border border-stone-700';
+        btnYes.className = 'py-2.5 rounded-lg text-xs font-medium font-sans transition-all text-stone-400 hover:text-stone-200';
+        guestRow.style.display = 'none';
+      }
+    }
+
+    function adjustGuests(delta) {
+      guestCount = Math.max(1, Math.min(6, guestCount + delta));
+      document.getElementById('guest-count').innerText = guestCount;
+    }
+
+    // RSVP Submit Sequence: Crystal Tink Sound + Bulbs pulse + warm golden spark celebration
+    function handleRsvpSubmit(e) {
+      e.preventDefault();
+      const guestName = document.getElementById('guest-name').value || 'Honored Guest';
+
+      // 1. Play crystal glass "tink"
+      playGlassTink();
+
+      // 2. Pulse all catenary bulbs warmly
+      targetIntensity = 3.6;
+      setTimeout(() => { targetIntensity = 1.8; }, 700);
+
+      // 3. Fall warm light particles
+      createRsvpCelebrationSparks();
+
+      // 4. Show success screen view
+      document.getElementById('rsvp-form').classList.add('hidden');
+      document.getElementById('rsvp-success-view').classList.remove('hidden');
+    }
+
+    // Golden sparks cascade
+    function createRsvpCelebrationSparks() {
+      const container = document.body;
+      for (let i = 0; i < 30; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'fixed pointer-events-none rounded-full z-50';
+        const size = 3 + Math.random() * 5;
+        spark.style.width = `${size}px`;
+        spark.style.height = `${size}px`;
+        spark.style.left = `${30 + Math.random() * 40}%`;
+        spark.style.top = `${25 + Math.random() * 20}%`;
+        spark.style.background = 'radial-gradient(circle, #FFF0B2 0%, #D8B84E 70%)';
+        spark.style.boxShadow = '0 0 10px #D8B84E';
+        container.appendChild(spark);
+
+        gsap.to(spark, {
+          y: 200 + Math.random() * 300,
+          x: (Math.random() - 0.5) * 160,
+          opacity: 0,
+          duration: 1.2 + Math.random() * 1.0,
+          ease: 'power2.out',
+          onComplete: () => spark.remove()
+        });
+      }
+    }
+
+    /* -------------------------------------------------------------
+       NAVIGATION SWITCHER (Direct access between 3 screens)
+    ------------------------------------------------------------- */
+    function switchScreen(screenName) {
+      initAudio();
+      if (screenName === 'envelope') {
+        closeRsvpSheet();
+        document.getElementById('screen-invitation').style.opacity = '0';
+        document.getElementById('screen-invitation').classList.add('pointer-events-none');
+        
+        const env = document.getElementById('screen-envelope');
+        env.classList.remove('pointer-events-none');
+        gsap.to(env, { scale: 1, y: 0, opacity: 1, duration: 0.5 });
+        updateNavHighlight('envelope');
+      } else if (screenName === 'invitation') {
+        closeRsvpSheet();
+        breakSealAndOpen();
+        showInvitationScreen();
+      } else if (screenName === 'rsvp') {
+        breakSealAndOpen();
+        showInvitationScreen();
+        setTimeout(openRsvpSheet, 300);
+      }
+    }
+
+    function updateNavHighlight(active) {
+      const btns = {
+        envelope: document.getElementById('nav-btn-envelope'),
+        invitation: document.getElementById('nav-btn-invitation'),
+        rsvp: document.getElementById('nav-btn-rsvp')
+      };
+      Object.keys(btns).forEach((k) => {
+        if (k === active) {
+          btns[k].className = 'px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 bg-gold-500/20 text-gold-300 border border-gold-400/30';
+        } else {
+          btns[k].className = 'px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 text-stone-400 hover:text-stone-200';
+        }
+      });
+    }
+
+    // Launch Three.js Scene on DOM ready
+    window.addEventListener('DOMContentLoaded', () => {
+      initThreeScene();
+    });
+  </script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

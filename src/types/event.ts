@@ -43,9 +43,9 @@ export interface TravelAccommodation {
 }
 
 export interface AppearanceSettings {
-  atmosphere: 'classic-elegance' | 'modernist-warmth' | 'sunlit-botanical' | 'monochrome-pure' | 'campus-academic';
-  palette: 'terracotta-ivory-olive' | 'sage-cream' | 'midnight-gilding' | 'navy-gold-coral';
-  typography: 'playfair-sans' | 'modern-grotesque' | 'space-inter';
+  atmosphere: string;
+  palette: string;
+  typography: string;
 }
 
 export interface ActiveSections {
@@ -71,10 +71,10 @@ export interface ActiveSections {
 export interface RsvpSettings {
   enabled: boolean;
   deadline?: string;
-  allowMealSelection: boolean;
-  allowDietaryNotes: boolean;
-  allowSongRequests: boolean;
-  allowPlusOnes: boolean;
+  allowMealSelection?: boolean;
+  allowDietaryNotes?: boolean;
+  allowSongRequests?: boolean;
+  allowPlusOnes?: boolean;
   mealOptions?: Array<{ id: string; label: string }>;
 }
 
@@ -160,6 +160,141 @@ export interface StudentHubData {
   };
 }
 
+export interface WeddingData {
+  partner1: string;
+  partner2: string;
+  storyHeadline?: string;
+  loveStory?: string;
+  ceremonyTime?: string;
+  ceremonyVenue?: string;
+  receptionTime?: string;
+  receptionVenue?: string;
+  registryUrl?: string;
+  shuttleInfo?: string;
+  hotelInfo?: string;
+  attireTitle?: string;
+  attireDescription?: string;
+  attireColors?: string[];
+}
+
+export interface PortfolioProject {
+  id: string;
+  title: string;
+  category: string;
+  year: string;
+  location?: string;
+  image: string;
+  description: string;
+  link?: string;
+}
+
+export interface PortfolioHireConfig {
+  label?: string;
+  mode: 'whatsapp' | 'phone' | 'email' | 'telegram' | 'instagram' | 'linkedin' | 'custom';
+  whatsapp?: string;
+  waText?: string;
+  phone?: string;
+  email?: string;
+  subject?: string;
+  telegram?: string;
+  instagram?: string;
+  linkedin?: string;
+  custom?: string;
+  fallback?: string;
+}
+
+export interface PortfolioNavConfig {
+  l1: string;
+  u1: string;
+  l2: string;
+  u2: string;
+}
+
+export interface PortfolioCardData {
+  id: 'card-1' | 'card-2' | string;
+  name: string;
+  word?: string;
+  role: string;
+  titleLines?: [string, string];
+  metaLines?: [string, string];
+  stack: string[];
+  bgImage?: string;
+  bgColor?: string;
+  sideText: string;
+  characterImage: string;
+  characterAlt?: string;
+  characterAr?: number;
+  phone?: string;
+  websiteLink?: string;
+  githubProfileLink?: string;
+  resumeLink?: string;
+  githubProjectLink?: string;
+  links?: Array<{ text: string; url: string }>;
+  prompt?: string;
+}
+
+export interface PortfolioData {
+  creatorName?: string;
+  brand?: string;
+  title?: string;
+  discipline?: string;
+  manifesto?: string;
+  statement?: string;
+  projects?: PortfolioProject[];
+  services?: string[];
+  clients?: string[];
+  inquiryEmail?: string;
+  card1?: PortfolioCardData;
+  card2?: PortfolioCardData;
+  activeCardIndex?: number;
+  hire?: PortfolioHireConfig;
+  nav?: PortfolioNavConfig;
+}
+
+export interface TastingCourseItem {
+  id: string;
+  course: string;
+  name: string;
+  pairing?: string;
+  desc: string;
+  price?: string;
+}
+
+export interface RestaurantData {
+  cuisine?: string;
+  chefStory?: string;
+  hours?: string;
+  pricePerGuest?: string;
+  menu: TastingCourseItem[];
+  bookingUrl?: string;
+  phone?: string;
+}
+
+export interface SaasFeatureItem {
+  id: string;
+  title: string;
+  desc: string;
+  icon?: string;
+}
+
+export interface SaasPricingTier {
+  id: string;
+  tier: string;
+  price: string;
+  frequency?: string;
+  features: string[];
+  highlighted?: boolean;
+}
+
+export interface SaasData {
+  heroHeadline?: string;
+  valueProp?: string;
+  features: SaasFeatureItem[];
+  ctaText?: string;
+  ctaLink?: string;
+  pricing: SaasPricingTier[];
+}
+
 export interface EventData {
   title: string; // e.g. "Rahul & Priya" or "EnrollDesk Class of 2027"
   tagline: string; // e.g. "Save the Date" or "Classmate Lounge & Portal"
@@ -181,6 +316,35 @@ export interface EventData {
   appearance: AppearanceSettings;
   activeSections: ActiveSections;
   rsvpSettings: RsvpSettings;
+  musicUrl?: string;
+  dressCode?: string | {
+    title?: string;
+    description: string;
+    colors?: string[];
+  };
+  locationMap?: {
+    lat: number;
+    lng: number;
+    zoom?: number;
+    query?: string;
+    mapUrl?: string;
+    embedUrl?: string;
+    label?: string;
+  };
+  musicSettings?: {
+    enabled: boolean;
+    url?: string;
+    trackName?: string;
+    artist?: string;
+    autoPlay?: boolean;
+    volume?: number;
+    isCustom?: boolean;
+  };
+  milestoneAge?: string;
+  weddingData?: WeddingData;
+  portfolioData?: PortfolioData;
+  restaurantData?: RestaurantData;
+  saasData?: SaasData;
   studentHub?: StudentHubData; // Student lounge & function suite data
   slug?: string;
 }

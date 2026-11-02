@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Space+Grotesk:wght@600;700&amp;family=Syne:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;background-color:#0d112a;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "error": "#ffb4ab", "on-secondary-container": "#d0a6ff", "background": "#0d112a", "on-tertiary-fixed": "#281900", "primary-container": "#ff5a5f", "on-secondary-fixed": "#2b0052", "outline": "#a98988", "outline-variant": "#5a403f", "surface-container-low": "#161a33", "tertiary-fixed": "#ffdeab", "on-error-container": "#ffdad6", "on-secondary-fixed-variant": "#6600b7", "on-primary": "#680010", "surface-bright": "#343752", "on-primary-fixed-variant": "#92001b", "tertiary": "#f3be63", "error-container": "#93000a", "inverse-primary": "#b52330", "on-error": "#690005", "on-tertiary-container": "#3d2900", "surface": "#0d112a", "surface-tint": "#ffb3b0", "on-primary-container": "#61000e", "surface-container": "#1a1e37", "inverse-surface": "#dee0ff", "inverse-on-surface": "#2b2f49", "on-surface-variant": "#e2bebc", "on-surface": "#dee0ff", "surface-dim": "#0d112a", "tertiary-container": "#bb8c36", "on-primary-fixed": "#410007", "secondary": "#dbb8ff", "surface-container-highest": "#2f334e", "tertiary-fixed-dim": "#f3be63", "surface-container-lowest": "#080c25", "primary-fixed-dim": "#ffb3b0", "secondary-fixed-dim": "#dbb8ff", "on-tertiary-fixed-variant": "#5f4100", "on-background": "#dee0ff", "on-secondary": "#470083", "surface-container-high": "#242842", "on-tertiary": "#422c00", "secondary-fixed": "#efdbff", "secondary-container": "#6807ba", "primary-fixed": "#ffdad8", "surface-variant": "#2f334e", "primary": "#ffb3b0" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-2xl": "4rem", "space-sm": "0.5rem", "margin": "3rem", "space-xl": "2.5rem", "space-lg": "1.75rem", "gutter-mobile": "1rem", "space-md": "1rem", "gutter": "1.5rem", "margin-mobile": "1.25rem", "space-xs": "0.25rem" }, "fontFamily": { "label-sm": [ "Space Grotesk" ], "headline-lg-mobile": [ "Syne" ], "headline-lg": [ "Syne" ], "headline-sm": [ "Plus Jakarta Sans" ], "body-md": [ "Plus Jakarta Sans" ], "display-xl": [ "Syne" ], "label-lg": [ "Space Grotesk" ], "body-sm": [ "Plus Jakarta Sans" ], "label-md": [ "Space Grotesk" ], "display-xl-mobile": [ "Syne" ], "display-lg-mobile": [ "Syne" ], "body-lg": [ "Plus Jakarta Sans" ], "display-lg": [ "Syne" ], "headline-md": [ "Syne" ] }, "fontSize": { "label-sm": [ "10px", { "lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700" } ], "headline-lg-mobile": [ "28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "headline-lg": [ "36px", { "lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "headline-sm": [ "20px", { "lineHeight": "26px", "fontWeight": "700" } ], "body-md": [ "15px", { "lineHeight": "22px", "fontWeight": "400" } ], "display-xl": [ "72px", { "lineHeight": "76px", "letterSpacing": "-0.04em", "fontWeight": "800" } ], "label-lg": [ "14px", { "lineHeight": "18px", "letterSpacing": "0.08em", "fontWeight": "700" } ], "body-sm": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" } ], "display-xl-mobile": [ "44px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800" } ], "display-lg-mobile": [ "36px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" } ], "body-lg": [ "18px", { "lineHeight": "28px", "fontWeight": "400" } ], "display-lg": [ "56px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" } ], "headline-md": [ "26px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.3)]"><div class="h-20 max-w-7xl mx-auto px-gutter-mobile lg:px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-tertiary shadow-[inset_0_1px_0_0_rgba(255,245,234,0.15)]"><span class="material-symbols-outlined text-[20px]">auto_awesome</span></div><span class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface">MAYA • 30</span></div><nav class="hidden md:flex items-center gap-space-xs bg-surface-container-lowest/80 p-space-xs rounded-full shadow-[0_16px_32px_-8px_rgba(3,5,15,0.7)]" data-active-classes="bg-surface-container text-on-surface rounded-full shadow-[inset_0_1px_0_0_rgba(255,245,234,0.15)]"><a aria-current="page" class="font-label-md px-space-md py-space-xs transition-colors bg-surface-container text-on-surface rounded-full shadow-[inset_0_1px_0_0_rgba(255,245,234,0.15)]" data-path="invitation" href="#">Event Details</a><a class="font-label-md text-label-md px-space-md py-space-xs rounded-full text-on-surface-variant hover:text-on-surface transition-colors" data-path="schedule" href="#">Schedule</a><a class="font-label-md text-label-md px-space-md py-space-xs rounded-full text-on-surface-variant hover:text-on-surface transition-colors" data-path="memories" href="#">Memories</a><a class="font-label-md text-label-md px-space-md py-space-xs rounded-full text-on-surface-variant hover:text-on-surface transition-colors" data-path="rsvp" href="#">RSVP</a></nav><div class="flex items-center gap-space-md"><a class="relative inline-flex items-center justify-center px-space-lg py-space-sm font-label-lg text-label-lg uppercase text-on-primary-container bg-primary-container rounded-full shadow-[0_4px_0_#92001b,0_0_20px_rgba(255,90,95,0.45)] hover:translate-y-0.5 active:translate-y-1 active:shadow-none transition-all" data-path="rsvp" href="#"><span class="relative z-10">RSVP Now</span></a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-surface min-h-[calc(100vh-5rem)]"><div class="flex flex-col w-full relative overflow-hidden">
+<!-- Atmospheric Background Glows -->
+<div class="absolute top-12 left-1/2 -translate-x-1/2 w-[850px] h-[450px] bg-secondary-container/20 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+<div class="absolute top-[800px] -left-40 w-[600px] h-[600px] bg-primary-container/15 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+<div class="absolute top-[1800px] -right-32 w-[550px] h-[550px] bg-tertiary/10 rounded-full blur-[150px] pointer-events-none -z-10"></div>
+<!-- HERO SECTION -->
+<section class="relative w-full max-w-7xl mx-auto px-gutter-mobile lg:px-margin pt-space-xl pb-space-2xl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-center">
+<!-- Headline & Callout Left Column -->
+<div class="lg:col-span-7 flex flex-col items-start z-10">
+<!-- Floating Micro Ticket Badge -->
+<div class="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-high/90 text-tertiary shadow-[0_8px_16px_rgba(0,0,0,0.4),inset_0_1px_0_0_rgba(255,245,234,0.15)] mb-space-lg backdrop-blur-md">
+<span class="material-symbols-outlined text-[16px] text-tertiary animate-spin" style="animation-duration: 9s;">arrow_back_ios_new</span>
+<span class="font-label-md text-label-md tracking-widest uppercase text-on-surface">Milestone Invitation • NYC</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container inline-block"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">SoHo Edition</span>
+</div>
+<h1 class="font-display-xl text-display-xl tracking-tight text-on-surface uppercase mb-space-sm selection:bg-primary-container">
+          Maya is <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-secondary">Turning 30</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mb-space-xl">
+          A celebratory evening of disco reverie, nocturnal glamour, and midnight champagne toasts under celestial disco spheres.
+        </p>
+<!-- CTA Cluster -->
+<div class="flex flex-wrap items-center gap-space-md">
+<a class="group relative inline-flex items-center justify-center gap-space-sm px-space-xl py-4 bg-primary-container text-on-primary font-label-lg text-label-lg uppercase tracking-wider rounded-full shadow-[0_6px_0_#92001b,0_0_28px_rgba(255,90,95,0.45)] hover:translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_#92001b] transition-all" href="#rsvp">
+<span class="material-symbols-outlined text-[20px] transition-transform group-hover:scale-110">celebration</span>
+<span>Secure Your Pass</span>
+</a>
+<a class="inline-flex items-center gap-space-xs px-space-lg py-4 rounded-full bg-surface-container text-on-surface font-label-md text-label-md uppercase tracking-wider shadow-[0_4px_0_#080c25,inset_0_1px_0_0_rgba(255,245,234,0.1)] hover:bg-surface-bright transition-all" href="#coordinates">
+<span class="material-symbols-outlined text-[18px] text-tertiary">near_me</span>
+<span>View Coordinates</span>
+</a>
+</div>
+<!-- Coordinates Teaser Meta -->
+<div class="mt-space-xl pt-space-md flex flex-wrap gap-space-xl text-on-surface-variant">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline block">Date</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Oct 25, 2025</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline block">Hour</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">8:00 PM EST</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline block">Coordinates</span>
+<span class="font-headline-sm text-headline-sm text-tertiary">SoHo, Manhattan</span>
+</div>
+</div>
+</div>
+<!-- Right 3D Interactive Disco Artifact Column -->
+<div class="lg:col-span-5 relative flex items-center justify-center">
+<div class="relative w-full aspect-square max-w-[480px] rounded-3xl p-2 bg-gradient-to-b from-surface-container-high/60 to-surface-container-lowest/90 shadow-[0_24px_48px_-12px_rgba(3,5,15,0.85),inset_0_1px_0_0_rgba(255,245,234,0.15)] backdrop-blur-xl">
+<div class="relative w-full h-full rounded-2xl overflow-hidden bg-surface-container-lowest flex items-center justify-center">
+<!-- STITCH_THREEJS_START:ANIMATION_2 class="w-full h-full" -->
+<div class="w-full h-full" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_2" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_2');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  // Interactive Three.js scene for 30th Birthday: Inflated 3D "30" with soft satin/matte clay materials, floating orbs, celestial rings & starlight confetti
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+camera.position.set(0, 0, 14);
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setSize(width, height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+container.appendChild(renderer.domElement);
+
+// Lighting setup - studio soft key light, gentle rim light
+const ambientLight = new THREE.AmbientLight(0xfff5ea, 0.95);
+scene.add(ambientLight);
+
+const mainKeyLight = new THREE.DirectionalLight(0xff5a5f, 2.4);
+mainKeyLight.position.set(-8, 12, 10);
+scene.add(mainKeyLight);
+
+const rimLight = new THREE.DirectionalLight(0x7928ca, 3.2);
+rimLight.position.set(10, -5, -6);
+scene.add(rimLight);
+
+const warmFillLight = new THREE.PointLight(0xf5c065, 1.8, 30);
+warmFillLight.position.set(2, 6, 8);
+scene.add(warmFillLight);
+
+// Group for the floating hero center
+const heroGroup = new THREE.Group();
+scene.add(heroGroup);
+
+// Materials - tactile matte clay / satin plastic with soft subsurface sheen
+const coralClayMaterial = new THREE.MeshPhongMaterial({
+  color: 0xff5a5f,
+  specular: 0xffccd0,
+  shininess: 28,
+  flatShading: false
+});
+
+const creamClayMaterial = new THREE.MeshPhongMaterial({
+  color: 0xfff5ea,
+  specular: 0xffffff,
+  shininess: 35
+});
+
+const violetClayMaterial = new THREE.MeshPhongMaterial({
+  color: 0x8a2be2,
+  specular: 0xd8b4fe,
+  shininess: 25
+});
+
+const goldSatinMaterial = new THREE.MeshPhongMaterial({
+  color: 0xf5c065,
+  specular: 0xfff0b3,
+  shininess: 45
+});
+
+// Construct stylized inflated '3' and '0'
+// Inflated '3': two connected rounded toruses with soft capped balls
+const numThreeGroup = new THREE.Group();
+const torusGeomUpper = new THREE.TorusGeometry(1.6, 0.62, 32, 64, Math.PI * 1.55);
+const mesh3Top = new THREE.Mesh(torusGeomUpper, coralClayMaterial);
+mesh3Top.position.set(0, 1.15, 0);
+mesh3Top.rotation.z = -Math.PI * 0.78;
+numThreeGroup.add(mesh3Top);
+
+const torusGeomLower = new THREE.TorusGeometry(1.85, 0.65, 32, 64, Math.PI * 1.6);
+const mesh3Bottom = new THREE.Mesh(torusGeomLower, coralClayMaterial);
+mesh3Bottom.position.set(0, -1.25, 0);
+mesh3Bottom.rotation.z = -Math.PI * 0.82;
+numThreeGroup.add(mesh3Bottom);
+
+// Soft end caps on '3'
+const capGeom = new THREE.SphereGeometry(0.64, 24, 24);
+const cap1 = new THREE.Mesh(capGeom, coralClayMaterial);
+cap1.position.set(-1.1, 2.3, 0);
+numThreeGroup.add(cap1);
+
+const cap2 = new THREE.Mesh(capGeom, coralClayMaterial);
+cap2.position.set(0.1, -0.05, 0);
+numThreeGroup.add(cap2);
+
+const cap3 = new THREE.Mesh(capGeom, coralClayMaterial);
+cap3.position.set(-1.3, -2.5, 0);
+numThreeGroup.add(cap3);
+
+numThreeGroup.position.set(-2.5, 0, 0);
+heroGroup.add(numThreeGroup);
+
+// Inflated '0': large pill/torus with oval stretch
+const numZeroGroup = new THREE.Group();
+const torusGeomZero = new THREE.TorusGeometry(2.35, 0.68, 32, 72);
+const mesh0 = new THREE.Mesh(torusGeomZero, creamClayMaterial);
+mesh0.scale.set(0.85, 1.25, 1.0);
+numZeroGroup.add(mesh0);
+
+numZeroGroup.position.set(2.4, 0, 0);
+heroGroup.add(numZeroGroup);
+
+// Celestial Disco orbital ring surrounding the "30"
+const ringGeom = new THREE.TorusGeometry(5.4, 0.12, 16, 90);
+const celestialRing = new THREE.Mesh(ringGeom, goldSatinMaterial);
+celestialRing.rotation.x = Math.PI * 0.45;
+celestialRing.rotation.y = Math.PI * 0.15;
+heroGroup.add(celestialRing);
+
+const ringGeom2 = new THREE.TorusGeometry(4.7, 0.08, 16, 90);
+const celestialRing2 = new THREE.Mesh(ringGeom2, violetClayMaterial);
+celestialRing2.rotation.x = -Math.PI * 0.35;
+celestialRing2.rotation.y = -Math.PI * 0.2;
+heroGroup.add(celestialRing2);
+
+// Floating celestial disco spheres, geometric stars, and multi-depth confetti
+const floatingElements = [];
+const sphereGeomSmall = new THREE.SphereGeometry(0.42, 24, 24);
+const sphereGeomMed = new THREE.SphereGeometry(0.72, 24, 24);
+
+const confettiColors = [coralClayMaterial, creamClayMaterial, violetClayMaterial, goldSatinMaterial];
+
+// Satin balloons & mini planets around
+for (let i = 0; i < 9; i++) {
+  const isMed = i % 2 === 0;
+  const mesh = new THREE.Mesh(isMed ? sphereGeomMed : sphereGeomSmall, confettiColors[i % confettiColors.length]);
+  const angle = (i / 9) * Math.PI * 2;
+  const radius = 4.2 + (i % 3) * 1.3;
+  mesh.position.set(
+    Math.cos(angle) * radius + (Math.random() - 0.5) * 1.5,
+    Math.sin(angle) * (radius * 0.8) + (Math.random() - 0.5) * 1.5,
+    (Math.random() - 0.5) * 4.5
+  );
+  mesh.userData = {
+    baseY: mesh.position.y,
+    baseX: mesh.position.x,
+    speed: 0.8 + Math.random() * 0.9,
+    rotSpeedX: (Math.random() - 0.5) * 0.02,
+    rotSpeedY: (Math.random() - 0.5) * 0.02,
+    phase: Math.random() * Math.PI * 2
+  };
+  heroGroup.add(mesh);
+  floatingElements.push(mesh);
+}
+
+// 3D Confetti cubes & octas
+const boxConfettiGeom = new THREE.BoxGeometry(0.32, 0.32, 0.08);
+const octaConfettiGeom = new THREE.OctahedronGeometry(0.28);
+
+for (let j = 0; j < 32; j++) {
+  const geom = j % 2 === 0 ? boxConfettiGeom : octaConfettiGeom;
+  const cMesh = new THREE.Mesh(geom, confettiColors[j % confettiColors.length]);
+  cMesh.position.set(
+    (Math.random() - 0.5) * 16,
+    (Math.random() - 0.5) * 11,
+    (Math.random() - 0.5) * 9 - 1
+  );
+  cMesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+  cMesh.userData = {
+    baseY: cMesh.position.y,
+    fallSpeed: 0.008 + Math.random() * 0.015,
+    rotX: (Math.random() - 0.5) * 0.03,
+    rotY: (Math.random() - 0.5) * 0.03,
+    wobble: Math.random() * Math.PI * 2
+  };
+  scene.add(cMesh);
+  floatingElements.push(cMesh);
+}
+
+// Mouse parallax interactivity
+let mouseX = 0;
+let mouseY = 0;
+let targetX = 0;
+let targetY = 0;
+
+function onMouseMove(event) {
+  const rect = container.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  mouseX = (x / rect.width) * 2 - 1;
+  mouseY = -(y / rect.height) * 2 + 1;
+}
+
+window.addEventListener('mousemove', onMouseMove);
+
+// Responsive resize
+function onWindowResize() {
+  const newW = container.clientWidth || window.innerWidth;
+  const newH = container.clientHeight || window.innerHeight;
+  camera.aspect = newW / newH;
+  camera.updateProjectionMatrix();
+  renderer.setSize(newW, newH);
+}
+window.addEventListener('resize', onWindowResize);
+
+// Animation Loop
+let clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsedTime = clock.getElapsedTime();
+
+  // Smooth mouse interpolation
+  targetX += (mouseX - targetX) * 0.05;
+  targetY += (mouseY - targetY) * 0.05;
+
+  // Hero main float & tilt
+  heroGroup.position.y = Math.sin(elapsedTime * 1.3) * 0.35;
+  heroGroup.rotation.y = Math.sin(elapsedTime * 0.7) * 0.16 + targetX * 0.35;
+  heroGroup.rotation.x = Math.cos(elapsedTime * 0.9) * 0.12 - targetY * 0.25;
+
+  // Orbital rings spin
+  celestialRing.rotation.z = elapsedTime * 0.35;
+  celestialRing2.rotation.z = -elapsedTime * 0.28;
+
+  // Animate mini floating balloons & confetti
+  floatingElements.forEach((el, index) => {
+    if (el.userData.speed) {
+      el.position.y = el.userData.baseY + Math.sin(elapsedTime * el.userData.speed + el.userData.phase) * 0.45;
+      el.rotation.x += el.userData.rotSpeedX;
+      el.rotation.y += el.userData.rotSpeedY;
+    } else if (el.userData.fallSpeed) {
+      el.position.y -= el.userData.fallSpeed;
+      if (el.position.y < -7) {
+        el.position.y = 7;
+      }
+      el.rotation.x += el.userData.rotX;
+      el.rotation.y += el.userData.rotY;
+    }
+  });
+
+  renderer.render(scene, camera);
+}
+
+animate();
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_2 -->
+<!-- Floating Overlay Pass Badge -->
+<div class="absolute bottom-4 left-4 right-4 p-space-md rounded-xl bg-surface-container-high/90 backdrop-blur-md shadow-[0_12px_24px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,245,234,0.12)] flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-secondary-container/60 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">graphic_eq</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Vinyl Set Curated</p>
+<p class="font-headline-sm text-[15px] leading-tight text-on-surface">Cosmic Soul &amp; Deep Disco</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2.5 py-1 rounded bg-tertiary-container/30 text-tertiary">VIP 030</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- TACTILE MECHANICAL COUNTDOWN SECTION -->
+<section class="w-full max-w-7xl mx-auto px-gutter-mobile lg:px-margin -mt-8 mb-space-2xl z-20">
+<div class="p-space-lg lg:p-space-xl rounded-3xl bg-surface-container-low shadow-[0_24px_40px_-8px_rgba(3,5,15,0.7),inset_0_1px_0_0_rgba(255,245,234,0.12)]">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary-fixed-dim block mb-1">Mission Clock</span>
+<h2 class="font-headline-lg text-headline-lg uppercase text-on-surface">Countdown to Nocturne</h2>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+<span>Synchronized with New York Time (EST)</span>
+</div>
+</div>
+<!-- Tactile Blocks Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-md lg:gap-space-lg" id="countdown-board">
+<!-- Days Tile -->
+<div class="group relative rounded-2xl bg-surface-container-high p-space-md lg:p-space-lg shadow-[0_8px_0_#050714,0_16px_24px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center transition-transform hover:-translate-y-1">
+<div class="w-full h-0.5 bg-surface-container-lowest/80 absolute top-1/2 left-0 -translate-y-1/2 z-10 opacity-70"></div>
+<span class="font-display-lg text-display-lg text-primary tracking-tighter" id="days-val">24</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline mt-space-xs">Days</span>
+</div>
+<!-- Hours Tile -->
+<div class="group relative rounded-2xl bg-surface-container-high p-space-md lg:p-space-lg shadow-[0_8px_0_#050714,0_16px_24px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center transition-transform hover:-translate-y-1">
+<div class="w-full h-0.5 bg-surface-container-lowest/80 absolute top-1/2 left-0 -translate-y-1/2 z-10 opacity-70"></div>
+<span class="font-display-lg text-display-lg text-on-surface tracking-tighter" id="hours-val">08</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline mt-space-xs">Hours</span>
+</div>
+<!-- Minutes Tile -->
+<div class="group relative rounded-2xl bg-surface-container-high p-space-md lg:p-space-lg shadow-[0_8px_0_#050714,0_16px_24px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center transition-transform hover:-translate-y-1">
+<div class="w-full h-0.5 bg-surface-container-lowest/80 absolute top-1/2 left-0 -translate-y-1/2 z-10 opacity-70"></div>
+<span class="font-display-lg text-display-lg text-tertiary tracking-tighter" id="minutes-val">42</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline mt-space-xs">Minutes</span>
+</div>
+<!-- Seconds Tile -->
+<div class="group relative rounded-2xl bg-surface-container-high p-space-md lg:p-space-lg shadow-[0_8px_0_#050714,0_16px_24px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center transition-transform hover:-translate-y-1">
+<div class="w-full h-0.5 bg-surface-container-lowest/80 absolute top-1/2 left-0 -translate-y-1/2 z-10 opacity-70"></div>
+<span class="font-display-lg text-display-lg text-secondary tracking-tighter" id="seconds-val">18</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline mt-space-xs">Seconds</span>
+</div>
+</div>
+</div>
+</section>
+<!-- EVENT COORDINATES & VENUE SHOWCASE -->
+<section class="w-full max-w-7xl mx-auto px-gutter-mobile lg:px-margin mb-space-2xl" id="coordinates">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-stretch">
+<!-- Left Editorial Ticket -->
+<div class="lg:col-span-5 rounded-3xl bg-surface-container p-space-xl relative overflow-hidden flex flex-col justify-between shadow-[0_20px_36px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,245,234,0.12)]">
+<!-- Notched Ticket Aesthetic Accents -->
+<div class="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-surface"></div>
+<div class="absolute -bottom-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-surface"></div>
+<div>
+<div class="flex items-center justify-between pb-space-lg">
+<span class="font-label-sm text-label-sm tracking-widest uppercase text-tertiary">Official Pass</span>
+<span class="font-label-sm text-label-sm text-outline uppercase font-mono">No. 30-1025</span>
+</div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary block mb-2">Venue &amp; Atmosphere</span>
+<h3 class="font-headline-lg text-headline-lg uppercase text-on-surface mb-space-sm leading-tight">The Starlight Loft</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-lg">
+            A rooftop enclave in historic SoHo featuring skylights, mirrored disco chandeliers, exposed cast-iron architecture, and an open panoramic skyline view.
+          </p>
+<div class="space-y-space-md">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 text-tertiary">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">482 Broome Street, 6th Floor</p>
+<p class="font-body-sm text-body-sm text-outline">SoHo • New York, NY 10013</p>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 text-primary">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Saturday, October 25, 2025</p>
+<p class="font-body-sm text-body-sm text-outline">Doors at 8:00 PM • Late Curfew</p>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 text-secondary">
+<span class="material-symbols-outlined text-[18px]">styler</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Celestial Glamour &amp; Shimmer</p>
+<p class="font-body-sm text-body-sm text-outline">Sequins, velvet, nocturnal silver, silk &amp; disco sparkle</p>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-space-xl">
+<a class="w-full inline-flex items-center justify-center gap-space-sm px-space-lg py-3.5 bg-surface-bright hover:bg-surface-container-highest text-on-surface rounded-xl font-label-md text-label-md uppercase tracking-wider shadow-[0_4px_0_#080c25] active:translate-y-0.5 transition-all" href="https://maps.google.com" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[18px] text-tertiary">explore</span>
+<span>Open in Apple / Google Maps</span>
+</a>
+</div>
+</div>
+<!-- Right Interactive Map Display -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<div class="w-full h-80 lg:h-full min-h-[340px] rounded-3xl bg-cover bg-center shadow-[0_20px_36px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,245,234,0.12)] relative p-space-md flex flex-col justify-end" data-location="482 Broome Street, New York, NY" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDTWSFXQ5Vot_yZCJK20o28-ko2kmwcc1LVBiy6k1kxvqp8KqH29_2d_63ZK1X2vsqaah5kqj-eklkAaKVNcV9AggQ_LIfRW_UD-jN4Ajlc4b-_pr4pPabfcsCMfckyiL7wUFG5PwdCjstDma6rpwovN-TPPmODx9yoeASirCy5J8kVSFpC3u5BuczoijoZxXatVMZDAu-V6FzWDaQZm6aMPTbhuCsUAW1b5YrmMASgfIKHMIV2DUXl')">
+<div class="absolute inset-0 rounded-3xl bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/30 to-transparent"></div>
+<div class="relative z-10 p-space-md rounded-2xl bg-surface-container-lowest/90 backdrop-blur-md max-w-sm flex items-center gap-space-md shadow-[0_12px_24px_rgba(0,0,0,0.7)]">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shrink-0 text-on-primary">
+<span class="material-symbols-outlined text-[22px]">apartment</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm uppercase tracking-wider text-tertiary">Private Elevator Entry</p>
+<p class="font-body-sm text-body-sm text-on-surface">Buzz suite #30 upon street arrival for private elevator bank</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- EVENING TIMELINE -->
+<section class="w-full max-w-7xl mx-auto px-gutter-mobile lg:px-margin mb-space-2xl" id="schedule">
+<div class="flex flex-col items-center text-center mb-space-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-tertiary block mb-2">Program Sequence</span>
+<h2 class="font-display-lg text-display-lg uppercase text-on-surface">The Evening Arc</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md mt-1">Flow seamlessly through cocktail hours into deep nocturnal celebration.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Arc Item 1 -->
+<div class="rounded-2xl bg-surface-container p-space-lg flex flex-col justify-between shadow-[0_12px_24px_-4px_rgba(3,5,15,0.6),inset_0_1px_0_0_rgba(255,245,234,0.1)] relative overflow-hidden group hover:bg-surface-bright transition-all">
+<div class="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-tertiary/10 blur-xl"></div>
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline block mb-space-sm">Phase 01</span>
+<div class="flex items-baseline gap-space-xs mb-space-xs">
+<span class="font-headline-lg text-headline-lg text-tertiary">8:00</span>
+<span class="font-label-sm text-label-sm text-tertiary uppercase">PM</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-space-xs">Celestial Cocktails</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Signature starlight spritzes, oysters on half shell, and seasonal canapés on arrival.</p>
+</div>
+<div class="pt-space-md flex items-center gap-space-xs text-outline font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">local_bar</span>
+<span>Aperitifs &amp; Warm Welcomes</span>
+</div>
+</div>
+<!-- Arc Item 2 -->
+<div class="rounded-2xl bg-surface-container p-space-lg flex flex-col justify-between shadow-[0_12px_24px_-4px_rgba(3,5,15,0.6),inset_0_1px_0_0_rgba(255,245,234,0.1)] relative overflow-hidden group hover:bg-surface-bright transition-all">
+<div class="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-primary/10 blur-xl"></div>
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline block mb-space-sm">Phase 02</span>
+<div class="flex items-baseline gap-space-xs mb-space-xs">
+<span class="font-headline-lg text-headline-lg text-primary">9:30</span>
+<span class="font-label-sm text-label-sm text-primary uppercase">PM</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-space-xs">Midnight Toast &amp; Cake</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Champagne pyramids, heartfelt speeches, and a metallic tiered disco birthday confection.</p>
+</div>
+<div class="pt-space-md flex items-center gap-space-xs text-outline font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">cake</span>
+<span>Speeches &amp; Bubbles</span>
+</div>
+</div>
+<!-- Arc Item 3 -->
+<div class="rounded-2xl bg-surface-container p-space-lg flex flex-col justify-between shadow-[0_12px_24px_-4px_rgba(3,5,15,0.6),inset_0_1px_0_0_rgba(255,245,234,0.1)] relative overflow-hidden group hover:bg-surface-bright transition-all">
+<div class="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-secondary/10 blur-xl"></div>
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline block mb-space-sm">Phase 03</span>
+<div class="flex items-baseline gap-space-xs mb-space-xs">
+<span class="font-headline-lg text-headline-lg text-secondary">10:00</span>
+<span class="font-label-sm text-label-sm text-secondary uppercase">PM</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-space-xs">Disco Vinyl Euphoria</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Analog grooves, funk, french touch, and deep house under mirror balls until midnight.</p>
+</div>
+<div class="pt-space-md flex items-center gap-space-xs text-outline font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">album</span>
+<span>DJ Sets &amp; Dancefloor Open</span>
+</div>
+</div>
+<!-- Arc Item 4 -->
+<div class="rounded-2xl bg-surface-container p-space-lg flex flex-col justify-between shadow-[0_12px_24px_-4px_rgba(3,5,15,0.6),inset_0_1px_0_0_rgba(255,245,234,0.1)] relative overflow-hidden group hover:bg-surface-bright transition-all">
+<div class="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-tertiary-fixed-dim/10 blur-xl"></div>
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline block mb-space-sm">Phase 04</span>
+<div class="flex items-baseline gap-space-xs mb-space-xs">
+<span class="font-headline-lg text-headline-lg text-tertiary-fixed-dim">1:30</span>
+<span class="font-label-sm text-label-sm text-tertiary-fixed-dim uppercase">AM</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-space-xs">Starlight Send-off</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Late night sliders, espresso martinis, and final slow dance under the Broome starlight.</p>
+</div>
+<div class="pt-space-md flex items-center gap-space-xs text-outline font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim">nightlight</span>
+<span>Nightcap &amp; Parting Gifts</span>
+</div>
+</div>
+</div>
+</section>
+<!-- PHOTO KEEPSAKES (POLAROID COLLAGE) -->
+<section class="w-full max-w-7xl mx-auto px-gutter-mobile lg:px-margin mb-space-2xl" id="memories">
+<div class="p-space-lg lg:p-space-xl rounded-3xl bg-surface-container-low shadow-[0_24px_48px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,245,234,0.1)] relative">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm mb-space-xl">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary block mb-1">Three Decades of Light</span>
+<h2 class="font-headline-lg text-headline-lg uppercase text-on-surface">Photo Keepsakes</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs">Snapshots along the journey to 30. Leave your instant prints at our guestbook table.</p>
+</div>
+<!-- Polaroid Mosaic -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-xl pt-space-sm pb-space-md">
+<!-- Polaroid 1 (Tilted -2deg) -->
+<div class="group transform lg:-rotate-2 hover:rotate-0 hover:scale-105 transition-all duration-300 p-3 pb-6 rounded-lg bg-[#fff5ea] shadow-[-6px_14px_28px_rgba(0,0,0,0.7)] text-[#0d112a]">
+<div class="relative w-full aspect-square rounded overflow-hidden mb-3 bg-[#1a1e37]">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Warm duotone vintage party snapshot of Maya laughing with friends at a rooftop lounge during golden hour in Manhattan, golden sparkle light leaks, aesthetic film grain, candid euphoria." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVEMIu93BisHEpb4vAMK9XN4rWiq-lNmhahWM67jACxXHsvTW0MvhwxCGzkxvWs7uNJoXtbkfIb1r4sLs4im15z6MDtSzDu2SSNUCvbXFbftPoOMvMtYgIirswr9-V0m3nOIBol0kJVY84sy_tcSlgqPSlnLKC89tPReZFg3lzAsrVcvsWZK0CFxB2mP06rGssc8XuHXIEEgcmMiMvsaHqIuKJk0TSn5A2g2nYtfr2sWYWOYKwqQU0"/>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-md text-label-md tracking-wider font-bold uppercase">Golden Hour Warmth</span>
+<span class="font-mono text-xs opacity-60">‘23 SoHo</span>
+</div>
+</div>
+<!-- Polaroid 2 (Tilted +2.5deg) -->
+<div class="group transform lg:rotate-2 hover:rotate-0 hover:scale-105 transition-all duration-300 p-3 pb-6 rounded-lg bg-[#fff5ea] shadow-[-6px_14px_28px_rgba(0,0,0,0.7)] text-[#0d112a]">
+<div class="relative w-full aspect-square rounded overflow-hidden mb-3 bg-[#1a1e37]">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Chic editorial vintage flash photo of a woman in shimmering sequin attire celebrating under a glistening disco ball, violet and hot coral neon backlighting, high contrast party atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDsYwzNHAB97Ak7tDggElwQLsEbfjvlznQ95-gbVwry2OTWsB2E6zXKsuqYUfyoNMiixFTbrNy8WsbkHIeL_R-x4FhZkWihYOdsbI5mQ6HyuOKdLHzwVbQi8T6pFpgk2iBaaC8yemws0F1cJHo0kDyLiSTG7_i_6-BI080ns0U5rQv4kC6Mc4XmKR8qGd40MNgkcW1DY1kLEMt5p2mQc7CukZh-d-1nHwfUcs1aPpYbaOZ170Riin8"/>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-md text-label-md tracking-wider font-bold uppercase">Disco Reverie</span>
+<span class="font-mono text-xs opacity-60">‘24 Paris</span>
+</div>
+</div>
+<!-- Polaroid 3 (Tilted -1deg) -->
+<div class="group transform lg:-rotate-1 hover:rotate-0 hover:scale-105 transition-all duration-300 p-3 pb-6 rounded-lg bg-[#fff5ea] shadow-[-6px_14px_28px_rgba(0,0,0,0.7)] text-[#0d112a] sm:col-span-2 lg:col-span-1">
+<div class="relative w-full aspect-square rounded overflow-hidden mb-3 bg-[#1a1e37]">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Atmospheric midnight party photograph showing clinking champagne coupes overflowing with sparkling wine against dark velvet textures, disco ball reflections, warm starlight sparkles." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpQyWx1QrGmbESlnrIzjUSqcNNonuHjhgH4D7idmk9ywwYbr-OOVjv_461xcPXD_8RMzmF8GG379BfRVNIPvURDGkzHZptSlVRdwn3qAXcR5eZKU_k7iqiqwKbociQvRHnqp8MSlbLxEeSPl260YFNWmkbetAlWWVbxOuX7CqKhFB5BeYa7YQOd2hm5uLL_4xdobCgvi6JyTckoKCUP5CMcfRwz4yqQ41j7Qs-JRUDxzwORLLmuFmb"/>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-md text-label-md tracking-wider font-bold uppercase">Midnight Toast</span>
+<span class="font-mono text-xs opacity-60">‘25 NYC</span>
+</div>
+</div>
+</div>
+<!-- Live Photo Wall Hint -->
+<div class="mt-space-md p-space-md rounded-xl bg-surface-container flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm text-tertiary">
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+<span class="font-label-md text-label-md text-on-surface">Vintage 35mm &amp; Instax cameras will be floating across tables.</span>
+</div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Hashtag #MayaTurns30</span>
+</div>
+</div>
+</section>
+<!-- RSVP INTERFACE -->
+<section class="w-full max-w-4xl mx-auto px-gutter-mobile lg:px-margin mb-space-2xl" id="rsvp">
+<div class="rounded-3xl bg-surface-container p-space-lg lg:p-space-xl relative shadow-[0_24px_50px_rgba(0,0,0,0.75),inset_0_1px_0_0_rgba(255,245,234,0.15)]">
+<!-- Header -->
+<div class="text-center max-w-lg mx-auto mb-space-xl">
+<div class="w-12 h-12 rounded-full bg-primary/20 text-primary mx-auto mb-space-sm flex items-center justify-center shadow-[0_0_20px_rgba(255,90,95,0.3)]">
+<span class="material-symbols-outlined text-[24px]">mark_email_read</span>
+</div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary block mb-1">Kindly Respond</span>
+<h2 class="font-headline-lg text-headline-lg uppercase text-on-surface">Confirm Your Presence</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-xs">Please RSVP by October 10th to finalize dinner courses &amp; bar provisions.</p>
+</div>
+<!-- Form Content -->
+<form class="space-y-space-lg" id="rsvp-form" onsubmit="event.preventDefault(); handleRsvpSubmit();">
+<!-- Attendance Toggle Pill -->
+<div>
+<label class="font-label-sm text-label-sm uppercase tracking-widest text-outline block mb-space-sm">Attendance Decision</label>
+<div class="grid grid-cols-2 gap-space-sm bg-surface-container-lowest p-1.5 rounded-2xl">
+<button class="py-3 px-space-md rounded-xl font-label-md text-label-md uppercase tracking-wider flex items-center justify-center gap-space-xs bg-primary-container text-on-primary-container shadow-[0_3px_0_#92001b] transition-all" id="btn-accept" onclick="selectAttendance(true)" type="button">
+<span class="material-symbols-outlined text-[18px]">done</span>
+<span>Joyfully Accept</span>
+</button>
+<button class="py-3 px-space-md rounded-xl font-label-md text-label-md uppercase tracking-wider flex items-center justify-center gap-space-xs text-on-surface-variant hover:text-on-surface transition-all" id="btn-decline" onclick="selectAttendance(false)" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+<span>Regretfully Decline</span>
+</button>
+</div>
+</div>
+<!-- Name Inputs Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<div>
+<label class="font-label-sm text-label-sm uppercase tracking-widest text-outline block mb-space-xs" for="guest-name">Your Full Name *</label>
+<input class="w-full px-space-md py-3.5 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] focus:outline-none focus:ring-2 focus:ring-tertiary transition-all" id="guest-name" placeholder="e.g. Julian Thorne" required="" type="text"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm uppercase tracking-widest text-outline block mb-space-xs" for="guest-email">Email Address *</label>
+<input class="w-full px-space-md py-3.5 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] focus:outline-none focus:ring-2 focus:ring-tertiary transition-all" id="guest-email" placeholder="julian@starlight.com" required="" type="email"/>
+</div>
+</div>
+<!-- Guest Count Selector -->
+<div>
+<label class="font-label-sm text-label-sm uppercase tracking-widest text-outline block mb-space-xs">Total Guests Attending</label>
+<div class="flex items-center gap-space-sm" id="guest-count-group">
+<button class="w-14 h-12 rounded-xl bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center shadow-[0_3px_0_#92001b] transition-all" id="guest-btn-1" onclick="setGuestCount(1)" type="button">1</button>
+<button class="w-14 h-12 rounded-xl bg-surface-container-lowest text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center shadow-[0_3px_0_#080c25] hover:text-on-surface transition-all" id="guest-btn-2" onclick="setGuestCount(2)" type="button">2</button>
+<span class="font-body-sm text-body-sm text-outline ml-space-sm">(Plus-ones are warmly welcomed upon invitation)</span>
+</div>
+</div>
+<!-- Song Request Input -->
+<div>
+<label class="font-label-sm text-label-sm uppercase tracking-widest text-outline block mb-space-xs" for="song-request">Disco / Dancefloor Anthem Request</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-[18px] text-secondary">graphic_eq</span>
+<input class="w-full pl-11 pr-space-md py-3.5 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] focus:outline-none focus:ring-2 focus:ring-secondary transition-all" id="song-request" placeholder="e.g. Donna Summer - I Feel Love" type="text"/>
+</div>
+</div>
+<!-- Note to Maya -->
+<div>
+<label class="font-label-sm text-label-sm uppercase tracking-widest text-outline block mb-space-xs" for="guest-note">Note or Dietary Preferences</label>
+<textarea class="w-full px-space-md py-3 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] focus:outline-none focus:ring-2 focus:ring-tertiary transition-all resize-none" id="guest-note" placeholder="Dietary restrictions or a birthday wish for Maya..." rows="3"></textarea>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-4 bg-primary-container text-on-primary-container font-label-lg text-label-lg uppercase tracking-wider rounded-xl shadow-[0_5px_0_#92001b,0_0_24px_rgba(255,90,95,0.4)] hover:translate-y-0.5 active:translate-y-1 active:shadow-[0_1px_0_#92001b] transition-all flex items-center justify-center gap-space-sm" id="submit-btn" type="submit">
+<span class="material-symbols-outlined text-[20px]">stars</span>
+<span>Submit RSVP Confirmation</span>
+</button>
+<p class="hidden text-center font-headline-sm text-[16px] text-tertiary pt-space-xs" id="rsvp-status">
+          ✨ Your RSVP has been beamed across the galaxy! Can't wait to celebrate.
+        </p>
+</form>
+</div>
+</section>
+<!-- CELEBRATION FOOTNOTE & HOST NOTE BANNER -->
+<section class="w-full max-w-7xl mx-auto px-gutter-mobile lg:px-margin mb-space-2xl">
+<div class="rounded-3xl bg-gradient-to-r from-surface-container-high via-surface-container to-surface-container-low p-space-xl flex flex-col md:flex-row items-center justify-between gap-space-lg shadow-[0_16px_32px_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,245,234,0.1)]">
+<div class="flex items-center gap-space-lg">
+<div class="w-16 h-16 rounded-2xl bg-tertiary/20 flex items-center justify-center shrink-0 text-tertiary shadow-[0_0_24px_rgba(243,190,99,0.25)]">
+<span class="material-symbols-outlined text-[32px]">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">"To thirty years of magic, music, and the people who made it extraordinary."</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">— Maya Vasquez • The Host</p>
+</div>
+</div>
+<div class="shrink-0 flex items-center gap-space-sm">
+<button class="inline-flex items-center gap-space-xs px-space-lg py-3 rounded-full bg-surface-bright text-on-surface font-label-md text-label-md uppercase tracking-wider shadow-[0_4px_0_#080c25] hover:bg-surface-container-highest transition-all" onclick="downloadCalendarInvite()">
+<span class="material-symbols-outlined text-[18px] text-tertiary">event</span>
+<span>Add .ICS Invite</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<script>
+  let isAttending = true;
+  let guestCount = 1;
+
+  function selectAttendance(accept) {
+    isAttending = accept;
+    const btnAccept = document.getElementById('btn-accept');
+    const btnDecline = document.getElementById('btn-decline');
+
+    if (accept) {
+      btnAccept.className = 'py-3 px-space-md rounded-xl font-label-md text-label-md uppercase tracking-wider flex items-center justify-center gap-space-xs bg-primary-container text-on-primary-container shadow-[0_3px_0_#92001b] transition-all';
+      btnDecline.className = 'py-3 px-space-md rounded-xl font-label-md text-label-md uppercase tracking-wider flex items-center justify-center gap-space-xs text-on-surface-variant hover:text-on-surface transition-all';
+    } else {
+      btnDecline.className = 'py-3 px-space-md rounded-xl font-label-md text-label-md uppercase tracking-wider flex items-center justify-center gap-space-xs bg-surface-container-highest text-on-surface shadow-[0_3px_0_#080c25] transition-all';
+      btnAccept.className = 'py-3 px-space-md rounded-xl font-label-md text-label-md uppercase tracking-wider flex items-center justify-center gap-space-xs text-on-surface-variant hover:text-on-surface transition-all';
+    }
+  }
+
+  function setGuestCount(count) {
+    guestCount = count;
+    const btn1 = document.getElementById('guest-btn-1');
+    const btn2 = document.getElementById('guest-btn-2');
+
+    if (count === 1) {
+      btn1.className = 'w-14 h-12 rounded-xl bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center shadow-[0_3px_0_#92001b] transition-all';
+      btn2.className = 'w-14 h-12 rounded-xl bg-surface-container-lowest text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center shadow-[0_3px_0_#080c25] hover:text-on-surface transition-all';
+    } else {
+      btn2.className = 'w-14 h-12 rounded-xl bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center shadow-[0_3px_0_#92001b] transition-all';
+      btn1.className = 'w-14 h-12 rounded-xl bg-surface-container-lowest text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center shadow-[0_3px_0_#080c25] hover:text-on-surface transition-all';
+    }
+  }
+
+  function handleRsvpSubmit() {
+    const status = document.getElementById('rsvp-status');
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.classList.add('opacity-50');
+    status.classList.remove('hidden');
+    submitBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">autorenew</span><span>Recorded</span>';
+  }
+
+  function downloadCalendarInvite() {
+    const icsData = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Maya 30th Birthday//EN',
+      'BEGIN:VEVENT',
+      'SUMMARY:Maya\\'s 30th Birthday • Midnight Celestial Disco',
+      'DESCRIPTION:Celebrating Maya turning 30 at The Starlight Loft in SoHo.',
+      'LOCATION:The Starlight Loft\\, 482 Broome Street\\, New York\\, NY 10013',
+      'DTSTART:20251025T200000Z',
+      'DTEND:20251026T020000Z',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute('download', 'maya-30th-birthday.ics');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // Live countdown ticker simulation
+  let sec = 18;
+  let min = 42;
+  const secEl = document.getElementById('seconds-val');
+  const minEl = document.getElementById('minutes-val');
+
+  setInterval(() => {
+    if (sec > 0) {
+      sec--;
+    } else {
+      sec = 59;
+      if (min > 0) min--;
+      if (minEl) minEl.innerText = min < 10 ? '0' + min : min;
+    }
+    if (secEl) secEl.innerText = sec < 10 ? '0' + sec : sec;
+  }, 1000);
+</script></main><footer class="w-full bg-surface-container-lowest py-space-2xl shadow-[inset_0_1px_0_0_rgba(255,245,234,0.08)]"><div class="max-w-7xl mx-auto px-gutter-mobile lg:px-margin"><div class="grid grid-cols-1 md:grid-cols-3 gap-space-xl items-center pb-space-xl"><div class="space-y-space-xs text-center md:text-left"><div class="flex items-center justify-center md:justify-start gap-space-xs text-tertiary"><span class="material-symbols-outlined text-[18px]">flare</span><span class="font-headline-sm text-headline-sm uppercase tracking-wide text-on-surface">MAYA • 30</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Midnight Celestial Disco Celebration</p></div><div class="flex flex-col sm:flex-row items-center justify-center gap-space-md"><a class="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md shadow-[0_3px_0_#080c25] hover:bg-surface-bright transition-all" href="#"><span class="material-symbols-outlined text-[16px] text-tertiary">calendar_add_on</span>Add to Calendar</a><a class="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-surface-container text-on-surface font-label-md text-label-md shadow-[0_3px_0_#080c25] hover:bg-surface-bright transition-all" href="#"><span class="material-symbols-outlined text-[16px] text-primary">mail</span>Host Inquiry</a></div><div class="text-center md:text-right space-y-space-xs"><p class="font-label-sm text-label-sm uppercase text-tertiary tracking-widest">Dress Code</p><p class="font-body-sm text-body-sm text-on-surface-variant">Nocturnal Glamour • Celestial Shimmer</p></div></div><div class="pt-space-lg text-center font-body-sm text-body-sm text-outline">© 2025 Maya's 30th Birthday. Curated with celestial sparkle.</div></div></footer>
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body></html>

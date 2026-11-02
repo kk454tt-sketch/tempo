@@ -15,7 +15,7 @@ src/
 ├── pages/               # Route pages (Home, Templates, SignIn, SignUp, ForgotPassword, Dashboard, Creator, PublicEvent, 404)
 ├── services/            # Decoupled data & integration layers (eventService, authService, storageService, mockData)
 ├── templates/           # Modular template system
-│   ├── components/      # Template React components (WeddingTimeless, BirthdayEmma, OpeningCoffeeHouse, PartyEvening, TemplateRenderer)
+│   ├── components/      # Atelier template React components (SolsticeSageTemplate, AtelierNordTemplate, KomorebiDiningTemplate, FolioNoirTemplate, EnrollDeskPortal, TemplateRenderer)
 │   ├── registry.ts      # Central template registry & dynamic registration API
 │   └── types.ts         # Template type definitions
 ├── types/               # Centralized TypeScript contracts (user, template, event, auth)

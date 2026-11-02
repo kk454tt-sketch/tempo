@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"><meta content="web_standard" name="shell-type"/><title>Event Protocol</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Syne:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}@keyframes pulse-diode{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}@keyframes sound-wave{0%,100%{height:4px;}50%{height:16px;}}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary": "#ffffff", "on-secondary-container": "#006c71", "on-secondary-fixed": "#002021", "on-tertiary": "#4c007d", "primary-container": "#dde3eb", "background": "#131317", "outline-variant": "#44474a", "inverse-surface": "#e5e1e7", "on-secondary": "#003739", "on-tertiary-fixed-variant": "#6a0baa", "surface-container-low": "#1b1b1f", "surface-dim": "#131317", "secondary-fixed-dim": "#00dce5", "surface-container-high": "#2a292e", "surface-variant": "#353438", "outline": "#8e9195", "inverse-primary": "#595f66", "surface-tint": "#c1c7cf", "tertiary-fixed-dim": "#e0b6ff", "primary-fixed-dim": "#c1c7cf", "on-tertiary-container": "#8b3aca", "error": "#ffb4ab", "secondary-fixed": "#63f7ff", "tertiary-fixed": "#f2daff", "surface-container": "#201f23", "secondary": "#e6feff", "tertiary-container": "f2daff", "on-primary-fixed": "#161c22", "on-tertiary-fixed": "#2e004e", "on-primary-container": "#5f656c", "on-surface": "#e5e1e7", "surface": "#131317", "surface-bright": "#39393d", "primary-fixed": "#dde3eb", "secondary-container": "#00f4fe", "on-surface-variant": "#c5c6cb", "surface-container-lowest": "#0e0e11", "on-secondary-fixed-variant": "#004f53", "tertiary": "#ffffff", "on-primary": "#2b3137", "on-error-container": "#ffdad6", "surface-container-highest": "#353438", "on-error": "#690005", "on-primary-fixed-variant": "#41474e", "inverse-on-surface": "#313034", "on-background": "#e5e1e7", "error-container": "#93000a" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-md": "1rem", "space-xs": "0.25rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "gutter": "1.5rem", "margin-desktop": "3rem", "margin": "1.25rem", "space-2xl": "4rem", "gutter-desktop": "2rem", "space-sm": "0.5rem" }, "fontFamily": { "display-hero-mobile": ["Syne"], "headline-lg-mobile": ["Syne"], "label-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Syne"], "display-hero": ["Syne"], "headline-lg": ["Syne"], "headline-sm": ["Syne"], "body-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "numeral-lg": ["Syne"], "numeral-xl": ["Syne"] }, "fontSize": { "display-hero-mobile": ["2.5rem", { "lineHeight": "2.875rem", "letterSpacing": "-0.03em", "fontWeight": "800" }], "headline-lg-mobile": ["1.75rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.08em", "fontWeight": "600" }], "body-lg": ["1.125rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.01em", "fontWeight": "400" }], "label-md": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.12em", "fontWeight": "700" }], "headline-md": ["1.75rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.01em", "fontWeight": "700" }], "display-hero": ["4rem", { "lineHeight": "4.5rem", "letterSpacing": "-0.04em", "fontWeight": "800" }], "headline-lg": ["2.5rem", { "lineHeight": "3rem", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-sm": ["1.25rem", { "lineHeight": "1.75rem", "letterSpacing": "0em", "fontWeight": "600" }], "body-md": ["1rem", { "lineHeight": "1.5rem", "letterSpacing": "0em", "fontWeight": "400" }], "body-sm": ["0.875rem", { "lineHeight": "1.25rem", "letterSpacing": "0.01em", "fontWeight": "400" }], "numeral-lg": ["1.5rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.02em", "fontWeight": "800" }], "numeral-xl": ["2.25rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.03em", "fontWeight": "800" }] } } } };</script>
+<style id="tempo-responsive-override">
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  /* Prevent animated ping or oversized elements from overflowing viewport */
+  .animate-ping {
+    max-width: 100% !important;
+  }
+</style>
+
+</head><body class="bg-background font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-secondary-fixed"><header class="fixed top-0 left-0 w-full z-50 bg-surface/70 backdrop-blur-2xl shadow-[0_1px_8px_rgba(0,0,0,0.5)]"><div class="h-20 w-full px-gutter-desktop mx-auto flex items-center justify-between"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm group" data-path="overview" href="#"><span class="w-2.5 h-2.5 bg-secondary-container rounded-DEFAULT rotate-45 group-hover:scale-125 transition-transform duration-300"></span><span class="font-headline-sm text-headline-sm uppercase tracking-wider text-primary">NOVA // PROTOCOL</span></a><div class="hidden xl:flex items-center gap-space-sm px-space-md py-space-xs rounded-full bg-surface-container-lowest"><span class="w-1.5 h-1.5 rounded-full bg-secondary-container animate-[pulse-diode_2s_infinite]"></span><span class="font-label-sm text-label-sm uppercase text-secondary-container tracking-widest">STATUS: LIVE ACCESS GRANTED</span></div></div><nav class="hidden md:flex items-center gap-space-xl" data-active-classes="text-primary font-bold border-b border-primary"><a aria-current="page" class="uppercase transition-colors py-1 text-primary font-bold border-b border-primary" data-path="overview" href="#">Overview</a><a class="font-label-md text-label-md uppercase text-on-surface-variant hover:text-on-surface transition-colors py-1" data-path="schedule" href="#">Transmission</a><a class="font-label-md text-label-md uppercase text-on-surface-variant hover:text-on-surface transition-colors py-1" data-path="keynotes" href="#">Keynotes</a><a class="font-label-md text-label-md uppercase text-on-surface-variant hover:text-on-surface transition-colors py-1" data-path="access-pass" href="#">Access Tier</a></nav><div class="flex items-center gap-space-md"><button aria-label="Sound Wave Toggle" class="hidden sm:flex items-center gap-1 px-space-sm py-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors group" type="button"><div class="flex items-end gap-[3px] h-4"><span class="w-[2px] bg-secondary-container h-2 animate-[sound-wave_1.2s_ease-in-out_infinite]"></span><span class="w-[2px] bg-secondary-container h-4 animate-[sound-wave_0.8s_ease-in-out_infinite_0.2s]"></span><span class="w-[2px] bg-secondary-container h-3 animate-[sound-wave_1s_ease-in-out_infinite_0.4s]"></span><span class="w-[2px] bg-secondary-container h-1 animate-[sound-wave_1.4s_ease-in-out_infinite_0.1s]"></span></div><span class="font-label-sm text-label-sm text-on-surface-variant uppercase ml-1 group-hover:text-on-surface transition-colors">Audio</span></button><a class="px-space-lg py-space-sm rounded-DEFAULT bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md uppercase tracking-widest transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.4)]" data-path="rsvp-portal" href="#">Quick RSVP</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full relative overflow-x-hidden selection:bg-secondary-container selection:text-on-secondary-fixed">
+<!-- Interactive Liquid Chrome 3D WebGL Shader Backdrop -->
+<!-- STITCH_SHADER_START:ANIMATION_15 class="fixed inset-0 w-full h-full pointer-events-none opacity-80 z-0" -->
+<div class="fixed inset-0 w-full h-full pointer-events-none opacity-80 z-0" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_15" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_15');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+
+// Liquid Chrome 3D Ripple Mesh Shader with iridescent reflections
+vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+
+float snoise(vec2 v) {
+    const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+    vec2 i  = floor(v + dot(v, C.yy) );
+    vec2 x0 = v -   i + dot(i, C.xx);
+    vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+    vec4 x12 = x0.xyxy + C.xxzz;
+    x12.xy -= i1;
+    i = mod289(i);
+    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+    m = m*m; m = m*m;
+    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+    vec3 h = abs(x) - 0.5;
+    vec3 ox = floor(x + 0.5);
+    vec3 a0 = x - ox;
+    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+    vec3 g;
+    g.x  = a0.x  * x0.x  + h.x  * x0.y;
+    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+    return 130.0 * dot(m, g);
+}
+
+void main() {
+    vec2 st = gl_FragCoord.xy / u_resolution.xy;
+    vec2 mouse = u_mouse / u_resolution.xy;
+    if (u_mouse.x == 0.0 && u_mouse.y == 0.0) {
+        mouse = vec2(0.5, 0.5);
+    }
+    
+    vec2 p = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+    vec2 mPos = (mouse * 2.0 - 1.0);
+    
+    float t = u_time * 0.4;
+    
+    // Mouse distance ripple dynamic distortion
+    float dMouse = length(p - mPos);
+    float ripple = sin(dMouse * 16.0 - u_time * 4.5) * exp(-dMouse * 2.2) * 0.22;
+    
+    // Liquid chrome organic caustics
+    float n1 = snoise(p * 1.4 + vec2(t * 0.25, -t * 0.15) + ripple);
+    float n2 = snoise(p * 2.2 + vec2(-t * 0.2, t * 0.3) + vec2(n1 * 1.2, n1));
+    float n3 = snoise(p * 3.6 + vec2(cos(t * 0.3), sin(t * 0.4)) + vec2(n2 * 0.8, -n2 * 0.5));
+    
+    // Surface normal estimation for specular chrome shine
+    vec3 normal = normalize(vec3(n2 - n1, n3 - n2, 0.65));
+    vec3 lightDir = normalize(vec3(mPos.x, mPos.y, 1.2));
+    float diff = max(dot(normal, lightDir), 0.0);
+    float spec = pow(max(dot(reflect(-lightDir, normal), vec3(0.0, 0.0, 1.0)), 0.0), 32.0);
+    
+    // Color Palette: Deep Velvet Black (#030305), Liquid Chrome (#E2E8F0), Neon Cyan (#00F5FF), Radiant Violet (#9D4EDD)
+    vec3 velvetBlack = vec3(0.012, 0.012, 0.020);
+    vec3 chromeShine = vec3(0.88, 0.91, 0.96);
+    vec3 neonCyan    = vec3(0.0, 0.96, 1.0);
+    vec3 neonViolet  = vec3(0.61, 0.30, 0.87);
+    vec3 goldAccent  = vec3(1.0, 0.82, 0.40);
+    
+    // Iridescent metallic blending
+    vec3 color = velvetBlack;
+    color = mix(color, neonViolet * 0.6, smoothstep(-0.6, 0.7, n1) * 0.6);
+    color = mix(color, neonCyan * 0.8, smoothstep(-0.3, 0.9, n2) * 0.5);
+    color = mix(color, chromeShine, smoothstep(0.3, 1.0, n3) * 0.4 + spec * 0.85);
+    
+    // Mouse interactive halo glow & gold flare
+    float mouseGlow = smoothstep(0.9, 0.0, dMouse);
+    color += mix(neonCyan, goldAccent, sin(u_time * 2.0 + dMouse * 5.0) * 0.5 + 0.5) * mouseGlow * 0.45;
+    
+    // Vignette
+    float vig = 1.0 - smoothstep(0.5, 1.7, length(p));
+    color *= mix(0.4, 1.15, vig);
+    
+    // Subtle luxury film dither
+    float dither = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) * 0.02;
+    color += vec3(dither);
+    
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_15 -->
+<!-- Ambient Obsidian Light Bleeds & Depth Flares -->
+<div class="fixed top-[-15%] left-[20%] w-[55vw] h-[55vw] bg-on-tertiary-container/15 rounded-full blur-[140px] pointer-events-none z-0"></div>
+<div class="fixed bottom-[-10%] right-[10%] w-[45vw] h-[45vw] bg-secondary-container/10 rounded-full blur-[160px] pointer-events-none z-0"></div>
+<!-- HERO SECTION -->
+<section class="relative z-10 w-full min-h-[942px] flex flex-col justify-between px-gutter md:px-gutter-desktop pt-8 pb-16 max-w-[1440px] mx-auto">
+<!-- Top Metadata Track -->
+<div class="flex flex-wrap items-center justify-between gap-space-md w-full">
+<div class="flex items-center gap-space-sm bg-surface-container-lowest/80 backdrop-blur-2xl px-space-md py-space-xs rounded-full shadow-[0_0_25px_rgba(0,0,0,0.6)]">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-[pulse-diode_1.6s_infinite]"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary-container font-bold">CHAPTER XXVIII • PRIVATE CELEBRATION</span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="hidden sm:flex items-center gap-space-xs bg-surface-container-high/60 backdrop-blur-xl px-space-md py-space-xs rounded-full">
+<span class="material-symbols-outlined text-secondary-fixed text-[14px]">lock_open</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary-fixed">VIP TIER-0 EXCLUSIVE</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-low/70 backdrop-blur-xl px-space-sm py-1 rounded-full">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant font-bold tracking-wider">CH-KEY:</span>
+<span class="font-numeral-lg text-label-sm text-primary tracking-widest">#028-VLT</span>
+</div>
+</div>
+</div>
+<!-- Core Kinetic Display -->
+<div class="relative my-auto py-12 flex flex-col items-center text-center justify-center">
+<!-- Massive 3D Deep Glowing Numeric Backdrop -->
+<div class="absolute select-none pointer-events-none font-display-hero text-[15rem] sm:text-[22rem] md:text-[30rem] leading-none font-extrabold text-on-tertiary-container/10 blur-[2px] tracking-tighter transform -translate-y-6 sm:-translate-y-12">
+        28
+      </div>
+<!-- Overline Meta Tag -->
+<div class="relative z-10 flex items-center gap-3 mb-4">
+<div class="w-8 h-[1px] bg-secondary-container"></div>
+<span class="font-label-md text-label-md uppercase tracking-[0.3em] text-on-surface-variant">SPECULATIVE NOIR PROTOCOL</span>
+<div class="w-8 h-[1px] bg-secondary-container"></div>
+</div>
+<!-- Main Liquid Chrome Metallic Title -->
+<h1 class="relative z-10 font-display-hero text-display-hero-mobile md:text-display-hero uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-primary via-primary-container to-outline drop-shadow-[0_15px_30px_rgba(0,0,0,0.9)] transition-transform duration-500 hover:scale-[1.01]">
+        VALENTIN'S<br class="hidden sm:inline"/> NIGHT
+      </h1>
+<!-- Holographic Ribbon Subhead -->
+<div class="relative z-10 mt-6 flex flex-wrap justify-center items-center gap-space-sm sm:gap-space-lg">
+<div class="bg-surface-container-high/90 backdrop-blur-xl px-space-lg py-space-xs rounded-full shadow-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-[18px]">verified</span>
+<span class="font-label-md text-label-md tracking-widest text-primary uppercase">ARCHITECTURAL SOUND IMMERSION</span>
+</div>
+<div class="bg-surface-container-high/90 backdrop-blur-xl px-space-lg py-space-xs rounded-full shadow-lg flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></span>
+<span class="font-label-md text-label-md tracking-widest text-secondary-fixed uppercase">INVITATION SECURED</span>
+</div>
+</div>
+</div>
+<!-- Hero Bottom Bar & Wave Indicator -->
+<div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-space-lg pt-6">
+<!-- Live Audio Wave Widget -->
+<div class="flex items-center gap-space-md bg-surface-container-low/80 backdrop-blur-xl px-space-lg py-space-sm rounded-xl shadow-md w-full sm:w-auto justify-between sm:justify-start">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary-container text-[20px]">graphic_eq</span>
+<div class="flex flex-col text-left">
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase">FREQUENCY MATRIX</span>
+<span class="font-label-md text-label-md text-primary font-bold tracking-widest">96kHz // 24-BIT HI-RES</span>
+</div>
+</div>
+<!-- Equalizer Animated Ribbons -->
+<div class="flex items-end gap-1 h-5 px-2">
+<div class="w-1 bg-secondary-container rounded-full animate-[sound-wave_0.8s_ease-in-out_infinite]"></div>
+<div class="w-1 bg-secondary-container rounded-full animate-[sound-wave_1.1s_ease-in-out_infinite_0.2s]"></div>
+<div class="w-1 bg-secondary-container rounded-full animate-[sound-wave_0.6s_ease-in-out_infinite_0.4s]"></div>
+<div class="w-1 bg-secondary-container rounded-full animate-[sound-wave_1.3s_ease-in-out_infinite_0.1s]"></div>
+<div class="w-1 bg-secondary-container rounded-full animate-[sound-wave_0.9s_ease-in-out_infinite_0.3s]"></div>
+</div>
+</div>
+<!-- Scroll Action Prompt -->
+<div class="flex items-center gap-space-sm text-on-surface-variant">
+<span class="font-label-sm text-label-sm tracking-[0.2em] uppercase font-bold text-on-surface-variant">PULL TO NAVIGATE</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center animate-bounce">
+<span class="material-symbols-outlined text-primary text-[18px]">south</span>
+</div>
+</div>
+</div>
+</section>
+<!-- KINETIC TYPOGRAPHY DUAL-MARQUEE SECTION -->
+<section class="relative z-10 w-full py-10 bg-surface-container-lowest/90 backdrop-blur-2xl overflow-hidden flex flex-col gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)]" id="kinetic-track">
+<!-- Track 1: Left to Right Continuous Velocity -->
+<div class="relative w-full overflow-hidden whitespace-nowrap flex select-none py-1">
+<div class="flex gap-8 items-center font-display-hero text-headline-lg-mobile md:text-headline-lg uppercase font-black tracking-tight text-primary transition-transform will-change-transform" id="marquee-left">
+<span class="flex items-center gap-4 text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-container to-outline">EXCLUSIVE ACCESS <span class="text-secondary-container">✦</span> NOV 15 <span class="text-secondary-container">✦</span> SOUND &amp; ARCHITECTURE <span class="text-secondary-container">✦</span> STRICT DRESS CODE: NOIR LUXE <span class="text-secondary-container">✦</span></span>
+<span class="flex items-center gap-4 text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-container to-outline">EXCLUSIVE ACCESS <span class="text-secondary-container">✦</span> NOV 15 <span class="text-secondary-container">✦</span> SOUND &amp; ARCHITECTURE <span class="text-secondary-container">✦</span> STRICT DRESS CODE: NOIR LUXE <span class="text-secondary-container">✦</span></span>
+<span class="flex items-center gap-4 text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-container to-outline">EXCLUSIVE ACCESS <span class="text-secondary-container">✦</span> NOV 15 <span class="text-secondary-container">✦</span> SOUND &amp; ARCHITECTURE <span class="text-secondary-container">✦</span> STRICT DRESS CODE: NOIR LUXE <span class="text-secondary-container">✦</span></span>
+</div>
+</div>
+<!-- Track 2: Right to Left Velocity with Neon Cyan Emphasis -->
+<div class="relative w-full overflow-hidden whitespace-nowrap flex select-none py-1">
+<div class="flex gap-8 items-center font-display-hero text-headline-lg-mobile md:text-headline-lg uppercase font-black tracking-tight text-secondary-fixed transition-transform will-change-transform" id="marquee-right">
+<span class="flex items-center gap-4">SAVE THE DATE <span class="text-on-tertiary-container">◆</span> JOIN THE CELEBRATION <span class="text-on-tertiary-container">◆</span> RSVP CONFIRMATION REQUIRED <span class="text-on-tertiary-container">◆</span> VIP ACCESS ONLY <span class="text-on-tertiary-container">◆</span></span>
+<span class="flex items-center gap-4">SAVE THE DATE <span class="text-on-tertiary-container">◆</span> JOIN THE CELEBRATION <span class="text-on-tertiary-container">◆</span> RSVP CONFIRMATION REQUIRED <span class="text-on-tertiary-container">◆</span> VIP ACCESS ONLY <span class="text-on-tertiary-container">◆</span></span>
+<span class="flex items-center gap-4">SAVE THE DATE <span class="text-on-tertiary-container">◆</span> JOIN THE CELEBRATION <span class="text-on-tertiary-container">◆</span> RSVP CONFIRMATION REQUIRED <span class="text-on-tertiary-container">◆</span> VIP ACCESS ONLY <span class="text-on-tertiary-container">◆</span></span>
+</div>
+</div>
+</section>
+<!-- DATA CARDS GRID SECTION -->
+<section class="relative z-10 w-full px-gutter md:px-gutter-desktop py-space-2xl max-w-[1440px] mx-auto">
+<!-- Section Indicator -->
+<div class="flex items-center justify-between mb-10">
+<div class="flex items-center gap-3">
+<span class="font-numeral-lg text-headline-sm text-secondary-container">01 //</span>
+<span class="font-headline-sm text-headline-sm uppercase tracking-wider text-primary">TELEMETRY &amp; PARAMETERS</span>
+</div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant bg-surface-container-high px-space-md py-1 rounded-full">REAL-TIME TELEMETRY</span>
+</div>
+<!-- 3-Column Glassmorphic Bento Cards -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg">
+<!-- CARD 1: DATE -->
+<div class="group relative bg-surface-container-lowest/80 backdrop-blur-2xl rounded-xl p-space-xl flex flex-col justify-between shadow-2xl overflow-hidden hover:bg-surface-container-low/90 transition-all duration-500">
+<!-- Liquid Chrome Accent Flash -->
+<div class="absolute -top-32 -right-32 w-64 h-64 bg-secondary-container/10 rounded-full blur-3xl pointer-events-none group-hover:bg-secondary-container/20 transition-all duration-700"></div>
+<div>
+<div class="flex items-center justify-between gap-space-sm mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-[20px]">calendar_month</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant font-bold">DATE PARAMETER</span>
+</div>
+<!-- Dynamic Countdown Chip -->
+<div class="px-space-md py-space-xs rounded-full bg-surface-container-high text-secondary-fixed font-label-sm text-label-sm font-bold uppercase tracking-widest shadow-inner">
+              T-MINUS 24 DAYS
+            </div>
+</div>
+<!-- Giant Numeric Date Display -->
+<div class="my-4">
+<h2 class="font-numeral-xl text-[3.8rem] leading-none text-primary uppercase tracking-tighter">
+              NOV 15
+            </h2>
+<p class="font-headline-sm text-headline-sm uppercase text-secondary-fixed tracking-widest mt-2">
+              SATURDAY 2025
+            </p>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant mt-4">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">ANNUAL CYCLE // SOLAR RETURNING</span>
+</div>
+</div>
+<!-- Tactile Trigger -->
+<div class="mt-8 pt-6 bg-surface-container-low/40 rounded-lg p-space-md">
+<button class="w-full flex items-center justify-center gap-space-sm py-space-md px-space-lg rounded-DEFAULT bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md uppercase tracking-widest transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.2)]" id="cal-sync-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">event_upcoming</span>
+<span>+ ADD TO WALLET / ICAL</span>
+</button>
+<div class="hidden text-center mt-2 font-label-sm text-label-sm text-secondary-container font-bold tracking-widest uppercase animate-fade-in" id="cal-sync-confirm">
+            FILE GENERATED &amp; SYNCHRONIZED
+          </div>
+</div>
+</div>
+<!-- CARD 2: TIME & SETS -->
+<div class="group relative bg-surface-container-lowest/80 backdrop-blur-2xl rounded-xl p-space-xl flex flex-col justify-between shadow-2xl overflow-hidden hover:bg-surface-container-low/90 transition-all duration-500">
+<div class="absolute -top-32 -right-32 w-64 h-64 bg-on-tertiary-container/15 rounded-full blur-3xl pointer-events-none group-hover:bg-on-tertiary-container/30 transition-all duration-700"></div>
+<div>
+<div class="flex items-center justify-between gap-space-sm mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed text-[20px]">schedule</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant font-bold">TEMPORAL WINDOW</span>
+</div>
+<!-- Live Ticking Millisecond Badge -->
+<div class="px-space-md py-space-xs rounded-full bg-surface-container-high text-tertiary-fixed-dim font-label-sm text-label-sm font-bold uppercase tracking-widest shadow-inner flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed animate-ping"></span>
+<span id="live-timer-chip">21:00:00.00</span>
+</div>
+</div>
+<!-- Huge Geometric Time Display -->
+<div class="my-4">
+<div class="flex items-baseline gap-2">
+<h2 class="font-numeral-xl text-[3.8rem] leading-none text-primary uppercase tracking-tighter">
+                21:00
+              </h2>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant font-bold uppercase tracking-widest">EST</span>
+</div>
+<p class="font-label-md text-label-md uppercase text-on-surface tracking-widest mt-2 font-bold">
+              DOORS OPEN SHARP // TRANSMISSION UNTIL LATE
+            </p>
+</div>
+<!-- Acoustic/Sets Telemetry Badge -->
+<div class="bg-surface-container-high/60 rounded-lg p-space-md mt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">ACOUSTIC PROGRAM</span>
+<span class="font-label-md text-label-md text-primary font-bold tracking-wider">LIVE HYBRID SET // SURROUND AUDIO</span>
+</div>
+<span class="material-symbols-outlined text-secondary-container text-[24px]">speaker_group</span>
+</div>
+</div>
+<div class="mt-8 pt-6 bg-surface-container-low/40 rounded-lg p-space-md flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">equalizer</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface">IMMERSIVE ACOUSTIC ARCHITECTURE</span>
+</div>
+<span class="font-numeral-lg text-label-sm text-secondary-fixed font-bold">128 BPM</span>
+</div>
+</div>
+<!-- CARD 3: VENUE -->
+<div class="group relative bg-surface-container-lowest/80 backdrop-blur-2xl rounded-xl p-space-xl flex flex-col justify-between shadow-2xl overflow-hidden hover:bg-surface-container-low/90 transition-all duration-500">
+<div class="absolute -top-32 -right-32 w-64 h-64 bg-secondary-container/10 rounded-full blur-3xl pointer-events-none group-hover:bg-secondary-container/20 transition-all duration-700"></div>
+<div>
+<div class="flex items-center justify-between gap-space-sm mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-[20px]">explore</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant font-bold">GEO COORDINATES</span>
+</div>
+<!-- Radar Beacon -->
+<div class="flex items-center gap-1.5 px-space-md py-space-xs rounded-full bg-surface-container-high text-secondary-container font-label-sm text-label-sm font-bold uppercase tracking-widest">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+              RADAR ACTIVE
+            </div>
+</div>
+<!-- Glass Pavilion Venue Info -->
+<div class="my-4">
+<h2 class="font-headline-lg text-headline-lg uppercase text-primary tracking-tight leading-tight">
+              THE OBSIDIAN ATRIUM
+            </h2>
+<p class="font-label-md text-label-md uppercase text-secondary-fixed tracking-widest mt-2 font-bold">
+              SKYLINE GLASS PAVILION // PENTHOUSE FLOOR 54
+            </p>
+</div>
+<!-- Real-Time Radar Coordinates -->
+<div class="bg-surface-container-high/60 rounded-lg p-space-md mt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">CRYPTOGRAPHIC LAT/LONG</span>
+<span class="font-numeral-lg text-label-md text-primary font-bold tracking-widest">40.7580° N, 73.9855° W</span>
+</div>
+<span class="material-symbols-outlined text-secondary-container text-[24px]">satellite_alt</span>
+</div>
+</div>
+<!-- Venue Modal Pin Action -->
+<div class="mt-8 pt-6 bg-surface-container-low/40 rounded-lg p-space-md">
+<button class="w-full flex items-center justify-center gap-space-sm py-space-md px-space-lg rounded-DEFAULT bg-surface-container-highest hover:bg-surface-bright text-primary font-label-md text-label-md uppercase tracking-widest transition-all duration-300 shadow-md" id="launch-radar-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">my_location</span>
+<span>LAUNCH RADAR PIN</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- INTERACTIVE RADAR MODAL OVERLAY -->
+<div class="fixed inset-0 z-50 bg-background/80 backdrop-blur-3xl hidden items-center justify-center p-gutter" id="radar-modal">
+<div class="relative w-full max-w-2xl bg-surface-container-lowest rounded-xl p-space-xl shadow-2xl flex flex-col gap-space-lg">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-ping"></span>
+<span class="font-headline-sm text-headline-sm uppercase text-primary tracking-wider">LOCATION SATELLITE MAP</span>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-surface-bright" id="close-radar-btn">
+<span class="material-symbols-outlined text-primary text-[18px]">close</span>
+</button>
+</div>
+<!-- Simulated Radar Map View -->
+<div class="w-full h-72 rounded-lg bg-surface-container-high relative overflow-hidden flex items-center justify-center shadow-inner" data-location="The Obsidian Atrium, Penthouse Floor 54, New York, NY" style="">
+<!-- SVG Radar Concentric Sweep Animation -->
+<svg class="absolute inset-0 w-full h-full text-secondary-container/15" fill="none" stroke="currentColor" viewbox="0 0 400 300">
+<circle cx="200" cy="150" r="40" stroke-dasharray="2 4" stroke-width="1"></circle>
+<circle cx="200" cy="150" r="80" stroke-width="1"></circle>
+<circle cx="200" cy="150" r="120" stroke-dasharray="4 6" stroke-width="1"></circle>
+<line stroke-width="0.75" x1="200" x2="200" y1="0" y2="300"></line>
+<line stroke-width="0.75" x1="0" x2="400" y1="150" y2="150"></line>
+</svg>
+<div class="relative z-10 flex flex-col items-center gap-2 bg-surface-container-lowest/90 px-6 py-4 rounded-xl shadow-2xl text-center">
+<span class="material-symbols-outlined text-secondary-container text-[28px] animate-bounce">location_pin</span>
+<span class="font-headline-sm text-headline-sm text-primary uppercase">THE OBSIDIAN ATRIUM</span>
+<span class="font-label-sm text-label-sm text-secondary-fixed tracking-widest uppercase">FLOOR 54 SKYLINE VIEW</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant pt-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">PRIVATE HELIPAD &amp; VALET ACCESS PROTOCOL ENGAGED</span>
+<button class="px-space-lg py-space-xs bg-primary text-on-primary font-label-md text-label-md uppercase tracking-wider rounded-DEFAULT" id="close-radar-btn-alt">DISMISS</button>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE RSVP SLIDER & VIP TICKET EXPERIENCE -->
+<section class="relative z-10 w-full px-gutter md:px-gutter-desktop py-space-2xl max-w-[1440px] mx-auto mb-16" id="rsvp-section">
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<span class="font-numeral-lg text-headline-sm text-secondary-container">02 //</span>
+<span class="font-headline-sm text-headline-sm uppercase tracking-wider text-primary">RESERVATION MATRIX</span>
+</div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary-fixed-dim bg-surface-container-high px-space-md py-1 rounded-full">ONE-TIME CIPHER</span>
+</div>
+<!-- Container Wrapping Slider & Pass Display -->
+<div class="relative w-full bg-surface-container-lowest/80 backdrop-blur-3xl rounded-xl p-space-xl md:p-space-2xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col items-center text-center overflow-hidden">
+<!-- Glow Pod -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] bg-on-tertiary-container/10 rounded-full blur-[100px] pointer-events-none"></div>
+<!-- State 1: Slider Controller Prompt -->
+<div class="w-full max-w-xl flex flex-col items-center gap-8 relative z-10" id="rsvp-slide-container">
+<div>
+<span class="font-label-md text-label-md uppercase tracking-[0.25em] text-secondary-fixed font-bold">INVITATION TRANSMISSION KEY</span>
+<h3 class="font-headline-lg text-headline-lg-mobile sm:text-headline-lg uppercase text-primary tracking-tight mt-2">
+            CLAIM YOUR ACCESS PASS
+          </h3>
+<p class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mt-2">
+            SLIDE CONTROLLER TO ENCRYPT &amp; GENERATE HOLOGRAM
+          </p>
+</div>
+<!-- Tactile Slide Track Component -->
+<div class="relative w-full h-20 bg-surface-container-lowest rounded-full p-2 flex items-center shadow-[inset_0_2px_12px_rgba(0,0,0,0.8)] select-none overflow-hidden" id="slider-track">
+<!-- Slide Track Fill Progress Glow -->
+<div class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-on-tertiary-container/40 to-secondary-container/40 rounded-full pointer-events-none transition-[width] duration-75" id="slider-fill"></div>
+<!-- Slide Hint Typography in background -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="font-label-md text-label-md tracking-[0.25em] uppercase text-on-surface-variant/70 font-bold flex items-center gap-2">
+              SLIDE TO CLAIM VIP TICKET <span class="material-symbols-outlined text-[16px] animate-pulse">arrow_forward</span>
+</span>
+</div>
+<!-- Draggable Obsidian Chrome Handle -->
+<div class="relative z-10 w-16 h-16 rounded-full bg-gradient-to-tr from-surface-container-high to-primary flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[0_0_25px_rgba(255,255,255,0.4)] transition-transform duration-75" id="slider-handle">
+<span class="material-symbols-outlined text-surface-container-lowest font-black text-[24px]">key</span>
+</div>
+</div>
+<!-- Mobile / Fallback One-Click Button -->
+<button class="text-on-surface-variant hover:text-primary font-label-sm text-label-sm uppercase tracking-widest transition-colors flex items-center gap-1" id="slider-direct-btn" type="button">
+<span>OR TAP HERE TO AUTO-AUTHENTICATE</span>
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+</button>
+</div>
+<!-- State 2: Transformed VIP Ticket Card (Hidden initially, reveals with confetti) -->
+<div class="hidden w-full max-w-xl flex-col items-center gap-6 relative z-10 animate-fade-in" id="vip-ticket-card">
+<!-- Success Micro-badge -->
+<div class="px-space-md py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm uppercase font-bold tracking-widest shadow-[0_0_20px_rgba(0,244,254,0.4)]">
+          IDENTITY VERIFIED // PROTOCOL GRANTED
+        </div>
+<!-- 3D Luxury VIP Entry Pass -->
+<div class="relative w-full bg-gradient-to-br from-surface-container-high via-surface-container-low to-surface-container-lowest p-space-xl rounded-xl shadow-[0_30px_70px_rgba(0,0,0,0.95)] overflow-hidden text-left transform transition-transform hover:scale-[1.01]">
+<!-- Top Holographic Foil Flare -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-secondary-container via-primary to-on-tertiary-container"></div>
+<div class="flex items-center justify-between pb-6">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary-fixed font-bold">ALL-ACCESS TIER 0</span>
+<h4 class="font-headline-md text-headline-md text-primary uppercase tracking-tight mt-1">VALENTIN // CHAPTER 28</h4>
+</div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center shadow-inner">
+<span class="material-symbols-outlined text-secondary-container text-[28px]">token</span>
+</div>
+</div>
+<!-- Mid Parameters Grid -->
+<div class="grid grid-cols-2 gap-4 py-4 bg-surface-container-lowest/60 rounded-lg p-space-md my-2">
+<div>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider">HOLDER TOKEN</span>
+<p class="font-numeral-lg text-label-md text-primary font-bold tracking-widest mt-0.5">#028-VLT-VIP</p>
+</div>
+<div>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider">ZONE / LOCATION</span>
+<p class="font-label-md text-label-md text-secondary-container font-bold tracking-wider mt-0.5">ATRIUM PENTHOUSE 54</p>
+</div>
+<div>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider">DATE VALID</span>
+<p class="font-label-md text-label-md text-primary font-bold tracking-wider mt-0.5">NOV 15, 2025 // 21:00</p>
+</div>
+<div>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider">DRESS MATRIX</span>
+<p class="font-label-md text-label-md text-primary font-bold tracking-wider mt-0.5">NOIR LUXE FORMAL</p>
+</div>
+</div>
+<!-- Bottom Barcode & RFID Seal -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 mt-2">
+<!-- Simulated Holographic Barcode -->
+<div class="flex flex-col gap-1 w-full sm:w-auto">
+<div class="flex items-end gap-[3px] h-10 w-52 bg-surface-container-lowest/80 p-1.5 rounded">
+<span class="w-[3px] bg-primary h-full"></span>
+<span class="w-[1px] bg-primary h-full"></span>
+<span class="w-[4px] bg-secondary-container h-full"></span>
+<span class="w-[2px] bg-primary h-full"></span>
+<span class="w-[1px] bg-primary h-full"></span>
+<span class="w-[3px] bg-primary h-full"></span>
+<span class="w-[5px] bg-secondary-fixed h-full"></span>
+<span class="w-[2px] bg-primary h-full"></span>
+<span class="w-[1px] bg-primary h-full"></span>
+<span class="w-[4px] bg-primary h-full"></span>
+<span class="w-[2px] bg-secondary-container h-full"></span>
+<span class="w-[6px] bg-primary h-full"></span>
+<span class="w-[1px] bg-primary h-full"></span>
+<span class="w-[3px] bg-primary h-full"></span>
+<span class="w-[2px] bg-primary h-full"></span>
+</div>
+<span class="font-numeral-lg text-label-sm text-on-surface-variant tracking-[0.25em]">028 9948 2025 VLT</span>
+</div>
+<!-- RFID Verification Badge -->
+<div class="flex items-center gap-2 bg-surface-container-high px-space-md py-space-xs rounded-full">
+<span class="material-symbols-outlined text-secondary-container text-[18px]">contactless</span>
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-widest">RFID ENCRYPTED</span>
+</div>
+</div>
+</div>
+<!-- Pass Action CTAs -->
+<div class="flex flex-wrap items-center justify-center gap-space-md w-full mt-2">
+<button class="flex-1 max-w-xs py-space-md px-space-lg rounded-DEFAULT bg-primary text-on-primary font-label-md text-label-md uppercase tracking-widest font-bold hover:bg-primary-container transition-all shadow-[0_0_20px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2" id="save-pass-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>SAVE TO APPLE WALLET</span>
+</button>
+<button class="py-space-md px-space-lg rounded-DEFAULT bg-surface-container-high text-primary font-label-md text-label-md uppercase tracking-widest hover:bg-surface-bright transition-all flex items-center gap-2" id="copy-token-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+<span>COPY VIP KEY</span>
+</button>
+</div>
+<p class="hidden font-label-sm text-label-sm text-secondary-container uppercase tracking-widest font-bold" id="copy-feedback">KEY COPIED TO CLIPBOARD</p>
+</div>
+</div>
+</section>
+<!-- CONFETTI / PARTICLES OVERLAY CANVAS -->
+<canvas class="fixed inset-0 pointer-events-none z-50 w-full h-full" id="confetti-canvas"></canvas>
+<!-- CLIENT-SIDE MICRO-INTERACTIONS SCRIPT -->
+<script>
+    (function initBirthdayInvitation() {
+      // 1. Live Millisecond Clock Tick
+      const liveTimerChip = document.getElementById('live-timer-chip');
+      if (liveTimerChip) {
+        function updateMicroClock() {
+          const now = new Date();
+          const ms = Math.floor(now.getMilliseconds() / 10).toString().padStart(2, '0');
+          liveTimerChip.textContent = `21:00:00.${ms}`;
+          requestAnimationFrame(updateMicroClock);
+        }
+        requestAnimationFrame(updateMicroClock);
+      }
+
+      // 2. Scroll Velocity on Kinetic Typography
+      const marqueeLeft = document.getElementById('marquee-left');
+      const marqueeRight = document.getElementById('marquee-right');
+      let lastScrollY = window.scrollY;
+      let leftOffset = 0;
+      let rightOffset = 0;
+
+      function animateMarquees() {
+        leftOffset -= 0.8;
+        rightOffset += 0.8;
+        if (marqueeLeft) marqueeLeft.style.transform = `translateX(${leftOffset}px)`;
+        if (marqueeRight) marqueeRight.style.transform = `translateX(${rightOffset}px)`;
+        requestAnimationFrame(animateMarquees);
+      }
+      requestAnimationFrame(animateMarquees);
+
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.scrollY;
+        const delta = Math.abs(currentScroll - lastScrollY);
+        leftOffset -= delta * 0.4;
+        rightOffset += delta * 0.4;
+        lastScrollY = currentScroll;
+      }, { passive: true });
+
+      // 3. Calendar Sync Trigger
+      const calSyncBtn = document.getElementById('cal-sync-btn');
+      const calSyncConfirm = document.getElementById('cal-sync-confirm');
+      if (calSyncBtn && calSyncConfirm) {
+        calSyncBtn.addEventListener('click', () => {
+          calSyncConfirm.classList.remove('hidden');
+          calSyncBtn.classList.add('opacity-80');
+          calSyncBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">done</span><span>SYNCHRONIZED (NOV 15)</span>';
+        });
+      }
+
+      // 4. Radar Map Pin Modal
+      const launchRadarBtn = document.getElementById('launch-radar-btn');
+      const radarModal = document.getElementById('radar-modal');
+      const closeRadarBtn = document.getElementById('close-radar-btn');
+      const closeRadarBtnAlt = document.getElementById('close-radar-btn-alt');
+
+      if (launchRadarBtn && radarModal) {
+        launchRadarBtn.addEventListener('click', () => {
+          radarModal.classList.remove('hidden');
+          radarModal.classList.add('flex');
+        });
+        const hideRadar = () => {
+          radarModal.classList.add('hidden');
+          radarModal.classList.remove('flex');
+        };
+        if (closeRadarBtn) closeRadarBtn.addEventListener('click', hideRadar);
+        if (closeRadarBtnAlt) closeRadarBtnAlt.addEventListener('click', hideRadar);
+      }
+
+      // 5. Interactive Slide To Claim Logic
+      const sliderTrack = document.getElementById('slider-track');
+      const sliderHandle = document.getElementById('slider-handle');
+      const sliderFill = document.getElementById('slider-fill');
+      const rsvpSlideContainer = document.getElementById('rsvp-slide-container');
+      const vipTicketCard = document.getElementById('vip-ticket-card');
+      const sliderDirectBtn = document.getElementById('slider-direct-btn');
+
+      let isDragging = false;
+      let startX = 0;
+      let currentX = 0;
+      let maxSlide = 0;
+
+      function triggerClaimSuccess() {
+        if (!rsvpSlideContainer || !vipTicketCard) return;
+        rsvpSlideContainer.classList.add('hidden');
+        vipTicketCard.classList.remove('hidden');
+        vipTicketCard.classList.add('flex');
+        fireMetallicConfetti();
+      }
+
+      if (sliderDirectBtn) {
+        sliderDirectBtn.addEventListener('click', triggerClaimSuccess);
+      }
+
+      if (sliderTrack && sliderHandle && sliderFill) {
+        function computeMax() {
+          return sliderTrack.clientWidth - sliderHandle.clientWidth - 16;
+        }
+
+        const onTouchStart = (e) => {
+          isDragging = true;
+          maxSlide = computeMax();
+          startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        };
+
+        const onTouchMove = (e) => {
+          if (!isDragging) return;
+          const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+          const diff = clientX - startX;
+          currentX = Math.max(0, Math.min(diff, maxSlide));
+          
+          sliderHandle.style.transform = `translateX(${currentX}px)`;
+          sliderFill.style.width = `${currentX + 70}px`;
+
+          if (currentX >= maxSlide * 0.92) {
+            isDragging = false;
+            triggerClaimSuccess();
+          }
+        };
+
+        const onTouchEnd = () => {
+          if (!isDragging) return;
+          isDragging = false;
+          // Snap back if threshold wasn't hit
+          sliderHandle.style.transition = 'transform 0.3s ease';
+          sliderFill.style.transition = 'width 0.3s ease';
+          sliderHandle.style.transform = 'translateX(0px)';
+          sliderFill.style.width = '80px';
+          setTimeout(() => {
+            sliderHandle.style.transition = '';
+            sliderFill.style.transition = '';
+          }, 300);
+        };
+
+        sliderHandle.addEventListener('mousedown', onTouchStart);
+        window.addEventListener('mousemove', onTouchMove);
+        window.addEventListener('mouseup', onTouchEnd);
+
+        sliderHandle.addEventListener('touchstart', onTouchStart, { passive: true });
+        window.addEventListener('touchmove', onTouchMove, { passive: true });
+        window.addEventListener('touchend', onTouchEnd);
+      }
+
+      // 6. Metallic Foil & Light Sparkle Confetti Simulation
+      const canvas = document.getElementById('confetti-canvas');
+      function fireMetallicConfetti() {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const colors = ['#00F5FF', '#FFFFFF', '#9D4EDD', '#E2E8F0', '#00dce5', '#FFD166'];
+
+        for (let i = 0; i < 180; i++) {
+          particles.push({
+            x: canvas.width / 2,
+            y: canvas.height * 0.65,
+            w: Math.random() * 8 + 4,
+            h: Math.random() * 12 + 6,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vx: (Math.random() - 0.5) * 24,
+            vy: (Math.random() - 0.85) * 22,
+            rot: Math.random() * 360,
+            vRot: (Math.random() - 0.5) * 12,
+            alpha: 1,
+            decay: Math.random() * 0.008 + 0.005
+          });
+        }
+
+        function renderConfetti() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let alive = 0;
+
+          particles.forEach((p) => {
+            if (p.alpha > 0) {
+              alive++;
+              p.x += p.vx;
+              p.y += p.vy;
+              p.vy += 0.35; // Gravity
+              p.rot += p.vRot;
+              p.alpha -= p.decay;
+
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate((p.rot * Math.PI) / 180);
+              ctx.globalAlpha = Math.max(0, p.alpha);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+              ctx.restore();
+            }
+          });
+
+          if (alive > 0) {
+            requestAnimationFrame(renderConfetti);
+          } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+        requestAnimationFrame(renderConfetti);
+      }
+
+      // 7. Clipboard and Wallet Save feedback
+      const copyTokenBtn = document.getElementById('copy-token-btn');
+      const copyFeedback = document.getElementById('copy-feedback');
+      if (copyTokenBtn && copyFeedback) {
+        copyTokenBtn.addEventListener('click', () => {
+          navigator.clipboard?.writeText('028-VLT-VIP-TOKEN-ACCESS');
+          copyFeedback.classList.remove('hidden');
+          setTimeout(() => copyFeedback.classList.add('hidden'), 3500);
+        });
+      }
+
+      const savePassBtn = document.getElementById('save-pass-btn');
+      if (savePassBtn) {
+        savePassBtn.addEventListener('click', () => {
+          savePassBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span><span>PASS DOWNLOADED</span>';
+        });
+      }
+    })();
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest overflow-hidden"><div class="w-full py-space-sm bg-surface-container-low/60 backdrop-blur-md"><div class="w-full flex items-center justify-between px-gutter-desktop"><div class="flex items-center gap-space-md overflow-hidden whitespace-nowrap text-on-surface-variant"><span class="font-label-sm text-label-sm uppercase text-secondary-container flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> GLOBAL FEED:</span><span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">SYDNEY [02:04:12] // TOKYO [03:04:12] // ZURICH [20:04:12] // NYC [14:04:12] — ALL CIPHER KEYS SYNCHRONIZED — PRIVATE PROTOCOL ENGAGED</span></div><div class="hidden md:flex items-center gap-space-md shrink-0 pl-space-lg"><span class="font-label-sm text-label-sm text-outline uppercase">© 2025 NOVA CORP</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">ENCRYPTED TRANSMISSION</span></div></div></div></footer>
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body></html>

@@ -1,12 +1,15 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { User as SupabaseUser, Session, AuthError } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '@/services/supabase';
 import { apiService } from '@/services/apiService';
-import { User, LoginCredentials, SignUpCredentials } from '@/types';
-import { mockCurrentUser } from '@/services/mockData';
+import { unlockService } from '@/services/unlockService';
+import { User, LoginCredentials, SignUpCredentials, UserProfile, UserSubscription } from '@/types';
 
 interface AuthContextType {
   user: User | null;
+  profile: UserProfile | null;
+  subscription: UserSubscription | null;
+  isPremiumActive: boolean;
   supabaseUser: SupabaseUser | null;
   session: Session | null;
   isAuthenticated: boolean;
@@ -15,9 +18,11 @@ interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   signUp: (credentials: SignUpCredentials) => Promise<{ confirmationRequired?: boolean }>;
+  resetPassword: (email: string) => Promise<{ error: { message: string } | null }>;
   logout: () => Promise<void>;
   clearError: () => void;
   refreshProfile: () => Promise<void>;
+  refreshSubscription: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,124 +31,128 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [subscription, setSubscription] = useState<UserSubscription | null>(null);
+  const [isPremiumActive, setIsPremiumActive] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProfile = async (sbUser: SupabaseUser) => {
+  const fetchSubscription = useCallback(async () => {
     try {
-      if (isSupabaseConfigured) {
-        const { data: profile, error: profileErr } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', sbUser.id)
-          .single();
-
-        if (profile && !profileErr) {
-          setUser({
-            id: profile.id,
-            name: profile.full_name || sbUser.user_metadata?.full_name || sbUser.email?.split('@')[0] || 'Tempo Creator',
-            email: sbUser.email || '',
-            avatarUrl: profile.avatar_url || sbUser.user_metadata?.avatar_url || '',
-            createdAt: profile.created_at,
-          });
-          return;
-        }
+      const sub = await apiService.getSubscription();
+      setSubscription(sub);
+      setIsPremiumActive(Boolean(sub?.isPremiumActive));
+      if (sub?.isPremiumActive) {
+        unlockService.notifyListeners();
       }
-
-      // Fallback from metadata or defaults
-      setUser({
-        id: sbUser.id,
-        name: sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || sbUser.email?.split('@')[0] || 'Tempo Creator',
-        email: sbUser.email || '',
-        avatarUrl: sbUser.user_metadata?.avatar_url || sbUser.user_metadata?.picture || '',
-        createdAt: sbUser.created_at,
-      });
     } catch {
-      setUser({
-        id: sbUser.id,
-        name: sbUser.email?.split('@')[0] || 'Tempo Creator',
-        email: sbUser.email || '',
-        createdAt: sbUser.created_at,
-      });
+      setSubscription(null);
+      setIsPremiumActive(false);
     }
-  };
+  }, []);
 
+  const fetchProfileAndUserData = useCallback(async (authenticatedUser: User) => {
+    setUser(authenticatedUser);
+    try {
+      const prof = await apiService.getProfile();
+      setProfile(prof);
+    } catch {
+      // profile fallback to user
+      setProfile(null);
+    }
+    await fetchSubscription();
+  }, [fetchSubscription]);
+
+  // Initial session restoration on startup (Phase 10)
   useEffect(() => {
     let isMounted = true;
 
-    if (!isSupabaseConfigured) {
-      // Check for stored active session and verify with database
-      const stored = localStorage.getItem('tempo_auth_session');
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          apiService
-            .getMe(parsed.id)
-            .then((dbUser) => {
-              if (dbUser && isMounted) setUser(dbUser);
-              else if (isMounted) setUser(parsed);
-            })
-            .catch(() => {
-              if (isMounted) setUser(parsed);
-            })
-            .finally(() => {
-              if (isMounted) setIsLoading(false);
-            });
-          return;
-        } catch {
-          setUser(mockCurrentUser);
+    const restoreSession = async () => {
+      setIsLoading(true);
+      try {
+        // 1. Check database session token
+        const existingToken = apiService.getAuthToken();
+        if (existingToken) {
+          const verifiedUser = await apiService.getMe();
+          if (verifiedUser && isMounted) {
+            await fetchProfileAndUserData(verifiedUser);
+            setIsLoading(false);
+            return;
+          }
         }
-      } else {
-        setUser(mockCurrentUser);
+
+        // 2. Check Supabase session if configured
+        if (isSupabaseConfigured) {
+          const { data: { session: sbSession } } = await supabase.auth.getSession();
+          if (sbSession?.user && isMounted) {
+            setSession(sbSession);
+            setSupabaseUser(sbSession.user);
+            apiService.setAuthToken(sbSession.access_token);
+
+            const verifiedUser: User = {
+              id: sbSession.user.id,
+              name: sbSession.user.user_metadata?.full_name || sbSession.user.email?.split('@')[0] || 'Creator',
+              email: sbSession.user.email || '',
+              avatarUrl: sbSession.user.user_metadata?.avatar_url || '',
+              createdAt: sbSession.user.created_at,
+            };
+            await fetchProfileAndUserData(verifiedUser);
+            setIsLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('[AuthContext] Session restore note:', err);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
-      setIsLoading(false);
-      return;
+    };
+
+    restoreSession();
+
+    // Listen to Supabase auth changes if configured
+    let sbSubscription: { unsubscribe: () => void } | null = null;
+    if (isSupabaseConfigured) {
+      const { data } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+        if (!isMounted) return;
+        setSession(newSession);
+        setSupabaseUser(newSession?.user ?? null);
+        if (newSession?.user) {
+          apiService.setAuthToken(newSession.access_token);
+          const sbUser: User = {
+            id: newSession.user.id,
+            name: newSession.user.user_metadata?.full_name || newSession.user.email?.split('@')[0] || 'Creator',
+            email: newSession.user.email || '',
+            avatarUrl: newSession.user.user_metadata?.avatar_url || '',
+            createdAt: newSession.user.created_at,
+          };
+          await fetchProfileAndUserData(sbUser);
+        } else {
+          setUser(null);
+          setProfile(null);
+          setSubscription(null);
+          setIsPremiumActive(false);
+          unlockService.reset();
+        }
+      });
+      sbSubscription = data.subscription;
     }
-
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!isMounted) return;
-      setSession(session);
-      setSupabaseUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user).finally(() => {
-          if (isMounted) setIsLoading(false);
-        });
-      } else {
-        setUser(null);
-        setIsLoading(false);
-      }
-    });
-
-    // Listen for auth state changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!isMounted) return;
-      setSession(session);
-      setSupabaseUser(session?.user ?? null);
-
-      if (session?.user) {
-        await fetchProfile(session.user);
-      } else {
-        setUser(null);
-      }
-      setIsLoading(false);
-    });
 
     return () => {
       isMounted = false;
-      subscription.unsubscribe();
+      if (sbSubscription) sbSubscription.unsubscribe();
     };
-  }, []);
+  }, [fetchProfileAndUserData]);
 
   const formatAuthError = (err: AuthError | Error | unknown): string => {
     if (!err) return 'An unexpected error occurred.';
     const message = (err as Error).message || String(err);
-    if (message.includes('Invalid login credentials')) {
+    if (message.includes('Invalid login credentials') || message.includes('Invalid password')) {
       return 'Invalid email or password. Please check your credentials and try again.';
     }
-    if (message.includes('User already registered')) {
+    if (message.includes('User already registered') || message.includes('already exists')) {
       return 'An account with this email already exists. Please sign in instead.';
     }
     if (message.includes('Password should be at least')) {
@@ -153,7 +162,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return 'Please verify your email address before signing in.';
     }
     if (message.includes('popup closed') || message.includes('cancelled')) {
-      return 'Google sign-in was cancelled.';
+      return 'Sign-in was cancelled.';
     }
     return message;
   };
@@ -162,26 +171,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
     setIsLoading(true);
     try {
-      if (!isSupabaseConfigured) {
-        // Authenticate directly against persistent database
-        const dbUser = await apiService.login({
-          email: credentials.email,
-          password: credentials.password,
-        });
-        setUser(dbUser);
-        localStorage.setItem('tempo_auth_session', JSON.stringify(dbUser));
-        return;
-      }
-
-      const { data, error: authErr } = await supabase.auth.signInWithPassword({
+      // 1. Authenticate with backend API
+      const result = await apiService.login({
         email: credentials.email.trim(),
         password: credentials.password || '',
       });
 
-      if (authErr) throw authErr;
-      if (data.user) {
-        await fetchProfile(data.user);
+      if (result.user && result.token) {
+        await fetchProfileAndUserData(result.user);
+        return;
       }
+
+      // 2. Supabase fallback if configured
+      if (isSupabaseConfigured) {
+        const { data, error: authErr } = await supabase.auth.signInWithPassword({
+          email: credentials.email.trim(),
+          password: credentials.password || '',
+        });
+        if (authErr) throw authErr;
+        if (data.user) {
+          const u: User = {
+            id: data.user.id,
+            name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'Creator',
+            email: data.user.email || '',
+            createdAt: data.user.created_at,
+          };
+          await fetchProfileAndUserData(u);
+          return;
+        }
+      }
+
+      throw new Error('Could not authenticate. Please verify your credentials.');
     } catch (err) {
       const msg = formatAuthError(err);
       setError(msg);
@@ -194,30 +214,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async () => {
     setError(null);
     try {
-      if (!isSupabaseConfigured) {
-        // Create or get user from database
-        const dbUser = await apiService.googleLogin({
-          email: 'creator@tempo.atelier',
-          name: 'Google Creator',
-        });
-        setUser(dbUser);
-        localStorage.setItem('tempo_auth_session', JSON.stringify(dbUser));
-        return;
-      }
-
-      const redirectUrl = `${window.location.origin}/auth/callback`;
-      const { error: oauthErr } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
+      if (isSupabaseConfigured) {
+        const redirectUrl = `${window.location.origin}/auth/callback`;
+        const { error: oauthErr } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: redirectUrl,
           },
-        },
-      });
-
-      if (oauthErr) throw oauthErr;
+        });
+        if (oauthErr) throw oauthErr;
+      } else {
+        throw new Error('OAuth provider is unavailable.');
+      }
     } catch (err) {
       const msg = formatAuthError(err);
       setError(msg);
@@ -229,45 +237,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
     setIsLoading(true);
     try {
-      if (!isSupabaseConfigured) {
-        // Register directly into persistent database
-        const dbUser = await apiService.register({
-          name: credentials.name.trim(),
-          email: credentials.email.trim(),
-          password: credentials.password,
-        });
-        setUser(dbUser);
-        localStorage.setItem('tempo_auth_session', JSON.stringify(dbUser));
+      // 1. Register with backend API
+      const result = await apiService.register({
+        name: credentials.name.trim(),
+        email: credentials.email.trim(),
+        password: credentials.password || '',
+      });
+
+      if (result.user && result.token) {
+        await fetchProfileAndUserData(result.user);
         return { confirmationRequired: false };
       }
 
-      const { data, error: signErr } = await supabase.auth.signUp({
-        email: credentials.email.trim(),
-        password: credentials.password || '',
-        options: {
-          data: {
-            full_name: credentials.name.trim(),
+      // 2. Supabase signup if configured
+      if (isSupabaseConfigured) {
+        const { data, error: signErr } = await supabase.auth.signUp({
+          email: credentials.email.trim(),
+          password: credentials.password || '',
+          options: {
+            data: { full_name: credentials.name.trim() },
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      if (signErr) throw signErr;
-
-      if (data.user && !data.session) {
-        // Confirmation email required
-        return { confirmationRequired: true };
-      }
-
-      if (data.user) {
-        // Create or ensure profile
-        await supabase.from('profiles').upsert({
-          id: data.user.id,
-          full_name: credentials.name.trim(),
-          avatar_url: '',
-          updated_at: new Date().toISOString(),
         });
-        await fetchProfile(data.user);
+        if (signErr) throw signErr;
+        if (data.user) {
+          if (!data.session) return { confirmationRequired: true };
+          const u: User = {
+            id: data.user.id,
+            name: credentials.name.trim(),
+            email: credentials.email.trim(),
+            createdAt: data.user.created_at,
+          };
+          await fetchProfileAndUserData(u);
+          return { confirmationRequired: false };
+        }
       }
 
       return { confirmationRequired: false };
@@ -280,50 +283,83 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = async () => {
-    setIsLoading(true);
+  const resetPassword = async (email: string) => {
+    setError(null);
     try {
+      if (isSupabaseConfigured) {
+        const { error: resetErr } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (resetErr) throw resetErr;
+        return { error: null };
+      }
+      return { error: null };
+    } catch (err) {
+      const msg = formatAuthError(err);
+      setError(msg);
+      return { error: { message: msg } };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await apiService.logout();
       if (isSupabaseConfigured) {
         await supabase.auth.signOut();
       }
+    } catch {
+      // ignore
+    } finally {
       setUser(null);
+      setProfile(null);
+      setSubscription(null);
+      setIsPremiumActive(false);
       setSession(null);
       setSupabaseUser(null);
-      localStorage.removeItem('tempo_auth_session');
-    } catch (err) {
-      console.error('Logout error:', err);
-    } finally {
-      setIsLoading(false);
+      unlockService.reset();
     }
   };
 
   const clearError = () => setError(null);
 
   const refreshProfile = async () => {
-    if (supabaseUser) {
-      await fetchProfile(supabaseUser);
+    if (user) {
+      await fetchProfileAndUserData(user);
     }
   };
 
-  const value: AuthContextType = {
-    user,
-    supabaseUser,
-    session,
-    isAuthenticated: user !== null,
-    isLoading,
-    error,
-    login,
-    loginWithGoogle,
-    signUp,
-    logout,
-    clearError,
-    refreshProfile,
+  const refreshSubscription = async () => {
+    await fetchSubscription();
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        profile,
+        subscription,
+        isPremiumActive,
+        supabaseUser,
+        session,
+        isAuthenticated: !!user,
+        isLoading,
+        error,
+        login,
+        loginWithGoogle,
+        signUp,
+        resetPassword,
+        logout,
+        clearError,
+        refreshProfile,
+        refreshSubscription,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');

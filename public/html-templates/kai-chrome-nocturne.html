@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;min-height:100vh;margin:0;padding:0;background-color:#131317;color:#e4e1e8;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-container-lowest": "#0e0e12", "primary": "#dbfcff", "surface-container-highest": "#353439", "tertiary-fixed-dim": "#e9c400", "on-primary": "#00363a", "primary-fixed-dim": "#00dbe9", "on-secondary-fixed": "#30004b", "on-surface": "#e4e1e8", "on-tertiary-fixed": "#221b00", "on-secondary-container": "#f7e1ff", "primary-fixed": "#7df4ff", "on-primary-fixed": "#002022", "surface-bright": "#39393e", "error": "#ffb4ab", "tertiary-container": "#ffd700", "on-tertiary-fixed-variant": "#544600", "surface-container-low": "#1b1b20", "error-container": "#93000a", "secondary-fixed-dim": "#e5b5ff", "tertiary-fixed": "#ffe16d", "surface-tint": "#00dbe9", "primary-container": "#00f0ff", "on-tertiary-container": "#705d00", "on-primary-fixed-variant": "#004f54", "background": "#131317", "surface": "#131317", "on-tertiary": "#3a3000", "tertiary": "#fff5de", "inverse-primary": "#006970", "surface-container-high": "#2a292e", "on-surface-variant": "#b9cacb", "outline-variant": "#3b494b", "surface-container": "#1f1f24", "inverse-on-surface": "#303035", "on-error": "#690005", "secondary-fixed": "#f4d9ff", "on-secondary-fixed-variant": "#7000a8", "secondary-container": "#a100f0", "secondary": "#e5b5ff", "inverse-surface": "#e4e1e8", "outline": "#849495", "on-primary-container": "#006970", "on-secondary": "#4e0078", "on-error-container": "#ffdad6", "surface-variant": "#353439", "surface-dim": "#131317", "on-background": "#e4e1e8" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-tablet": "2rem", "margin": "3rem", "gutter-mobile": "1rem", "gutter": "1.5rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "margin-mobile": "1.25rem", "space-xl": "2.5rem", "space-sm": "0.5rem", "space-2xl": "4rem", "space-md": "1rem" }, "fontFamily": { "headline-lg-mobile": ["Space Grotesk"], "headline-md": ["Space Grotesk"], "label-lg": ["Space Grotesk"], "label-sm": ["Space Grotesk"], "display-hero-mobile": ["Space Grotesk"], "headline-sm": ["Space Grotesk"], "label-md": ["Space Grotesk"], "headline-lg": ["Space Grotesk"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "display-hero": ["Space Grotesk"] }, "fontSize": { "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}], "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600"}], "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.08em", "fontWeight": "600"}], "label-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.12em", "fontWeight": "500"}], "display-hero-mobile": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700"}], "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "500"}], "headline-lg": ["44px", {"lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "600"}], "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}], "body-md": ["15px", {"lineHeight": "24px", "fontWeight": "400"}], "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400"}], "display-hero": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "700"}] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  
+<style id="tempo-responsive-override">
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  /* Prevent animated ping or oversized elements from overflowing viewport */
+  .animate-ping {
+    max-width: 100% !important;
+  }
+</style>
+
+</head><body class="bg-background font-body-md text-on-surface antialiased flex flex-col min-h-screen relative selection:bg-primary-container selection:text-on-primary-container"><div class="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(161,0,240,0.08),transparent_70%)]"></div><header class="fixed top-0 w-full z-50 pt-safe bg-surface/75 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.5)]"><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-xs"><button aria-label="Return" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-on-surface hover:text-primary-container transition-colors" onclick="history.back()" type="button"><span class="material-symbols-outlined text-[20px]">arrow_back_ios_new</span></button><h1 class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface">Swipe Pass Redemption</h1></div><div class="flex items-center gap-space-xs"><button aria-label="Toggle Sound" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center text-primary-fixed-dim hover:text-primary transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">graphic_eq</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 bg-surface z-10 flex-grow min-h-screen"><div class="flex flex-col w-full relative overflow-hidden select-none">
+<!-- Interactive Background Canvas (Shimmer & Dust) -->
+<canvas class="fixed inset-0 pointer-events-none z-0 w-full h-full opacity-60" id="ambient-canvas"></canvas>
+<!-- Ambient Holographic Floating Blobs for Parallax Depth -->
+<div class="fixed -top-24 -left-20 w-80 h-80 rounded-full pointer-events-none z-0 blur-[85px] bg-secondary-container/20 transition-transform duration-75 will-change-transform" id="blob-1"></div>
+<div class="fixed top-1/3 -right-28 w-96 h-96 rounded-full pointer-events-none z-0 blur-[95px] bg-primary-container/15 transition-transform duration-75 will-change-transform" id="blob-2"></div>
+<div class="fixed -bottom-24 left-1/4 w-88 h-88 rounded-full pointer-events-none z-0 blur-[90px] bg-tertiary-container/15 transition-transform duration-75 will-change-transform" id="blob-3"></div>
+<!-- FLOATING STICKY STATUS PILL -->
+<div class="sticky top-2 z-40 px-margin-mobile pt-space-xs pb-space-sm flex justify-center w-full">
+<div class="w-full max-w-md bg-surface-container-low/75 backdrop-blur-2xl rounded-full p-1.5 flex items-center justify-between shadow-[0_8px_32px_rgba(0,0,0,0.6)] shadow-primary-container/5">
+<!-- VIP Status Tier -->
+<div class="flex items-center gap-space-xs pl-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim shadow-[0_0_8px_#ffd700] animate-pulse"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-tertiary-fixed font-semibold">VIP TIER 01</span>
+</div>
+<!-- Real-Time Dynamic Countdown Pill -->
+<div class="bg-surface-container-high/90 px-3 py-1 rounded-full flex items-center gap-1 shadow-inner">
+<span class="material-symbols-outlined text-[13px] text-primary-fixed-dim">schedule</span>
+<span class="font-label-sm text-label-sm text-primary tracking-wider font-bold tabular-nums" id="countdown-text">T-12D 04H 28M 14S</span>
+</div>
+<!-- Audio Mood Equalizer Pill Button -->
+<button aria-label="Toggle Night Ambient Audio" class="flex items-center gap-1 pr-2 py-1 text-on-surface hover:text-primary transition-colors" id="audio-toggle" type="button">
+<span class="flex items-end gap-[2px] h-3.5">
+<span class="w-[2px] h-2 bg-primary-fixed-dim rounded-full animate-[pulse_0.8s_ease-in-out_infinite]"></span>
+<span class="w-[2px] h-3.5 bg-primary-fixed rounded-full animate-[pulse_1.2s_ease-in-out_infinite]"></span>
+<span class="w-[2px] h-1.5 bg-secondary-fixed rounded-full animate-[pulse_0.6s_ease-in-out_infinite]"></span>
+</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase" id="sound-state">FX</span>
+</button>
+</div>
+</div>
+<!-- MAIN SCROLLABLE STREAM -->
+<div class="flex flex-col gap-space-lg px-margin-mobile pb-32 pt-space-sm z-10 w-full max-w-md mx-auto">
+<!-- HERO SECTION / CARD A -->
+<section class="relative rounded-xl p-space-lg bg-surface-container-low/85 backdrop-blur-xl shadow-2xl flex flex-col items-center text-center overflow-hidden" id="hero-card">
+<!-- Specular Highlight Top Light Edge -->
+<div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-70"></div>
+<div class="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Chapter Badge -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-highest/60 backdrop-blur-md mb-space-md">
+<span class="material-symbols-outlined text-primary text-[14px]">auto_awesome</span>
+<span class="font-label-sm text-label-sm tracking-widest uppercase text-primary font-semibold">PRIVATE GUESTLIST ONLY</span>
+</div>
+<!-- Kinetic Chrome Fluid Headline -->
+<h2 class="font-display-hero-mobile text-display-hero-mobile uppercase leading-[1.05] tracking-tight bg-gradient-to-br from-primary via-on-surface to-secondary bg-clip-text text-transparent drop-shadow-[0_4px_16px_rgba(0,240,255,0.25)]">
+        JOIN THE<br/>NIGHT
+      </h2>
+<!-- Subtitle -->
+<p class="font-headline-sm text-headline-sm text-on-surface tracking-wider mt-space-sm uppercase font-bold">
+        KAI'S CELEBRATION
+      </p>
+<p class="font-label-md text-label-md uppercase tracking-[0.25em] text-tertiary-fixed-dim mt-1 font-semibold">
+        CHAPTER 28 • PRIVATE EDITION
+      </p>
+<!-- Editorial Intro Scrim -->
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs mt-space-md leading-relaxed">
+        An intimate nocturnal communion of hyper-visual soundscapes, analog frequencies, and liquid chrome atmosphere.
+      </p>
+<!-- Scroll Invitation Indicator -->
+<div class="mt-space-lg flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition-opacity">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary-fixed-dim">REVEAL DOSSIER</span>
+<span class="material-symbols-outlined text-primary-container text-[20px] animate-bounce">keyboard_arrow_down</span>
+</div>
+</section>
+<!-- CARD B: DATE & TIME SPECIFICATION -->
+<section class="relative rounded-xl p-space-md bg-surface-container-low/85 backdrop-blur-xl shadow-xl flex flex-col gap-space-md overflow-hidden">
+<div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-secondary to-transparent opacity-60"></div>
+<!-- Date Row -->
+<div class="flex items-center justify-between bg-surface-container/70 rounded-lg p-space-md">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider">DATE OF GATHERING</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight font-bold">28.10.2026</span>
+<span class="font-body-sm text-body-sm text-secondary-fixed">WEDNESDAY EVENING</span>
+</div>
+<div class="w-14 h-14 rounded-xl bg-surface-container-high flex flex-col items-center justify-center text-center shadow-inner">
+<span class="font-label-sm text-label-sm uppercase text-primary-fixed-dim font-bold">OCT</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-extrabold leading-none">28</span>
+</div>
+</div>
+<!-- Time & Meridian Badge -->
+<div class="grid grid-cols-2 gap-space-xs">
+<div class="bg-surface-container/70 rounded-lg p-space-sm flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">DOORS OPEN</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">09:00 PM</span>
+<span class="font-label-sm text-label-sm text-primary-fixed-dim">SYNCHRONIZED (HST)</span>
+</div>
+<div class="bg-surface-container/70 rounded-lg p-space-sm flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">CURFEW</span>
+<span class="font-headline-sm text-headline-sm text-tertiary-fixed font-bold tracking-tight">UNTIL LATE</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">SUNRISE SET OPTION</span>
+</div>
+</div>
+<!-- Quick Action Buttons -->
+<div class="flex items-center gap-space-xs pt-space-xs">
+<button class="flex-1 py-3 px-space-sm rounded-lg bg-surface-container-highest hover:bg-surface-bright text-on-surface text-center flex items-center justify-center gap-2 transition-all active:scale-[0.98]" id="add-wallet-btn" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">calendar_add_on</span>
+<span class="font-label-md text-label-md uppercase tracking-wider font-semibold">ADD TO .ICS</span>
+</button>
+<button class="flex-1 py-3 px-space-sm rounded-lg bg-surface-container-highest hover:bg-surface-bright text-on-surface text-center flex items-center justify-center gap-2 transition-all active:scale-[0.98]" id="reminder-btn" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">notifications_active</span>
+<span class="font-label-md text-label-md uppercase tracking-wider font-semibold">SET REMINDER</span>
+</button>
+</div>
+</section>
+<!-- CARD C: VENUE & SANCTUARY DIRECTIONS -->
+<section class="relative rounded-xl p-space-md bg-surface-container-low/85 backdrop-blur-xl shadow-xl flex flex-col gap-space-md overflow-hidden">
+<div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-primary-container to-transparent opacity-60"></div>
+<!-- Venue Imagery Backdrop Container -->
+<div class="relative w-full h-36 rounded-lg overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover object-center brightness-75 scale-105" data-alt="Futuristic luxury rooftop glass atrium at midnight overlooking high-end urban neon skyline with violet obsidian lighting, ultra high-end nocturnal architecture, 8k render style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi6Dj9NPbMDTkw4hROEr0JTyMLsrR03cpZguNCi9DOCNsViePTlxnPuR8IfrXzcCdsAiB8tyS3Oy_wXdFb7wF5OpvakvvkcKKtoyrVBnhWbhXG4yFXDgWyeSdRxZdFBIJIN4KmnNxgPrpGJHbOw34N9l8M4yUScJeuy2ScTU4kcvxi_Mb2Mc8lAVgi4lRmrWVH6SjpvRZlRuMEfC-_n5x82dhKm7QtLQRZ8BuhQF9eUvO9kYU_RKfB5g"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/40 to-transparent"></div>
+<div class="absolute bottom-3 left-3 right-3 flex items-end justify-between">
+<div>
+<span class="font-label-sm text-label-sm tracking-widest text-primary font-bold uppercase">SECRET LOCATION</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-extrabold uppercase tracking-wide">THE OBSIDIAN ATRIUM</h3>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest/80 backdrop-blur-md text-on-surface font-label-sm text-label-sm">FLOOR 44</span>
+</div>
+</div>
+<!-- Specific Address & Coordinates -->
+<div class="flex items-center justify-between text-on-surface-variant px-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">near_me</span>
+<span class="font-body-sm text-body-sm text-on-surface">Rooftop Penthouse &amp; Skyline Terrace</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">21°18'N 157°51'W</span>
+</div>
+<!-- Dress Code Preview Chip -->
+<div class="flex items-center gap-2 p-space-sm rounded-lg bg-surface-container/60">
+<span class="material-symbols-outlined text-tertiary-fixed text-[18px]">palette</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant font-semibold">AESTHETIC PROTOCOL</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Elevated Noir • Liquid Chrome &amp; Metallic Accents</span>
+</div>
+</div>
+<!-- Liquid Chrome Interactive Button: Open Maps Modal -->
+<button class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-primary-fixed-dim via-primary to-secondary-fixed text-on-primary font-headline-sm text-label-lg uppercase tracking-wider font-bold shadow-[0_0_24px_rgba(0,240,255,0.35)] flex items-center justify-center gap-2 transition-transform active:scale-[0.98]" id="open-maps-modal-btn" type="button">
+<span class="material-symbols-outlined text-[20px] text-on-primary">pin_drop</span>
+<span>ACCESS NAVIGATION DOSSIER</span>
+</button>
+</section>
+<!-- VIP GUEST PERKS & CURATED EXPERIENCES -->
+<section class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant font-semibold">CURATED EXPERIENCES</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">ALL-INCLUSIVE PASS</span>
+</div>
+<div class="grid grid-cols-1 gap-space-xs">
+<!-- Perk 1 -->
+<div class="flex items-center gap-space-md p-space-sm rounded-xl bg-surface-container-low/70 backdrop-blur-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary-container text-[24px]">liquor</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h4 class="font-label-lg text-label-lg text-on-surface uppercase font-bold tracking-wide truncate">OPEN CHAMPAGNE &amp; ELIXIR BAR</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Vintage Dom Pérignon &amp; signature sensory infusions</p>
+</div>
+</div>
+<!-- Perk 2 -->
+<div class="flex items-center gap-space-md p-space-sm rounded-xl bg-surface-container-low/70 backdrop-blur-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[24px]">graphic_eq</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h4 class="font-label-lg text-label-lg text-on-surface uppercase font-bold tracking-wide truncate">LIVE ANALOG SYNTH SET</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Unreleased modular soundscapes curated for Kai's 28th</p>
+</div>
+</div>
+<!-- Perk 3 -->
+<div class="flex items-center gap-space-md p-space-sm rounded-xl bg-surface-container-low/70 backdrop-blur-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[24px]">blur_on</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h4 class="font-label-lg text-label-lg text-on-surface uppercase font-bold tracking-wide truncate">IMMERSIVE LIGHT SCULPTURE</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Holographic projection maze designed by Studio Noc</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- STICKY BOTTOM SWIPE-TO-UNLOCK RSVP BAR -->
+<div class="fixed bottom-0 inset-x-0 z-40 p-margin-mobile pb-safe bg-gradient-to-t from-background via-surface-container-lowest/90 to-transparent pointer-events-none">
+<div class="max-w-md mx-auto w-full pointer-events-auto">
+<!-- Outer Track Container -->
+<div class="relative w-full h-16 rounded-full bg-surface-container-low/90 backdrop-blur-2xl shadow-[0_10px_35px_rgba(0,0,0,0.8)] overflow-hidden flex items-center px-1.5 touch-none select-none" id="slider-track">
+<!-- Interactive Glowing Fill Track -->
+<div class="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-primary-container/20 to-secondary-container/40 transition-none pointer-events-none" id="slider-fill"></div>
+<!-- Guiding Track Label -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none pl-12 pr-4">
+<span class="font-label-lg text-label-lg uppercase tracking-widest text-on-surface-variant font-bold flex items-center gap-2" id="slider-label">
+            SWIPE TO CLAIM PASS <span class="material-symbols-outlined text-[16px] text-primary animate-pulse">keyboard_double_arrow_right</span>
+</span>
+</div>
+<!-- Draggable Chrome Handle -->
+<div class="relative z-10 w-13 h-13 min-w-[52px] min-h-[52px] rounded-full bg-gradient-to-tr from-on-surface via-primary-fixed to-secondary-fixed shadow-[0_0_20px_rgba(0,240,255,0.7)] flex items-center justify-center cursor-grab active:cursor-grabbing transition-transform duration-75" id="slider-handle">
+<span class="material-symbols-outlined text-surface-container-lowest text-[24px] font-bold">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+<!-- VENUE DIRECTIONS MODAL -->
+<div class="fixed inset-0 z-50 bg-surface-container-lowest/80 backdrop-blur-2xl hidden items-end sm:items-center justify-center p-0 sm:p-margin-mobile transition-opacity duration-300 opacity-0" id="venue-modal">
+<div class="w-full max-w-md bg-surface-container-low rounded-t-3xl sm:rounded-2xl p-space-lg flex flex-col gap-space-md shadow-2xl relative max-h-[751px] overflow-y-auto">
+<div class="w-12 h-1 bg-surface-variant rounded-full mx-auto sm:hidden mb-1"></div>
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase text-primary tracking-widest font-bold">VENUE PROTOCOL</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-extrabold uppercase">THE OBSIDIAN ATRIUM</h3>
+</div>
+<button aria-label="Close Modal" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface hover:text-primary transition-colors" id="close-modal-btn" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Static Map Integration -->
+<div class="w-full h-44 rounded-xl bg-surface-container-highest bg-cover bg-center overflow-hidden relative shadow-inner" data-location="Honolulu Skyline Rooftop, Hawaii" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA5jZUkzwjoorQtVuvMfi9yBKLLNoplENM8O17DvaxFzjbMHyTY6J6GA4-EUmNega1PRjeeGF2Ka4ixpPoyQ113sx2LfoZohR6kKpHo-dGJmL6EuS7eItC2Qz_u_L5-5Jx1hi78kFG1J2_b1Gr3Q2o1vTJ9D0ytHh4ka8lCUE9Y6hPbFdOEMMJV_udEs5AJW2oSaX4K79HdDCy30uQ302KAZPmRJcAYjbYh-Nee4Xb7oZMM-K-j-l33NQ')">
+<div class="absolute inset-0 bg-primary/10 mix-blend-color"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<span class="w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-[0_0_15px_#00f0ff] animate-ping absolute"></span>
+<span class="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-lg relative z-10">
+<span class="material-symbols-outlined text-[14px]">apartment</span>
+</span>
+</div>
+<div class="absolute bottom-2 left-2 px-2 py-1 bg-surface-container-lowest/80 backdrop-blur-md rounded font-label-sm text-label-sm text-primary">
+          LAT 21.3069° N, LONG 157.8583° W
+        </div>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant font-semibold">VALET &amp; ENTRY PROCEDURE</span>
+<p class="font-body-sm text-body-sm text-on-surface leading-relaxed">
+          Complimentary white-glove valet available on Bishop Street private ingress. Present digital VIP card at the high-speed express elevator lobby for Chapter 28 penthouse clearance.
+        </p>
+</div>
+<!-- Direct Taxi / Transit CTAs -->
+<div class="grid grid-cols-2 gap-space-xs pt-1">
+<button class="py-3 rounded-lg bg-surface-container-highest hover:bg-surface-bright text-on-surface font-label-md text-label-md uppercase tracking-wider font-semibold flex items-center justify-center gap-1.5" onclick="alert('Dispatching Uber Lux coordinates to The Obsidian Atrium...')" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">local_taxi</span>
+          UBER BLACK
+        </button>
+<button class="py-3 rounded-lg bg-surface-container-highest hover:bg-surface-bright text-on-surface font-label-md text-label-md uppercase tracking-wider font-semibold flex items-center justify-center gap-1.5" onclick="alert('Opening native maps with waypoint: 21°18\'N 157°51\'W')" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">explore</span>
+          OPEN MAPS
+        </button>
+</div>
+</div>
+</div>
+<!-- CELEBRATION / VIP GOLDEN PASS SCREEN OVERLAY -->
+<div class="fixed inset-0 z-50 bg-background/95 backdrop-blur-3xl hidden flex-col items-center justify-between p-margin-mobile pb-safe transition-opacity duration-500 opacity-0 overflow-y-auto" id="pass-overlay">
+<!-- Confetti Explosion Fullscreen Canvas -->
+<canvas class="absolute inset-0 pointer-events-none z-10 w-full h-full" id="confetti-canvas"></canvas>
+<!-- Header info in pass screen -->
+<div class="w-full flex items-center justify-between z-20 pt-2">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-fixed shadow-[0_0_10px_#00f0ff]"></span>
+<span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">ACCESS GRANTED</span>
+</div>
+<button aria-label="Close Invitation Pass" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface hover:text-primary transition-colors" id="close-pass-btn" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- 3D Interactive Tilting VIP Card Container -->
+<div class="w-full max-w-sm my-auto py-space-sm z-20 perspective-[1000px] flex justify-center">
+<div class="relative w-full aspect-[9/14] max-h-[460px] rounded-2xl p-space-lg bg-gradient-to-b from-surface-container-high/90 via-surface-container-low/95 to-surface-container-lowest backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(255,215,0,0.2)] flex flex-col justify-between overflow-hidden will-change-transform transition-transform duration-150 ease-out" id="tilt-card">
+<!-- Holographic Foil Reflection Sheen -->
+<div class="absolute inset-0 pointer-events-none opacity-40 bg-[linear-gradient(115deg,transparent_20%,rgba(0,240,255,0.4)_40%,rgba(229,181,255,0.5)_60%,transparent_80%)] mix-blend-overlay" id="card-sheen"></div>
+<div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-tertiary-container via-primary to-secondary"></div>
+<!-- Top Row of VIP Pass -->
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-tertiary-fixed font-bold">INVITATION SPECIFICATION</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-extrabold uppercase tracking-tight">KAI // CH.28</h3>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-tertiary-container/15 text-tertiary-fixed font-label-sm text-label-sm font-bold uppercase tracking-widest shadow-[0_0_12px_rgba(255,215,0,0.3)]">
+            ADMIT ONE
+          </div>
+</div>
+<!-- Center Holographic Graphic & Pass Number -->
+<div class="flex flex-col items-center justify-center text-center my-auto">
+<!-- Holographic Simulated Metallic Hologram Stamp -->
+<div class="w-28 h-28 rounded-2xl bg-surface-container-highest/80 p-2.5 shadow-2xl relative flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary-container/20 via-tertiary-container/30 to-secondary-container/20 animate-pulse"></div>
+<!-- Custom Stylized VIP QR / Hologram Code Placeholder -->
+<svg class="w-full h-full text-primary" fill="currentColor" viewbox="0 0 100 100">
+<rect height="24" rx="4" width="24" x="10" y="10"></rect>
+<rect height="24" rx="4" width="24" x="66" y="10"></rect>
+<rect height="24" rx="4" width="24" x="10" y="66"></rect>
+<rect class="text-tertiary-fixed" height="16" rx="2" width="16" x="42" y="42"></rect>
+<circle cx="50" cy="22" r="4"></circle>
+<circle cx="22" cy="50" r="4"></circle>
+<circle cx="78" cy="50" r="4"></circle>
+<circle cx="50" cy="78" r="4"></circle>
+<rect class="text-secondary-fixed" height="10" width="10" x="66" y="66"></rect>
+<rect height="10" width="10" x="80" y="80"></rect>
+</svg>
+</div>
+<span class="font-headline-sm text-headline-sm text-tertiary font-mono tracking-widest font-extrabold mt-3">#VIP-0824</span>
+<span class="font-label-sm text-label-sm uppercase tracking-[0.2em] text-on-surface-variant font-medium">AUTHENTICATED CREDENTIAL</span>
+</div>
+<!-- Pass Bottom Data Ribbon -->
+<div class="bg-surface-container-lowest/80 rounded-xl p-3 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">NAME</span>
+<span class="font-label-md text-label-md text-on-surface font-bold uppercase">HONORED GUEST</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">TIER</span>
+<span class="font-label-md text-label-md text-primary font-bold uppercase">GOLD REVELER</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Pass Confirmation Actions -->
+<div class="w-full max-w-sm flex flex-col gap-space-xs z-20 pb-2">
+<button class="w-full py-3.5 rounded-xl bg-gradient-to-r from-tertiary-container via-primary-fixed to-primary text-on-surface-variant font-label-lg text-label-lg uppercase tracking-wider font-extrabold shadow-[0_0_30px_rgba(255,215,0,0.35)] flex items-center justify-center gap-2 active:scale-[0.98] transition-transform" id="save-wallet-btn" type="button">
+<span class="material-symbols-outlined text-surface-container-lowest text-[22px]">wallet</span>
+<span class="text-surface-container-lowest">SAVE PASS TO APPLE WALLET</span>
+</button>
+<button class="w-full py-2.5 rounded-xl bg-surface-container-high/60 hover:bg-surface-container-high text-on-surface font-label-md text-label-md uppercase tracking-wider font-semibold transition-colors" id="share-pass-btn" type="button">
+        SHARE INVITATION CONFIRMATION
+      </button>
+</div>
+</div>
+</div>
+<script>
+  (function initLuxuryInvite() {
+    // 1. DYNAMIC COUNTDOWN TIMER LOGIC
+    const countdownTarget = new Date('2026-10-28T21:00:00-10:00').getTime();
+    const countdownEl = document.getElementById('countdown-text');
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = Math.max(0, countdownTarget - now);
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+      const dStr = String(days).padStart(2, '0');
+      const hStr = String(hours).padStart(2, '0');
+      const mStr = String(mins).padStart(2, '0');
+      const sStr = String(secs).padStart(2, '0');
+
+      if (countdownEl) {
+        countdownEl.textContent = `T-${dStr}D ${hStr}H ${mStr}M ${sStr}S`;
+      }
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 2. AMBIENT SHIMMER CANVAS (60FPS)
+    const bgCanvas = document.getElementById('ambient-canvas');
+    if (bgCanvas) {
+      const ctx = bgCanvas.getContext('2d');
+      let width, height;
+      const particles = [];
+      const particleCount = 42;
+
+      function resize() {
+        width = bgCanvas.width = window.innerWidth;
+        height = bgCanvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.5 + 0.5,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          alpha: Math.random() * 0.8 + 0.2,
+          pulse: Math.random() * 0.05
+        });
+      }
+
+      function drawAmbient() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha += p.pulse;
+          if (p.alpha <= 0.1 || p.alpha >= 0.9) p.pulse = -p.pulse;
+
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0, 240, 255, ${p.alpha * 0.6})`;
+          ctx.fill();
+        });
+        requestAnimationFrame(drawAmbient);
+      }
+      drawAmbient();
+    }
+
+    // 3. PARALLAX BLOB SCROLL MECHANICS
+    const blob1 = document.getElementById('blob-1');
+    const blob2 = document.getElementById('blob-2');
+    const blob3 = document.getElementById('blob-3');
+
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+      if (blob1) blob1.style.transform = `translate3d(0, ${scrolled * 0.18}px, 0)`;
+      if (blob2) blob2.style.transform = `translate3d(0, ${scrolled * -0.22}px, 0)`;
+      if (blob3) blob3.style.transform = `translate3d(0, ${scrolled * 0.12}px, 0)`;
+    }, { passive: true });
+
+    // 4. VENUE MODAL INTERACTIONS
+    const modalBtn = document.getElementById('open-maps-modal-btn');
+    const modal = document.getElementById('venue-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    function openModal() {
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      requestAnimationFrame(() => {
+        modal.classList.remove('opacity-0');
+        modal.classList.add('opacity-100');
+      });
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.add('opacity-0');
+      modal.classList.remove('opacity-100');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 300);
+    }
+
+    if (modalBtn) modalBtn.addEventListener('click', openModal);
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    }
+
+    // 5. AUDIO EQUALIZER TOGGLE FEEDBACK
+    const audioToggle = document.getElementById('audio-toggle');
+    const soundState = document.getElementById('sound-state');
+    let soundActive = false;
+    if (audioToggle && soundState) {
+      audioToggle.addEventListener('click', () => {
+        soundActive = !soundActive;
+        soundState.textContent = soundActive ? 'ON' : 'FX';
+        soundState.classList.toggle('text-primary-fixed', soundActive);
+      });
+    }
+
+    // Quick Alert hooks for Wallet / Reminders
+    const addWalletBtn = document.getElementById('add-wallet-btn');
+    if (addWalletBtn) {
+      addWalletBtn.addEventListener('click', () => {
+        alert('Event file (Kai-Chapter-28.ics) downloaded to your calendar!');
+      });
+    }
+
+    const reminderBtn = document.getElementById('reminder-btn');
+    if (reminderBtn) {
+      reminderBtn.addEventListener('click', () => {
+        alert('VIP Notification registered for 24 hours prior to gathering.');
+      });
+    }
+
+    // 6. INTERACTIVE DRAG-TO-SWIPE SLIDER RSVP
+    const track = document.getElementById('slider-track');
+    const handle = document.getElementById('slider-handle');
+    const fill = document.getElementById('slider-fill');
+    const sliderLabel = document.getElementById('slider-label');
+    const passOverlay = document.getElementById('pass-overlay');
+    const closePassBtn = document.getElementById('close-pass-btn');
+
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
+    let maxDrag = 0;
+    let hasUnlocked = false;
+
+    function updateSliderMetrics() {
+      if (!track || !handle) return;
+      maxDrag = track.clientWidth - handle.clientWidth - 8;
+    }
+    window.addEventListener('resize', updateSliderMetrics);
+    updateSliderMetrics();
+
+    function onDragStart(e) {
+      if (hasUnlocked) return;
+      isDragging = true;
+      startX = (e.touches ? e.touches[0].clientX : e.clientX) - currentX;
+      handle.style.transition = 'none';
+      if (fill) fill.style.transition = 'none';
+    }
+
+    function onDragMove(e) {
+      if (!isDragging || hasUnlocked) return;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      currentX = Math.max(0, Math.min(clientX - startX, maxDrag));
+
+      handle.style.transform = `translate3d(${currentX}px, 0, 0)`;
+      if (fill) fill.style.width = `${currentX + handle.clientWidth}px`;
+
+      const progress = currentX / maxDrag;
+      if (sliderLabel) {
+        sliderLabel.style.opacity = String(1 - progress * 1.2);
+      }
+
+      // Check threshold for unlock completion
+      if (progress >= 0.92) {
+        completeUnlock();
+      }
+    }
+
+    function onDragEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      if (!hasUnlocked) {
+        // Snap back reset
+        handle.style.transition = 'transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
+        handle.style.transform = 'translate3d(0, 0, 0)';
+        if (fill) {
+          fill.style.transition = 'width 0.3s ease-out';
+          fill.style.width = '64px';
+        }
+        if (sliderLabel) {
+          sliderLabel.style.transition = 'opacity 0.2s';
+          sliderLabel.style.opacity = '1';
+        }
+        currentX = 0;
+      }
+    }
+
+    if (handle) {
+      handle.addEventListener('mousedown', onDragStart);
+      handle.addEventListener('touchstart', onDragStart, { passive: true });
+    }
+    window.addEventListener('mousemove', onDragMove);
+    window.addEventListener('touchmove', onDragMove, { passive: true });
+    window.addEventListener('mouseup', onDragEnd);
+    window.addEventListener('touchend', onDragEnd);
+
+    // 7. SWIPE COMPLETION -> CELEBRATION & GOLDEN VIP PASS REVEAL
+    function completeUnlock() {
+      hasUnlocked = true;
+      isDragging = false;
+      currentX = maxDrag;
+      handle.style.transform = `translate3d(${maxDrag}px, 0, 0)`;
+
+      // Haptic visual & open overlay
+      if (navigator.vibrate) navigator.vibrate([40, 60, 100]);
+
+      setTimeout(() => {
+        if (!passOverlay) return;
+        passOverlay.classList.remove('hidden');
+        passOverlay.classList.add('flex');
+        requestAnimationFrame(() => {
+          passOverlay.classList.remove('opacity-0');
+          passOverlay.classList.add('opacity-100');
+          triggerHoloConfetti();
+        });
+      }, 200);
+    }
+
+    if (closePassBtn) {
+      closePassBtn.addEventListener('click', () => {
+        if (!passOverlay) return;
+        passOverlay.classList.add('opacity-0');
+        passOverlay.classList.remove('opacity-100');
+        setTimeout(() => {
+          passOverlay.classList.add('hidden');
+          passOverlay.classList.remove('flex');
+          // Reset slider state so user can admire flow again
+          hasUnlocked = false;
+          onDragEnd();
+        }, 400);
+      });
+    }
+
+    // 8. 3D PASS TILT ON TOUCH / POINTER MOVE
+    const tiltCard = document.getElementById('tilt-card');
+    const cardSheen = document.getElementById('card-sheen');
+
+    function handleCardTilt(clientX, clientY) {
+      if (!tiltCard) return;
+      const rect = tiltCard.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = ((y - centerY) / centerY) * -12;
+      const rotateY = ((x - centerX) / centerX) * 12;
+
+      tiltCard.style.transform = `rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
+
+      if (cardSheen) {
+        const sheenX = (x / rect.width) * 100;
+        const sheenY = (y / rect.height) * 100;
+        cardSheen.style.background = `radial-gradient(circle at ${sheenX}% ${sheenY}%, rgba(255,215,0,0.45) 0%, rgba(0,240,255,0.3) 35%, transparent 70%)`;
+      }
+    }
+
+    if (tiltCard) {
+      tiltCard.addEventListener('mousemove', (e) => {
+        handleCardTilt(e.clientX, e.clientY);
+      });
+      tiltCard.addEventListener('mouseleave', () => {
+        tiltCard.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        if (cardSheen) {
+          cardSheen.style.background = '';
+        }
+      });
+      tiltCard.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          handleCardTilt(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+      tiltCard.addEventListener('touchend', () => {
+        tiltCard.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      });
+    }
+
+    // 9. GOLDEN & IRIDESCENT CONFETTI PARTICLE SYSTEM
+    function triggerHoloConfetti() {
+      const cCanvas = document.getElementById('confetti-canvas');
+      if (!cCanvas) return;
+      const ctx = cCanvas.getContext('2d');
+      cCanvas.width = window.innerWidth;
+      cCanvas.height = window.innerHeight;
+
+      const confettiPieces = [];
+      const colors = ['#ffd700', '#00f0ff', '#e5b5ff', '#ffffff', '#e9c400'];
+
+      for (let i = 0; i < 90; i++) {
+        confettiPieces.push({
+          x: cCanvas.width * (Math.random() * 0.6 + 0.2),
+          y: cCanvas.height * 0.5,
+          vx: (Math.random() - 0.5) * 16,
+          vy: Math.random() * -18 - 4,
+          gravity: 0.45,
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 15,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 8 + 4,
+          opacity: 1
+        });
+      }
+
+      let frameCount = 0;
+      function animateConfetti() {
+        ctx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+        let activeCount = 0;
+
+        confettiPieces.forEach(p => {
+          p.x += p.vx;
+          p.vy += p.gravity;
+          p.y += p.vy;
+          p.rotation += p.rotationSpeed;
+          p.opacity -= 0.007;
+
+          if (p.opacity > 0 && p.y < cCanvas.height + 20) {
+            activeCount++;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+            ctx.restore();
+          }
+        });
+
+        frameCount++;
+        if (activeCount > 0 && frameCount < 260) {
+          requestAnimationFrame(animateConfetti);
+        } else {
+          ctx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+        }
+      }
+      animateConfetti();
+    }
+
+    // Additional Pass Action feedback
+    const saveWalletBtn = document.getElementById('save-wallet-btn');
+    if (saveWalletBtn) {
+      saveWalletBtn.addEventListener('click', () => {
+        alert('Pass #VIP-0824 generated and added to Apple Wallet / Google Pay.');
+      });
+    }
+
+    const sharePassBtn = document.getElementById('share-pass-btn');
+    if (sharePassBtn) {
+      sharePassBtn.addEventListener('click', () => {
+        if (navigator.share) {
+          navigator.share({
+            title: "Kai's Private Celebration • Ch. 28",
+            text: "Access Granted to Kai's Private Night. Pass #VIP-0824.",
+            url: window.location.href
+          }).catch(() => {});
+        } else {
+          alert('Pass invitation link copied to clipboard.');
+        }
+      });
+    }
+  })();
+</script></main>
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body></html>

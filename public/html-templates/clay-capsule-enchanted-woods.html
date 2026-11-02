@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_blank" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,600;0,700;0,800;1,700&amp;family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "tertiary-fixed-dim": "#85d3da", "secondary-fixed-dim": "#fdba49", "tertiary-fixed": "#a1f0f6", "primary": "#a93629", "tertiary-container": "#50a0a6", "on-tertiary-fixed-variant": "#004f54", "primary-fixed": "#ffdad5", "surface-container": "#f1eee5", "secondary": "#805600", "on-tertiary-container": "#003336", "inverse-surface": "#31312b", "surface-variant": "#e6e2d9", "outline-variant": "#dfbfba", "on-primary-fixed": "#410000", "primary-container": "#f06a58", "error-container": "#ffdad6", "surface-bright": "#fdf9f0", "on-secondary-fixed-variant": "#614000", "on-surface-variant": "#58413e", "on-secondary": "#ffffff", "on-secondary-container": "#704b00", "surface-container-lowest": "#ffffff", "error": "#ba1a1a", "on-surface": "#1c1c17", "surface-tint": "#a93629", "on-secondary-fixed": "#281800", "surface-container-highest": "#e6e2d9", "primary-fixed-dim": "#ffb4a8", "on-error-container": "#93000a", "background": "#fdf9f0", "on-tertiary-fixed": "#002022", "on-primary-container": "#620000", "on-error": "#ffffff", "on-primary-fixed-variant": "#881e14", "surface": "#fdf9f0", "on-tertiary": "#ffffff", "surface-container-high": "#ece8df", "surface-dim": "#dddad1", "outline": "#8b716d", "secondary-container": "#fdba49", "inverse-primary": "#ffb4a8", "secondary-fixed": "#ffddaf", "on-background": "#1c1c17", "inverse-on-surface": "#f4f0e7", "surface-container-low": "#f7f3ea", "on-primary": "#ffffff", "tertiary": "#00696f" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "gutter": "1.25rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "margin": "1.5rem", "space-md": "1rem", "space-lg": "1.5rem", "space-xl": "2.5rem" }, fontFamily: { "headline-lg": ["Epilogue"], "headline-md": ["Epilogue"], "label-lg": ["Nunito Sans"], "headline-lg-mobile": ["Epilogue"], "display-lg": ["Epilogue"], "body-md": ["Nunito Sans"], "body-sm": ["Nunito Sans"], "headline-sm": ["Epilogue"], "title-md": ["Nunito Sans"], "display-lg-mobile": ["Epilogue"], "label-sm": ["Nunito Sans"], "body-lg": ["Nunito Sans"] }, fontSize: { "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }], "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.04em", "fontWeight": "700" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "0em", "fontWeight": "700" }], "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "title-md": ["18px", { "lineHeight": "24px", "fontWeight": "700" }], "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "800" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }] } } } }</script><style>@layer base { html, body { min-height: 100%; margin: 0; padding: 0; } body { overscroll-behavior-y: none; -webkit-font-smoothing: antialiased; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; } .proscenium-stage-shadow { box-shadow: inset 0 0 0 1px rgba(26, 34, 56, 0.08), 0 16px 28px -4px rgba(26, 34, 56, 0.28), 0 6px 10px -2px rgba(26, 34, 56, 0.16); }</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-[#141b2d] min-h-screen text-on-surface font-body-md text-body-md flex justify-center items-start pt-safe pb-safe select-none overflow-x-hidden"><div class="w-full max-w-[390px] min-h-screen flex flex-col relative px-space-xs py-space-xs bg-[#141b2d]"><div class="w-full min-h-full flex-1 flex flex-col relative rounded-xl bg-surface overflow-hidden proscenium-stage-shadow"><main class="flex flex-col relative w-full flex-1 bg-surface z-10"><div class="flex flex-col w-full relative select-none">
+<!-- Interactive Confetti Canvas Overlay (Fixed on Top Plane) -->
+<div class="pointer-events-none fixed inset-0 z-50 overflow-hidden hidden" id="confetti-stage"></div>
+<!-- THEATRICAL POP-UP STAGE CONTAINER -->
+<div class="flex flex-col w-full relative">
+<!-- SCENE 1 & 2: THE THEATRE PROSCENIUM & MAIN STAGE REVEAL -->
+<div class="relative w-full overflow-hidden rounded-t-xl bg-on-tertiary-container pt-3 shadow-2xl">
+<!-- Top Proscenium Header Frame & Pelmet Valance -->
+<div class="relative z-30 flex flex-col items-center w-full px-2">
+<!-- Suspended Ropes for Marquee -->
+<div class="w-full flex justify-between px-10 h-6">
+<div class="w-1 h-full bg-secondary-container rounded-full shadow-sm"></div>
+<div class="w-1 h-full bg-secondary-container rounded-full shadow-sm"></div>
+</div>
+<!-- Hanging Cut-Paper Marquee Board -->
+<div class="relative -mt-1 w-full max-w-[340px] bg-surface-container-lowest px-4 py-3 rounded-lg shadow-xl text-center transform -rotate-1 transition-transform hover:rotate-0">
+<div class="absolute -top-2 left-6 w-3 h-3 rounded-full bg-secondary-container shadow-md flex items-center justify-center">
+<div class="w-1 h-1 rounded-full bg-on-secondary-fixed"></div>
+</div>
+<div class="absolute -top-2 right-6 w-3 h-3 rounded-full bg-secondary-container shadow-md flex items-center justify-center">
+<div class="w-1 h-1 rounded-full bg-on-secondary-fixed"></div>
+</div>
+<!-- Scallop Inset Strip -->
+<div class="bg-surface-variant p-2 rounded-md">
+<span class="font-label-sm text-label-sm text-tertiary uppercase tracking-widest block font-bold">Admit One To</span>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight font-extrabold uppercase drop-shadow-sm leading-none mt-0.5">
+              LEO'S 5TH
+            </h1>
+<p class="font-headline-sm text-headline-sm text-secondary font-bold tracking-wider uppercase mt-1">
+              Birthday Stage Show
+            </p>
+</div>
+</div>
+<!-- Scalloped Pelmet / Arch Fringe -->
+<div class="w-full flex justify-center -space-x-1 mt-2.5 z-40">
+<div class="w-8 h-4 bg-primary-container rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary-container rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary-container rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary-container rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary-container rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary rounded-b-full shadow-sm"></div>
+<div class="w-8 h-4 bg-primary-container rounded-b-full shadow-sm"></div>
+</div>
+</div>
+<!-- STAGE BOX INTERIOR (With Curtains Layer & Center Stage) -->
+<div class="relative w-full h-[380px] bg-on-tertiary-container overflow-hidden">
+<!-- Backdrop Cyclorama: Stars & Moon Cutouts -->
+<div class="absolute inset-0 z-0 flex flex-col justify-start p-4">
+<div class="flex justify-between items-start opacity-70">
+<div class="flex space-x-6">
+<span class="w-2.5 h-2.5 rotate-45 bg-secondary-fixed-dim rounded-xs inline-block shadow-sm"></span>
+<span class="w-1.5 h-1.5 rotate-45 bg-secondary-container rounded-xs inline-block shadow-sm"></span>
+</div>
+<div class="w-8 h-8 rounded-full bg-secondary-container shadow-md flex items-center justify-center">
+<div class="w-6 h-6 rounded-full bg-on-tertiary-container translate-x-1"></div>
+</div>
+<div class="flex space-x-4">
+<span class="w-2 h-2 rotate-45 bg-secondary-fixed rounded-xs inline-block"></span>
+<span class="w-3 h-3 rotate-45 bg-secondary-container rounded-xs inline-block"></span>
+</div>
+</div>
+</div>
+<!-- STAGE REVEAL CONTENT (Backstage Layer - Z-10) -->
+<div class="absolute inset-0 z-10 flex flex-col items-center justify-between pt-6 pb-2 px-4">
+<!-- Bunting Pennants Garland -->
+<div class="w-full flex justify-around items-center -mt-2">
+<div class="w-5 h-7 bg-primary shadow-sm" style="clip-path: polygon(0 0, 100% 0, 50% 100%);"></div>
+<div class="w-5 h-7 bg-secondary-container shadow-sm" style="clip-path: polygon(0 0, 100% 0, 50% 100%);"></div>
+<div class="w-5 h-7 bg-tertiary-container shadow-sm" style="clip-path: polygon(0 0, 100% 0, 50% 100%);"></div>
+<div class="w-5 h-7 bg-primary-container shadow-sm" style="clip-path: polygon(0 0, 100% 0, 50% 100%);"></div>
+<div class="w-5 h-7 bg-secondary-fixed-dim shadow-sm" style="clip-path: polygon(0 0, 100% 0, 50% 100%);"></div>
+<div class="w-5 h-7 bg-tertiary shadow-sm" style="clip-path: polygon(0 0, 100% 0, 50% 100%);"></div>
+<div class="w-5 h-7 bg-primary shadow-sm" style="clip-path: polygon(0 0, 100% 0, 50% 100%);"></div>
+</div>
+<!-- Hanging Ribbon Banner -->
+<div class="bg-surface-bright px-5 py-1.5 rounded-sm shadow-md transform -rotate-1 relative z-10">
+<span class="font-headline-sm text-headline-sm text-primary font-bold tracking-tight">
+              ★ LEO IS TURNING FIVE! ★
+            </span>
+</div>
+<!-- Center Stage Diorama: Cake & Pip The Little Fox Mascot -->
+<div class="relative w-full flex justify-center items-end h-56">
+<!-- 3-Tier Cut-Paper Birthday Cake -->
+<div class="relative z-10 flex flex-col items-center mr-2">
+<!-- Giant Golden 5 Candle Topper -->
+<div class="relative flex flex-col items-center -mb-2 z-20">
+<!-- Paper Candle Flame with flicker -->
+<div class="w-3.5 h-6 bg-secondary-container rounded-full shadow-md animate-pulse"></div>
+<div class="w-2 h-4 bg-surface-lowest shadow-inner"></div>
+<div class="w-7 h-9 bg-secondary-container rounded-md flex items-center justify-center shadow-md">
+<span class="font-display-lg-mobile text-headline-sm text-on-secondary-container font-extrabold">5</span>
+</div>
+</div>
+<!-- Cake Tier 1 (Top) -->
+<div class="w-20 h-9 bg-surface-container-lowest rounded-t-lg shadow-md flex items-center justify-around px-1 relative">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-xs"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-xs"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-xs"></span>
+</div>
+<!-- Cake Tier 2 (Middle) -->
+<div class="w-28 h-10 bg-primary-fixed rounded-t-md shadow-md flex items-center justify-around px-2 relative -mt-0.5">
+<div class="w-3 h-3 bg-secondary-container rounded-full"></div>
+<div class="w-3 h-3 bg-tertiary-container rounded-full"></div>
+<div class="w-3 h-3 bg-primary-container rounded-full"></div>
+<div class="w-3 h-3 bg-secondary-container rounded-full"></div>
+</div>
+<!-- Cake Tier 3 (Base) -->
+<div class="w-36 h-12 bg-surface-bright rounded-t-md shadow-lg flex items-center justify-center relative -mt-0.5">
+<div class="w-full flex justify-between px-3">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="w-3 h-3 rounded-full bg-secondary-container"></span>
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+</div>
+</div>
+<!-- Cake Stand Plate -->
+<div class="w-44 h-3 bg-surface-dim rounded-full shadow-md"></div>
+</div>
+<!-- Pip the Little Fox Mascot (Layered Cardstock Cutout with Brass Pin Joint) -->
+<div class="relative z-20 flex flex-col items-center ml-2 cursor-pointer transition-transform duration-300 active:scale-95" id="fox-mascot">
+<!-- Party Hat -->
+<div class="w-6 h-9 bg-primary-container shadow-sm flex flex-col items-center relative -mb-2 z-10" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);">
+<div class="w-full h-1.5 bg-secondary-container mt-2"></div>
+<div class="w-full h-1.5 bg-surface-bright mt-1"></div>
+</div>
+<!-- Fox Ears & Head -->
+<div class="relative w-16 h-14 bg-primary-container rounded-xl shadow-md flex flex-col items-center justify-center p-1">
+<!-- Paper Ears -->
+<div class="absolute -top-3 left-0.5 w-4 h-5 bg-primary rounded-t-md"></div>
+<div class="absolute -top-3 right-0.5 w-4 h-5 bg-primary rounded-t-md"></div>
+<!-- Origami Face Muzzle -->
+<div class="w-12 h-8 bg-surface-bright rounded-b-xl flex flex-col items-center justify-end pb-1 shadow-sm mt-3">
+<div class="flex space-x-3 mb-1">
+<div class="w-1.5 h-1.5 rounded-full bg-on-surface"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-on-surface"></div>
+</div>
+<!-- Little Nose -->
+<div class="w-2 h-1.5 rounded-full bg-primary"></div>
+</div>
+</div>
+<!-- Fox Body -->
+<div class="relative w-14 h-14 bg-primary rounded-t-2xl shadow-md flex justify-center -mt-1">
+<div class="w-7 h-10 bg-surface-bright rounded-t-lg"></div>
+<!-- Brass Fastener Joint & Waving Arm Tab -->
+<div class="absolute -right-3 top-2 w-7 h-3 bg-primary-container rounded-full shadow-sm transform rotate-45 origin-left transition-transform duration-300" id="fox-arm">
+<div class="w-1.5 h-1.5 bg-secondary-container rounded-full ml-0.5 mt-0.5"></div>
+</div>
+</div>
+<!-- Fox Label Tag -->
+<div class="bg-surface-container-highest px-2 py-0.5 rounded text-center shadow-xs mt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">Pip the Fox</span>
+</div>
+</div>
+</div>
+<!-- Stage Floor Planks -->
+<div class="w-full h-5 bg-secondary flex justify-between items-center px-4 rounded-t shadow-inner">
+<div class="w-full flex space-x-3 opacity-30">
+<div class="h-3 w-10 bg-on-secondary rounded-sm"></div>
+<div class="h-3 w-16 bg-on-secondary rounded-sm"></div>
+<div class="h-3 w-12 bg-on-secondary rounded-sm"></div>
+<div class="h-3 w-20 bg-on-secondary rounded-sm"></div>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE PAPER CURTAINS (Left & Right Flaps) -->
+<div class="absolute top-0 bottom-0 left-0 w-1/2 bg-primary z-20 flex flex-col justify-between py-6 px-3 shadow-2xl transition-all duration-700 ease-out" id="curtain-left">
+<!-- Curtain Folds Scallops -->
+<div class="flex justify-between opacity-30">
+<div class="w-3 h-full bg-primary-container"></div>
+<div class="w-3 h-full bg-on-primary-container"></div>
+</div>
+<!-- Left Gold Tie Cord -->
+<div class="w-8 h-4 bg-secondary-container rounded-r-full shadow-md self-start"></div>
+<div class="opacity-20 text-on-primary font-headline-sm">✂</div>
+</div>
+<div class="absolute top-0 bottom-0 right-0 w-1/2 bg-primary z-20 flex flex-col justify-between py-6 px-3 shadow-2xl transition-all duration-700 ease-out items-end" id="curtain-right">
+<!-- Curtain Folds Scallops -->
+<div class="flex justify-between opacity-30">
+<div class="w-3 h-full bg-on-primary-container"></div>
+<div class="w-3 h-full bg-primary-container"></div>
+</div>
+<!-- Right Gold Tie Cord -->
+<div class="w-8 h-4 bg-secondary-container rounded-l-full shadow-md self-end"></div>
+<div class="opacity-20 text-on-primary font-headline-sm">✂</div>
+</div>
+<!-- INTERACTIVE CURTAIN PULL TAG BUTTON (Z-30) -->
+<div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 flex flex-col items-center transition-all duration-300" id="curtain-trigger-card">
+<div class="w-1 h-6 bg-secondary-container shadow-sm"></div>
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2.5 rounded-full font-label-lg text-label-lg font-bold shadow-xl flex items-center space-x-2 border-none active:translate-y-0.5" id="curtain-button" type="button">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">content_cut</span>
+<span id="curtain-text">TAP TO DRAW CURTAINS</span>
+</button>
+</div>
+</div>
+</div>
+<!-- SCENE 3: THE DATE AND TIME (Layered Landscape Diorama) -->
+<div class="relative w-full bg-surface-container-low px-4 pt-8 pb-10 overflow-hidden shadow-inner">
+<!-- Background Rolling Hills Cardstock Planes -->
+<div class="relative w-full h-32 mb-4 overflow-hidden rounded-xl bg-tertiary-container shadow-md">
+<!-- Sun Peeking Cutout -->
+<div class="absolute top-2 left-6 w-12 h-12 bg-secondary-container rounded-full shadow-md flex items-center justify-center">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+</div>
+</div>
+<!-- Hill Layer 1 (Distant Forest) -->
+<div class="absolute -bottom-4 -left-10 w-72 h-24 bg-tertiary rounded-t-full shadow-lg transform -rotate-6"></div>
+<!-- Hill Layer 2 (Midground Mustard Grass) -->
+<div class="absolute -bottom-6 -right-8 w-64 h-24 bg-secondary-container rounded-t-full shadow-xl transform rotate-3"></div>
+<!-- Hill Layer 3 (Foreground Teal Slope) -->
+<div class="absolute -bottom-8 left-12 w-64 h-20 bg-tertiary-fixed-dim rounded-t-full shadow-2xl"></div>
+<!-- Scene Ribbon Header -->
+<div class="absolute top-3 right-4 bg-surface-lowest px-3 py-1 rounded shadow-md z-10">
+<span class="font-label-sm text-label-sm text-tertiary font-extrabold uppercase tracking-wider">Act I: The Time &amp; Date</span>
+</div>
+</div>
+<!-- Two Physical Staggered Hanging Cards -->
+<div class="flex justify-between items-start gap-3">
+<!-- Date Card (Hanging from Paper Twine) -->
+<div class="flex-1 flex flex-col items-center">
+<div class="w-1 h-5 bg-outline-variant shadow-xs"></div>
+<div class="w-full bg-surface-bright p-4 rounded-xl shadow-lg relative transform -rotate-1 hover:rotate-0 transition-transform">
+<!-- Brass Brad Cutout -->
+<div class="absolute -top-1.5 left-1/2 transform -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-secondary-container shadow-md flex items-center justify-center">
+<div class="w-1 h-1 bg-secondary rounded-full"></div>
+</div>
+<!-- Card Tag -->
+<div class="bg-primary-fixed px-2 py-0.5 rounded text-center w-fit mb-2">
+<span class="font-label-sm text-label-sm text-on-primary-fixed font-bold uppercase tracking-wider">The Date</span>
+</div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+<p class="font-headline-sm text-headline-sm text-on-surface font-extrabold">Saturday</p>
+</div>
+<p class="font-title-md text-title-md text-primary font-bold">Sep 20, 2025</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Autumn Equinox Eve</p>
+</div>
+</div>
+<!-- Time Card (Staggered Lower with Paper Loops) -->
+<div class="flex-1 flex flex-col items-center mt-4">
+<div class="w-1 h-7 bg-outline-variant shadow-xs"></div>
+<div class="w-full bg-surface-container-lowest p-4 rounded-xl shadow-lg relative transform rotate-1 hover:rotate-0 transition-transform">
+<!-- Brass Brad Cutout -->
+<div class="absolute -top-1.5 left-1/2 transform -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-secondary-container shadow-md flex items-center justify-center">
+<div class="w-1 h-1 bg-secondary rounded-full"></div>
+</div>
+<!-- Card Tag -->
+<div class="bg-secondary-fixed px-2 py-0.5 rounded text-center w-fit mb-2">
+<span class="font-label-sm text-label-sm text-on-secondary-fixed-variant font-bold uppercase tracking-wider">The Time</span>
+</div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">schedule</span>
+<p class="font-headline-sm text-headline-sm text-on-surface font-extrabold">3:00 PM</p>
+</div>
+<p class="font-title-md text-title-md text-secondary font-bold">to 6:00 PM</p>
+<!-- Candle Ceremony Tag -->
+<div class="mt-2 pt-2 bg-surface-container px-2 py-1 rounded">
+<p class="font-label-sm text-label-sm text-on-surface font-bold">🎂 4:30 PM</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-tight">Cake &amp; Song</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- SCENE 4: THE PLACE (The Paper Village & Map) -->
+<div class="relative w-full bg-surface-container px-4 py-8 overflow-hidden shadow-inner">
+<div class="flex items-center justify-between mb-4">
+<div>
+<span class="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider block">Act II: The Setting</span>
+<h2 class="font-headline-md text-headline-md text-on-surface font-extrabold">The Enchanted Woods</h2>
+</div>
+<div class="bg-primary-container text-on-primary-container px-2.5 py-1 rounded-full shadow-sm flex items-center space-x-1">
+<span class="material-symbols-outlined text-sm">nature_people</span>
+<span class="font-label-sm text-label-sm font-bold">Stage 4</span>
+</div>
+</div>
+<!-- Pop-Up Paper Village Card with Map Coordinates -->
+<div class="relative w-full bg-surface-bright rounded-xl p-5 shadow-xl">
+<!-- Folded Paper Pine Trees & Village Silhouettes -->
+<div class="w-full flex justify-between items-end mb-4 px-2">
+<!-- Pine Tree 1 -->
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 bg-tertiary shadow-sm" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+<div class="w-10 h-8 bg-tertiary-container -mt-4 shadow-sm" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+<div class="w-3 h-3 bg-secondary"></div>
+</div>
+<!-- Little Cut-Paper House -->
+<div class="flex flex-col items-center">
+<div class="w-14 h-8 bg-primary shadow-sm" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+<div class="w-12 h-10 bg-surface-container-high rounded-b shadow-md flex items-center justify-center space-x-2">
+<div class="w-2.5 h-3 bg-tertiary-fixed-dim rounded-xs"></div>
+<div class="w-2.5 h-4 bg-primary rounded-t-xs"></div>
+</div>
+</div>
+<!-- Pine Tree 2 (Mustard Pop-up) -->
+<div class="flex flex-col items-center">
+<div class="w-9 h-9 bg-secondary shadow-sm" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+<div class="w-11 h-9 bg-secondary-container -mt-4 shadow-sm" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+<div class="w-3 h-3 bg-secondary"></div>
+</div>
+</div>
+<!-- Directional Wooden Signpost (Cardstock Cutout Planks) -->
+<div class="relative w-full flex flex-col items-center my-3">
+<!-- Sign Post Spine -->
+<div class="absolute -top-3 bottom-0 w-3 bg-secondary-fixed-dim rounded shadow-xs"></div>
+<!-- Plaque 1 -->
+<div class="relative z-10 w-full max-w-[270px] bg-secondary text-on-secondary px-3 py-2 rounded shadow-md transform -rotate-1 text-center mb-1.5">
+<p class="font-headline-sm text-headline-sm font-bold tracking-wide">The Enchanted Oak Hollow</p>
+</div>
+<!-- Plaque 2 -->
+<div class="relative z-10 w-full max-w-[240px] bg-primary text-on-primary px-3 py-1.5 rounded shadow-md transform rotate-1 text-center mb-1.5">
+<p class="font-title-md text-title-md font-bold">Forest Pavilion #3</p>
+</div>
+<!-- Plaque 3 -->
+<div class="relative z-10 w-full max-w-[260px] bg-surface-container-highest text-on-surface-variant px-3 py-1 rounded shadow-sm text-center">
+<p class="font-body-md text-body-md font-semibold">Maple Valley Park, Portland, OR</p>
+</div>
+</div>
+<!-- Map Location Preview Box with Brass Pin -->
+<div class="relative mt-5 rounded-lg overflow-hidden shadow-md">
+<div class="absolute top-2 left-2 z-20 w-5 h-5 rounded-full bg-secondary-container shadow-md flex items-center justify-center">
+<div class="w-1.5 h-1.5 rounded-full bg-on-secondary-fixed"></div>
+</div>
+<!-- Google Maps static pipeline representation via container -->
+<div class="w-full h-36 bg-cover bg-center rounded-lg" data-location="The Enchanted Oak Hollow, Forest Pavilion #3, Portland, OR" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBIDgboMcUI2iRW43jolYyxp6Q0GXeJVFKO848yoRxYtebL1pLy1O4J0hSpAa-aMs5oUcIdu-USjN4k4VG-KMl7ggyxxzfPLy3PqGkjs2GGWP54w54KCNSeDJkbspuKPSaxQDXLWP5jG2f6wb8O06QXx3SY2Edjgo2Tt_V1HCWNCs1FaqNhC4qqYN-Zu2_VAvk7d9oPi28QYwIc4WW0cK2g1ICXmCOmfcDHEGIbj7DvI1HqUeoUI0o')"></div>
+</div>
+<!-- Action Button: Open in Maps (Paper Card Tab with Stitch Simulation) -->
+<div class="mt-4 flex justify-center">
+<a class="w-full bg-tertiary text-on-tertiary py-3 px-4 rounded-xl shadow-md flex items-center justify-center space-x-2 transform transition-transform active:scale-95" href="https://maps.google.com" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-title-md text-title-md font-bold">Get Directions to Oak Hollow</span>
+</a>
+</div>
+</div>
+</div>
+<!-- SCENE 5: FINALE & THE INTERACTIVE RSVP TICKET -->
+<div class="relative w-full bg-surface-container-highest px-4 pt-8 pb-12 overflow-hidden shadow-2xl">
+<div class="text-center mb-5">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-widest block">Grand Finale • Act III</span>
+<h2 class="font-headline-md text-headline-md text-on-surface font-extrabold uppercase mt-0.5">Your Admission Ticket</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Please clip your ticket to claim your stage seat!</p>
+</div>
+<!-- VINTAGE POP-UP THEATRE TICKET STUB -->
+<div class="relative w-full bg-surface-container-lowest rounded-2xl shadow-2xl overflow-hidden" id="rsvp-ticket">
+<!-- Gold Ticket Header -->
+<div class="bg-secondary-container text-on-secondary-container px-4 py-3 text-center shadow-sm">
+<span class="font-label-sm text-label-sm font-extrabold tracking-widest uppercase">Leo's 5th Birthday Extravaganza</span>
+<p class="font-headline-sm text-headline-sm font-black mt-0.5">OFFICIAL AUDIENCE PASS</p>
+</div>
+<!-- Top Half: Perforation Notch & Ticket Info -->
+<div class="relative px-5 pt-4 pb-2">
+<!-- Ticket Serial & Decorative Stars -->
+<div class="flex justify-between items-center text-outline font-label-sm text-label-sm">
+<span>NO. 092025-05</span>
+<div class="flex space-x-1">
+<span class="material-symbols-outlined text-sm text-secondary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm text-secondary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm text-secondary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span>PORTLAND, OR</span>
+</div>
+</div>
+<!-- PHYSICAL PERFORATED CUT TICKET DIVIDER -->
+<div class="relative w-full flex items-center my-1">
+<!-- Left Punch Notch Cutout -->
+<div class="w-5 h-8 bg-surface-container-highest rounded-r-full shadow-inner -ml-0.5"></div>
+<!-- Perforated Line -->
+<div class="flex-1 flex justify-around px-2 overflow-hidden">
+<div class="w-full h-0.5 border-b-2 border-dashed border-outline-variant"></div>
+</div>
+<!-- Right Punch Notch Cutout -->
+<div class="w-5 h-8 bg-surface-container-highest rounded-l-full shadow-inner -mr-0.5"></div>
+</div>
+<!-- Bottom Half: The Interactive RSVP Stub -->
+<div class="px-5 pt-2 pb-6 flex flex-col space-y-4">
+<!-- Form Input: Parent / Guest Name -->
+<div>
+<label class="font-label-lg text-label-lg text-on-surface font-bold block mb-1" for="adventurer-name">
+              Adventurer or Family Name
+            </label>
+<div class="relative rounded-lg bg-surface-container p-1 shadow-inner">
+<input class="w-full bg-transparent px-3 py-2 text-on-surface font-body-md text-body-md focus:outline-none placeholder:text-outline" id="adventurer-name" placeholder="e.g. The Miller Family" type="text"/>
+</div>
+</div>
+<!-- Counter Chips: Number of Adventurers Attending -->
+<div>
+<label class="font-label-lg text-label-lg text-on-surface font-bold block mb-2">
+              Number of Attendees
+            </label>
+<div class="flex space-x-2" id="ticket-guest-counter">
+<button class="guest-btn flex-1 py-2 rounded-lg bg-surface-variant text-on-surface-variant font-title-md text-title-md font-bold shadow-xs active:scale-95 transition-all" data-val="1" type="button">
+                1
+              </button>
+<button class="guest-btn flex-1 py-2 rounded-lg bg-primary-container text-on-primary-container font-title-md text-title-md font-bold shadow-md active:scale-95 transition-all" data-val="2" type="button">
+                2
+              </button>
+<button class="guest-btn flex-1 py-2 rounded-lg bg-surface-variant text-on-surface-variant font-title-md text-title-md font-bold shadow-xs active:scale-95 transition-all" data-val="3" type="button">
+                3
+              </button>
+<button class="guest-btn flex-1 py-2 rounded-lg bg-surface-variant text-on-surface-variant font-title-md text-title-md font-bold shadow-xs active:scale-95 transition-all" data-val="4+" type="button">
+                4+
+              </button>
+</div>
+</div>
+<!-- Dietary / Note Accordion Tab -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold block mb-1" for="party-notes">
+              Special Food Allergies or Wishes?
+            </label>
+<input class="w-full rounded-lg bg-surface-container px-3 py-2 text-on-surface font-body-sm text-body-sm shadow-inner focus:outline-none placeholder:text-outline" id="party-notes" placeholder="Nut-free, dairy-free, favorite song..." type="text"/>
+</div>
+<!-- Big Coral Primary Decision Button: YES! -->
+<div class="pt-2">
+<button class="w-full min-h-[56px] bg-primary-container text-on-primary font-headline-sm text-headline-sm font-extrabold rounded-xl shadow-xl flex items-center justify-center space-x-2 active:translate-y-1 transition-all" id="btn-submit-rsvp" type="button">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+<span>YES! WE WILL BE THERE</span>
+</button>
+</div>
+<!-- Secondary Polite Button: Can't Make It -->
+<div>
+<button class="w-full py-2.5 bg-surface-container text-on-surface-variant font-label-lg text-label-lg font-bold rounded-lg shadow-xs active:scale-95 transition-all" id="btn-decline-rsvp" type="button">
+              So sorry, cheering from afar!
+            </button>
+</div>
+</div>
+</div>
+<!-- Cut-Paper Footer Emblem -->
+<div class="flex flex-col items-center mt-8 space-y-2 opacity-80">
+<div class="flex items-center space-x-2">
+<div class="w-8 h-0.5 bg-outline-variant"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold uppercase tracking-widest">Handcrafted Pop-Up Production</span>
+<div class="w-8 h-0.5 bg-outline-variant"></div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-center">
+          Questions for Leo's Parents? Ring or text (503) 555-0192
+        </p>
+</div>
+</div>
+</div>
+<!-- POP-UP PAPER CONFIRMATION MODAL -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-on-tertiary-container/80 backdrop-blur-xs hidden" id="rsvp-modal">
+<div class="relative w-full max-w-[340px] bg-surface-bright rounded-2xl p-6 shadow-2xl flex flex-col items-center text-center transform scale-95 transition-transform duration-300">
+<!-- Mascot Pop-up Badge -->
+<div class="w-16 h-16 rounded-full bg-secondary-container shadow-lg flex items-center justify-center -mt-12 mb-3">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">celebration</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider" id="modal-eyebrow">Ticket Confirmed!</span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-extrabold mt-1" id="modal-title">See You At The Stage!</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2" id="modal-body">
+        Your seat at Leo's 5th Birthday Show is reserved. We have saved a party hat &amp; cake slice for you!
+      </p>
+<div class="w-full bg-surface-container-high rounded-xl p-3 my-4">
+<p class="font-title-md text-title-md text-primary font-bold">Saturday, Sept 20 • 3:00 PM</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">The Enchanted Oak Hollow, Forest Pavilion #3</p>
+</div>
+<button class="w-full py-3 bg-primary-container text-on-primary font-title-md text-title-md font-bold rounded-xl shadow-md active:scale-95 transition-transform" id="modal-close" type="button">
+        Back to Stage Show
+      </button>
+</div>
+</div>
+<!-- JAVASCRIPT FOR MICRO-INTERACTIONS -->
+<script>
+    (function() {
+      // 1. Interactive Curtain Reveal Logic
+      var curtainOpen = false;
+      var leftCurtain = document.getElementById('curtain-left');
+      var rightCurtain = document.getElementById('curtain-right');
+      var curtainBtn = document.getElementById('curtain-button');
+      var curtainText = document.getElementById('curtain-text');
+      var foxArm = document.getElementById('fox-arm');
+      var foxMascot = document.getElementById('fox-mascot');
+
+      function toggleCurtains() {
+        curtainOpen = !curtainOpen;
+        if (curtainOpen) {
+          leftCurtain.style.transform = 'translateX(-85%)';
+          rightCurtain.style.transform = 'translateX(85%)';
+          curtainText.textContent = 'CLOSE CURTAINS';
+          // Trigger Fox Mascot wave
+          if (foxArm) {
+            foxArm.style.transform = 'rotate(90deg)';
+          }
+        } else {
+          leftCurtain.style.transform = 'translateX(0)';
+          rightCurtain.style.transform = 'translateX(0)';
+          curtainText.textContent = 'TAP TO DRAW CURTAINS';
+          if (foxArm) {
+            foxArm.style.transform = 'rotate(45deg)';
+          }
+        }
+      }
+
+      if (curtainBtn) {
+        curtainBtn.addEventListener('click', toggleCurtains);
+      }
+
+      // Waving Fox on mascot click
+      if (foxMascot) {
+        foxMascot.addEventListener('click', function() {
+          if (foxArm) {
+            foxArm.style.transform = foxArm.style.transform === 'rotate(90deg)' ? 'rotate(30deg)' : 'rotate(90deg)';
+          }
+        });
+      }
+
+      // 2. RSVP Guest Counter Selector
+      var guestBtns = document.querySelectorAll('.guest-btn');
+      guestBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          guestBtns.forEach(function(b) {
+            b.classList.remove('bg-primary-container', 'text-on-primary-container', 'shadow-md');
+            b.classList.add('bg-surface-variant', 'text-on-surface-variant', 'shadow-xs');
+          });
+          btn.classList.add('bg-primary-container', 'text-on-primary-container', 'shadow-md');
+          btn.classList.remove('bg-surface-variant', 'text-on-surface-variant', 'shadow-xs');
+        });
+      });
+
+      // 3. Confetti Animation Trigger
+      var confettiStage = document.getElementById('confetti-stage');
+      function burstConfetti() {
+        if (!confettiStage) return;
+        confettiStage.innerHTML = '';
+        confettiStage.classList.remove('hidden');
+
+        var colors = ['#f06a58', '#fdba49', '#50a0a6', '#ffdad5', '#fdf9f0'];
+        for (var i = 0; i < 40; i++) {
+          var piece = document.createElement('div');
+          var color = colors[Math.floor(Math.random() * colors.length)];
+          var left = Math.random() * 100;
+          var animDuration = 1.5 + Math.random() * 2;
+          var width = 8 + Math.random() * 8;
+          var height = 12 + Math.random() * 12;
+
+          piece.className = 'absolute';
+          piece.style.backgroundColor = color;
+          piece.style.left = left + '%';
+          piece.style.top = '-20px';
+          piece.style.width = width + 'px';
+          piece.style.height = height + 'px';
+          piece.style.borderRadius = '2px';
+          piece.style.boxShadow = '0 2px 4px rgba(0,0,0,0.15)';
+          piece.style.transition = 'transform ' + animDuration + 's ease-out, opacity ' + animDuration + 's ease-out';
+
+          confettiStage.appendChild(piece);
+
+          (function(p, dur) {
+            setTimeout(function() {
+              p.style.transform = 'translateY(' + (window.innerHeight + 50) + 'px) rotate(' + (Math.random() * 720 - 360) + 'deg)';
+              p.style.opacity = '0';
+            }, 20);
+          })(piece, animDuration);
+        }
+
+        setTimeout(function() {
+          confettiStage.classList.add('hidden');
+          confettiStage.innerHTML = '';
+        }, 3500);
+      }
+
+      // 4. Modal Triggers
+      var rsvpModal = document.getElementById('rsvp-modal');
+      var btnSubmit = document.getElementById('btn-submit-rsvp');
+      var btnDecline = document.getElementById('btn-decline-rsvp');
+      var modalClose = document.getElementById('modal-close');
+      var modalTitle = document.getElementById('modal-title');
+      var modalEyebrow = document.getElementById('modal-eyebrow');
+      var modalBody = document.getElementById('modal-body');
+
+      if (btnSubmit) {
+        btnSubmit.addEventListener('click', function() {
+          var nameInput = document.getElementById('adventurer-name');
+          var name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'Adventurer';
+          modalEyebrow.textContent = 'Ticket Confirmed!';
+          modalTitle.textContent = 'Hooray, ' + name + '!';
+          modalBody.textContent = 'Your seats at Leo&apos;s 5th Birthday Stage Show are booked. A party hat is being crafted in your honor!';
+          rsvpModal.classList.remove('hidden');
+          burstConfetti();
+        });
+      }
+
+      if (btnDecline) {
+        btnDecline.addEventListener('click', function() {
+          modalEyebrow.textContent = 'Warm Paper Wishes Sent';
+          modalTitle.textContent = 'You Will Be Missed!';
+          modalBody.textContent = 'We will save a slice of paper birthday cake in spirit. Thank you for letting us know!';
+          rsvpModal.classList.remove('hidden');
+        });
+      }
+
+      if (modalClose) {
+        modalClose.addEventListener('click', function() {
+          rsvpModal.classList.add('hidden');
+        });
+      }
+    })();
+  </script>
+</div></main></div></div>
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body></html>

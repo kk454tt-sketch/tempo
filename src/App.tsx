@@ -73,23 +73,9 @@ export const App: React.FC = () => {
               }
             />
 
-            {/* Website Creation / Studio (Protected) */}
-            <Route
-              path="/create"
-              element={
-                <ProtectedRoute>
-                  <WebsiteCreatorPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/create/:templateId"
-              element={
-                <ProtectedRoute>
-                  <WebsiteCreatorPage />
-                </ProtectedRoute>
-              }
-            />
+            {/* Website Creation / Studio (Publicly Accessible - sign in requested upon publishing) */}
+            <Route path="/create" element={<WebsiteCreatorPage />} />
+            <Route path="/create/:templateId" element={<WebsiteCreatorPage />} />
 
             {/* Public Event Guest Portal */}
             <Route path="/e/:slug" element={<PublicEventPage />} />
@@ -103,5 +89,6 @@ export const App: React.FC = () => {
     </ErrorBoundary>
   );
 };
+
 
 export default App;

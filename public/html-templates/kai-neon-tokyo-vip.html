@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#050508] text-white antialiased">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>KAI IS TURNING 25 // VIP BIRTHDAY CELEBRATION</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --neon-purple: #a855f7;
+      --neon-cyan: #00f0ff;
+      --neon-pink: #ec4899;
+    }
+    
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overscroll-behavior-y: none;
+      background: #040407;
+    }
+
+    .font-syne {
+      font-family: 'Syne', sans-serif;
+    }
+
+    .font-mono-num {
+      font-family: 'Space Grotesk', monospace;
+    }
+
+    /* Custom Vertical Snap Container */
+    .snap-container {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      height: 100vh;
+      height: 100dvh;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+    .snap-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .snap-section {
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    /* Neon Glow Effects */
+    .text-glow-purple {
+      text-shadow: 0 0 20px rgba(168, 85, 247, 0.7), 0 0 50px rgba(168, 85, 247, 0.4), 0 0 80px rgba(168, 85, 247, 0.2);
+    }
+    
+    .text-glow-cyan {
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 45px rgba(0, 240, 255, 0.4), 0 0 70px rgba(0, 240, 255, 0.2);
+    }
+
+    .box-glow-purple {
+      box-shadow: 0 0 30px -5px rgba(168, 85, 247, 0.5), inset 0 0 20px rgba(168, 85, 247, 0.15);
+    }
+
+    .box-glow-cyan {
+      box-shadow: 0 0 35px -5px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.15);
+    }
+
+    /* Floating particles background */
+    @keyframes floatParticle {
+      0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+      50% { transform: translateY(-70px) translateX(25px) scale(1.3); opacity: 0.7; }
+      100% { transform: translateY(-140px) translateX(-20px) scale(0.9); opacity: 0; }
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 9999px;
+      pointer-events: none;
+      animation: floatParticle var(--d, 6s) infinite ease-in-out;
+    }
+
+    /* Pulse radar */
+    @keyframes radarPing {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.6); opacity: 0.2; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    .radar-circle {
+      animation: radarPing 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+
+    /* Bounce scroll prompt */
+    @keyframes gentleBounce {
+      0%, 100% { transform: translateY(0); opacity: 0.9; }
+      50% { transform: translateY(8px); opacity: 0.4; }
+    }
+    .bounce-scroll {
+      animation: gentleBounce 1.8s ease-in-out infinite;
+    }
+
+    /* 3D tilt perspective for cards */
+    .perspective-card {
+      perspective: 1000px;
+      transform-style: preserve-3d;
+    }
+
+    /* Canvas Fireworks overlay */
+    #fireworks-canvas {
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 100;
+    }
+  </style>
+
+<style id="tempo-responsive-override">
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  /* Prevent animated ping or oversized elements from overflowing viewport */
+  .animate-ping {
+    max-width: 100% !important;
+  }
+</style>
+
+</head>
+<body class="h-full overflow-hidden select-none">
+
+  <!-- Fixed Ambient Lighting Mesh -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-[15%] -left-[10%] w-[80vw] h-[80vw] rounded-full bg-purple-600/15 blur-[120px]"></div>
+    <div class="absolute top-[40%] -right-[20%] w-[90vw] h-[90vw] rounded-full bg-cyan-500/15 blur-[130px]"></div>
+    <div class="absolute -bottom-[10%] left-[10%] w-[85vw] h-[85vw] rounded-full bg-purple-900/20 blur-[140px]"></div>
+    <!-- Subtle Grid Lines overlay -->
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30"></div>
+  </div>
+
+  <!-- Story Progress Indicator Bar (Top) -->
+  <nav class="fixed top-0 inset-x-0 z-50 p-4 max-w-md mx-auto flex items-center justify-between gap-1.5" aria-label="Story Progress">
+    <div class="flex-1 h-1 rounded-full bg-white/20 overflow-hidden backdrop-blur-sm">
+      <div id="prog-1" class="h-full bg-gradient-to-r from-purple-400 to-cyan-400 transition-all duration-300 w-full"></div>
+    </div>
+    <div class="flex-1 h-1 rounded-full bg-white/20 overflow-hidden backdrop-blur-sm">
+      <div id="prog-2" class="h-full bg-gradient-to-r from-purple-400 to-cyan-400 transition-all duration-300 w-0"></div>
+    </div>
+    <div class="flex-1 h-1 rounded-full bg-white/20 overflow-hidden backdrop-blur-sm">
+      <div id="prog-3" class="h-full bg-gradient-to-r from-purple-400 to-cyan-400 transition-all duration-300 w-0"></div>
+    </div>
+    <div class="flex-1 h-1 rounded-full bg-white/20 overflow-hidden backdrop-blur-sm">
+      <div id="prog-4" class="h-full bg-gradient-to-r from-purple-400 to-cyan-400 transition-all duration-300 w-0"></div>
+    </div>
+  </nav>
+
+  <!-- Audio / Vibe Toggle Top Right -->
+  <aside class="fixed top-6 right-4 z-50 flex items-center gap-2">
+    <button id="vibe-btn" onclick="toggleVibeSound()" aria-label="Toggle Club Audio Vibe" class="px-3 py-1.5 rounded-full bg-black/40 border border-white/10 backdrop-blur-xl text-xs font-semibold tracking-wider text-cyan-300 flex items-center gap-1.5 shadow-lg active:scale-95 transition-transform">
+      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping inline-block"></span>
+      <span id="vibe-text">AUDIO ON</span>
+    </button>
+  </aside>
+
+  <!-- Fireworks Canvas Layer -->
+  <canvas id="fireworks-canvas"></canvas>
+
+  <!-- Master Mobile-Width Container -->
+  <main class="w-full h-full max-w-md mx-auto relative z-10">
+    <div id="story-slider" class="snap-container">
+
+      <!-- ==============================================
+           SCREEN 1: HERO (GLOWING TYPOGRAPHY & PARTICLES)
+           ============================================== -->
+      <section id="screen-1" class="snap-section relative flex flex-col justify-between p-6 pt-16 pb-10 overflow-hidden">
+        
+        <!-- Floating Ambient Particles inside hero -->
+        <div id="hero-particles" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+
+        <!-- Top Badge -->
+        <header class="flex justify-between items-center z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-[11px] font-bold tracking-widest uppercase backdrop-blur-md">
+            <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_#a855f7]"></span>
+            OFFICIAL INVITATION
+          </div>
+          <span class="font-mono-num text-[11px] text-white/40 tracking-wider">01 // 04</span>
+        </header>
+
+        <!-- Center Hero Typography -->
+        <div class="my-auto z-10 flex flex-col items-center text-center">
+          <p class="text-xs uppercase font-extrabold tracking-[0.3em] text-cyan-400 mb-2">CHAPTER XXV</p>
+          
+          <h1 class="font-syne text-[58px] sm:text-[66px] leading-[0.88] font-extrabold tracking-tighter uppercase text-white">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-100 to-purple-200 drop-shadow-sm">KAI</span>
+            <span class="block text-sm sm:text-base font-semibold tracking-[0.35em] text-white/50 my-1 font-mono-num">IS TURNING</span>
+            <span class="block text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-300 to-cyan-300 text-glow-purple">
+              25
+            </span>
+          </h1>
+
+          <!-- Electric Accent Line -->
+          <div class="w-24 h-0.5 mt-5 bg-gradient-to-r from-purple-500 via-cyan-400 to-transparent shadow-[0_0_12px_#00f0ff]"></div>
+          
+          <p class="mt-4 text-xs font-medium text-white/60 tracking-wider uppercase">
+            One Night in Neo Tokyo &bull; Exclusive Guestlist
+          </p>
+        </div>
+
+        <!-- Scroll Swipe Prompt -->
+        <footer class="z-10 flex flex-col items-center gap-2">
+          <p class="text-[10px] uppercase font-bold tracking-[0.3em] text-white/40">SWIPE UP TO ENTER</p>
+          <div class="bounce-scroll w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md text-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+        </footer>
+      </section>
+
+
+      <!-- ==============================================
+           SCREEN 2: THE DATE & TIME (3D NUMBERS + COUNTDOWN)
+           ============================================== -->
+      <section id="screen-2" class="snap-section relative flex flex-col justify-between p-6 pt-16 pb-10 overflow-hidden">
+        
+        <!-- Header -->
+        <header class="flex justify-between items-center z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[11px] font-bold tracking-widest uppercase backdrop-blur-md">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00f0ff]"></span>
+            SAVE THE DATE
+          </div>
+          <span class="font-mono-num text-[11px] text-white/40 tracking-wider">02 // 04</span>
+        </header>
+
+        <!-- Dynamic Date Hero with 3D Depth & Glow -->
+        <div class="my-auto z-10 flex flex-col items-center text-center">
+          <span class="text-xs font-extrabold uppercase tracking-[0.3em] text-purple-400 mb-1">SATURDAY NIGHT</span>
+
+          <!-- Big Scale-Up Date Block -->
+          <div class="relative py-2 flex flex-col items-center">
+            <div class="font-syne text-[88px] sm:text-[100px] leading-none font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-500 text-glow-cyan">
+              OCT 28
+            </div>
+            <div class="flex items-center gap-3 mt-1 text-sm font-bold tracking-widest uppercase text-white/80">
+              <span class="px-2.5 py-0.5 rounded bg-white/10 border border-white/10 font-mono-num text-cyan-300">10:00 PM</span>
+              <span class="text-white/30">&bull;</span>
+              <span class="font-mono-num text-purple-300">TILL LATE</span>
+            </div>
+          </div>
+
+          <!-- Live Ticking Neon Countdown Timer Box -->
+          <div class="w-full mt-6 p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl box-glow-purple">
+            <div class="text-[10px] font-extrabold uppercase tracking-[0.25em] text-white/50 mb-3 text-center">
+              COUNTDOWN TO LAUNCH
+            </div>
+            
+            <div class="grid grid-cols-4 gap-2 text-center font-mono-num">
+              <!-- Days -->
+              <div class="p-2.5 rounded-xl bg-black/40 border border-purple-500/30">
+                <span id="days" class="block text-2xl sm:text-3xl font-extrabold text-white text-glow-purple">18</span>
+                <span class="text-[9px] uppercase tracking-wider text-white/50">DAYS</span>
+              </div>
+              <!-- Hours -->
+              <div class="p-2.5 rounded-xl bg-black/40 border border-purple-500/30">
+                <span id="hours" class="block text-2xl sm:text-3xl font-extrabold text-white text-glow-purple">09</span>
+                <span class="text-[9px] uppercase tracking-wider text-white/50">HOURS</span>
+              </div>
+              <!-- Mins -->
+              <div class="p-2.5 rounded-xl bg-black/40 border border-cyan-500/30">
+                <span id="mins" class="block text-2xl sm:text-3xl font-extrabold text-cyan-300 text-glow-cyan">42</span>
+                <span class="text-[9px] uppercase tracking-wider text-cyan-200/50">MINS</span>
+              </div>
+              <!-- Secs -->
+              <div class="p-2.5 rounded-xl bg-black/40 border border-cyan-500/30">
+                <span id="secs" class="block text-2xl sm:text-3xl font-extrabold text-cyan-300 text-glow-cyan">15</span>
+                <span class="text-[9px] uppercase tracking-wider text-cyan-200/50">SECS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scroll Swipe Prompt -->
+        <footer class="z-10 flex flex-col items-center gap-2">
+          <p class="text-[10px] uppercase font-bold tracking-[0.3em] text-white/40">SWIPE UP FOR VENUE</p>
+          <div class="bounce-scroll w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md text-purple-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+        </footer>
+      </section>
+
+
+      <!-- ==============================================
+           SCREEN 3: LOCATION & VIBE (INTERACTIVE 3D MAP CARD)
+           ============================================== -->
+      <section id="screen-3" class="snap-section relative flex flex-col justify-between p-6 pt-16 pb-10 overflow-hidden">
+        
+        <!-- Header -->
+        <header class="flex justify-between items-center z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/30 text-fuchsia-300 text-[11px] font-bold tracking-widest uppercase backdrop-blur-md">
+            <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400 shadow-[0_0_8px_#d946ef]"></span>
+            VENUE &amp; VIBE
+          </div>
+          <span class="font-mono-num text-[11px] text-white/40 tracking-wider">03 // 04</span>
+        </header>
+
+        <!-- Venue Minimal Card -->
+        <div class="my-auto z-10 flex flex-col items-center w-full">
+          
+          <!-- 3D Radar Card -->
+          <div class="w-full relative rounded-3xl p-6 bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/15 backdrop-blur-2xl box-glow-cyan overflow-hidden">
+            
+            <!-- Map Radar Grid Simulation Background -->
+            <div class="absolute inset-0 opacity-25">
+              <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="grad-radar" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+                <circle cx="50%" cy="50%" r="40" fill="none" stroke="#00f0ff" stroke-width="0.8" stroke-dasharray="3 3"/>
+                <circle cx="50%" cy="50%" r="90" fill="none" stroke="#00f0ff" stroke-width="0.6"/>
+                <circle cx="50%" cy="50%" r="140" fill="none" stroke="#a855f7" stroke-width="0.5" stroke-dasharray="4 4"/>
+                <line x1="0" y1="50%" x2="100%" y2="50%" stroke="rgba(255,255,255,0.08)"/>
+                <line x1="50%" y1="0" x2="50%" y2="100%" stroke="rgba(255,255,255,0.08)"/>
+              </svg>
+            </div>
+
+            <!-- Pulsing Radar Map Beacon -->
+            <div class="relative flex flex-col items-center text-center my-4">
+              <div class="relative w-20 h-20 flex items-center justify-center">
+                <div class="radar-circle absolute inset-0 rounded-full border border-cyan-400/60 bg-cyan-400/20"></div>
+                <div class="radar-circle absolute inset-0 rounded-full border border-purple-400/40 bg-purple-400/10" style="animation-delay: 1.2s;"></div>
+                <!-- Pin icon -->
+                <div class="relative z-10 w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center shadow-[0_0_20px_#00f0ff]">
+                  <svg class="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Venue Details -->
+              <h2 class="mt-4 font-syne text-2xl sm:text-3xl font-extrabold uppercase tracking-tight text-white">
+                THE NEON LOFT
+              </h2>
+              <p class="text-xs font-mono-num text-cyan-300 font-bold tracking-wider mt-1">
+                482 METROPOLIS AVE, PENTHOUSE 9
+              </p>
+              
+              <!-- Tag Badges -->
+              <div class="flex flex-wrap justify-center gap-2 mt-4">
+                <span class="px-2.5 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-[10px] font-bold text-purple-200">
+                  ⚡ CYBERPUNK CHIC
+                </span>
+                <span class="px-2.5 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/30 text-[10px] font-bold text-cyan-200">
+                  🍸 OPEN BAR
+                </span>
+                <span class="px-2.5 py-1 rounded-full bg-pink-500/20 border border-pink-400/30 text-[10px] font-bold text-pink-200">
+                  🎵 LIVE DJ SET
+                </span>
+              </div>
+            </div>
+
+            <!-- Get Directions Button -->
+            <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="mt-4 w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-xs font-extrabold tracking-wider uppercase flex items-center justify-center gap-2 active:scale-95 transition-all text-white">
+              <span>OPEN IN MAPS</span>
+              <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Scroll Swipe Prompt -->
+        <footer class="z-10 flex flex-col items-center gap-2">
+          <p class="text-[10px] uppercase font-bold tracking-[0.3em] text-white/40">SWIPE UP TO RSVP</p>
+          <div class="bounce-scroll w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md text-cyan-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+        </footer>
+      </section>
+
+
+      <!-- ==============================================
+           SCREEN 4: ACTION (HOLD TO RSVP & FIREWORKS BLAST)
+           ============================================== -->
+      <section id="screen-4" class="snap-section relative flex flex-col justify-between p-6 pt-16 pb-12 overflow-hidden">
+        
+        <!-- Header -->
+        <header class="flex justify-between items-center z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold tracking-widest uppercase backdrop-blur-md">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981]"></span>
+            FINAL STEP
+          </div>
+          <span class="font-mono-num text-[11px] text-white/40 tracking-wider">04 // 04</span>
+        </header>
+
+        <!-- Hold to RSVP Center Interactive Component -->
+        <div class="my-auto z-10 flex flex-col items-center text-center w-full">
+          
+          <div id="rsvp-status-badge" class="mb-5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-white/70">
+            HOLD FOR 1.5 SECONDS TO CONFIRM
+          </div>
+
+          <!-- Circular SVG Progress Hold Button -->
+          <div class="relative w-56 h-56 flex items-center justify-center">
+            
+            <!-- SVG Progress Ring -->
+            <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 120 120">
+              <!-- Background Ring -->
+              <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="7"/>
+              <!-- Animated Filling Ring -->
+              <circle id="progress-circle" cx="60" cy="60" r="52" fill="none" stroke="url(#cyan-purple-grad)" stroke-width="7" stroke-dasharray="326.72" stroke-dashoffset="326.72" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="cyan-purple-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f0ff" />
+                  <stop offset="50%" stop-color="#a855f7" />
+                  <stop offset="100%" stop-color="#ec4899" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <!-- Inner Interactive Press Target -->
+            <button id="hold-button" aria-label="Hold to RSVP" class="w-40 h-40 rounded-full bg-gradient-to-br from-[#120826] to-[#04101e] border border-white/20 flex flex-col items-center justify-center p-4 active:scale-95 transition-transform duration-150 cursor-pointer shadow-[0_0_30px_rgba(168,85,247,0.3)] hover:shadow-[0_0_45px_rgba(0,240,255,0.4)]">
+              
+              <div id="btn-icon" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-1 text-cyan-300">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11a7.994 7.994 0 001.378 4.542"/>
+                </svg>
+              </div>
+
+              <span id="btn-label" class="font-syne font-extrabold text-sm uppercase tracking-wider text-white text-glow-cyan text-center leading-tight">
+                HOLD TO<br>RSVP
+              </span>
+
+              <span id="btn-sub" class="text-[9px] uppercase tracking-widest text-white/40 mt-1 font-mono-num">
+                TAP &amp; HOLD
+              </span>
+            </button>
+          </div>
+
+          <!-- Success Modal / Overlay when RSVP is triggered -->
+          <div id="rsvp-success-card" class="hidden mt-6 p-4 rounded-2xl bg-gradient-to-r from-purple-900/60 to-cyan-900/60 border border-cyan-400/50 backdrop-blur-xl text-center w-full max-w-xs animate-bounce">
+            <span class="text-xl">🎉</span>
+            <div class="font-syne font-extrabold text-base text-white uppercase tracking-wider mt-1">
+              YOU'RE ON THE LIST!
+            </div>
+            <p class="text-[11px] text-cyan-200 mt-0.5 font-mono-num">
+              PASS #25-KAI-VIP &bull; SEE YOU SATURDAY
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Footer / Restart Story Link -->
+        <footer class="z-10 flex flex-col items-center gap-2">
+          <button onclick="scrollToTop()" class="text-[11px] uppercase font-bold tracking-[0.2em] text-white/50 hover:text-white flex items-center gap-1.5 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+            </svg>
+            BACK TO FIRST SCREEN
+          </button>
+        </footer>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Sound Generator & Interaction Logic -->
+  <script>
+    // Audio synthesis using Web Audio API for electric SFX
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function toggleVibeSound() {
+      initAudio();
+      audioEnabled = !audioEnabled;
+      const btnText = document.getElementById('vibe-text');
+      const ping = document.querySelector('#vibe-btn span:first-child');
+      if (audioEnabled) {
+        btnText.textContent = "AUDIO ON";
+        ping.className = "w-2 h-2 rounded-full bg-cyan-400 animate-ping inline-block";
+        playSynthNote(440, 0.1);
+      } else {
+        btnText.textContent = "AUDIO MUTED";
+        ping.className = "w-2 h-2 rounded-full bg-white/30 inline-block";
+      }
+    }
+
+    function playSynthNote(freq, dur = 0.15) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + dur);
+      } catch (e) {}
+    }
+
+    // Scroll Story Progress & Screen Tracking
+    const slider = document.getElementById('story-slider');
+    const progs = [
+      document.getElementById('prog-1'),
+      document.getElementById('prog-2'),
+      document.getElementById('prog-3'),
+      document.getElementById('prog-4')
+    ];
+
+    slider.addEventListener('scroll', () => {
+      const scrollPos = slider.scrollTop;
+      const height = slider.clientHeight;
+      const activeIdx = Math.round(scrollPos / height);
+
+      progs.forEach((bar, idx) => {
+        if (idx <= activeIdx) {
+          bar.style.width = '100%';
+        } else {
+          bar.style.width = '0%';
+        }
+      });
+    });
+
+    function scrollToTop() {
+      slider.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Floating Hero Particles generator
+    const heroParticles = document.getElementById('hero-particles');
+    for (let i = 0; i < 24; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = Math.random() * 6 + 3;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.top = (Math.random() * 100) + '%';
+      p.style.background = i % 2 === 0 ? '#00f0ff' : '#a855f7';
+      p.style.boxShadow = i % 2 === 0 ? '0 0 12px #00f0ff' : '0 0 12px #a855f7';
+      p.style.setProperty('--d', (4 + Math.random() * 5) + 's');
+      p.style.animationDelay = (Math.random() * 4) + 's';
+      heroParticles.appendChild(p);
+    }
+
+    // Live Ticking Countdown to Oct 28
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minsEl = document.getElementById('mins');
+    const secsEl = document.getElementById('secs');
+
+    // Set target date for 18 days from now
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 18);
+    targetDate.setHours(22, 0, 0, 0);
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if (diff > 0) {
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+        daysEl.textContent = String(d).padStart(2, '0');
+        hoursEl.textContent = String(h).padStart(2, '0');
+        minsEl.textContent = String(m).padStart(2, '0');
+        secsEl.textContent = String(s).padStart(2, '0');
+      }
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // ==============================================
+    // HOLD TO RSVP PROGRESS & NEON FIREWORKS
+    // ==============================================
+    const holdBtn = document.getElementById('hold-button');
+    const circle = document.getElementById('progress-circle');
+    const badge = document.getElementById('rsvp-status-badge');
+    const btnLabel = document.getElementById('btn-label');
+    const btnSub = document.getElementById('btn-sub');
+    const successCard = document.getElementById('rsvp-success-card');
+    const totalCircumference = 326.72; // 2 * PI * 52
+
+    let holdTimer = null;
+    let holdProgress = 0;
+    const holdDuration = 1500; // 1.5 seconds hold
+    let hasCompleted = false;
+
+    function startHold(e) {
+      if (hasCompleted) return;
+      if (e) e.preventDefault();
+      initAudio();
+      playSynthNote(320, 0.1);
+      
+      const startTime = performance.now();
+      badge.textContent = "HOLDING... CONFIRMING GUESTLIST";
+      badge.className = "mb-5 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400 text-xs font-semibold text-cyan-300 animate-pulse";
+
+      function updateHold(now) {
+        const elapsed = now - startTime;
+        holdProgress = Math.min(elapsed / holdDuration, 1);
+        const offset = totalCircumference * (1 - holdProgress);
+        circle.style.strokeDashoffset = offset;
+
+        if (holdProgress < 1) {
+          holdTimer = requestAnimationFrame(updateHold);
+        } else {
+          completeRSVP();
+        }
+      }
+      holdTimer = requestAnimationFrame(updateHold);
+    }
+
+    function cancelHold(e) {
+      if (hasCompleted) return;
+      if (holdTimer) {
+        cancelAnimationFrame(holdTimer);
+        holdTimer = null;
+      }
+      circle.style.strokeDashoffset = totalCircumference;
+      badge.textContent = "HOLD FOR 1.5 SECONDS TO CONFIRM";
+      badge.className = "mb-5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-white/70";
+    }
+
+    function completeRSVP() {
+      hasCompleted = true;
+      circle.style.strokeDashoffset = 0;
+      badge.textContent = "CONFIRMED // VIP ACCESS GRANTED";
+      badge.className = "mb-5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400 text-xs font-bold text-emerald-300";
+      
+      btnLabel.innerHTML = "RSVP'D<br>✓";
+      btnLabel.className = "font-syne font-black text-xl uppercase tracking-wider text-emerald-300 text-center";
+      btnSub.textContent = "CONFIRMED";
+      holdBtn.classList.add("shadow-[0_0_60px_#10b981]", "border-emerald-400");
+      
+      successCard.classList.remove('hidden');
+
+      // Play victory chord
+      playSynthNote(523.25, 0.2); // C5
+      setTimeout(() => playSynthNote(659.25, 0.2), 100); // E5
+      setTimeout(() => playSynthNote(783.99, 0.4), 200); // G5
+      setTimeout(() => playSynthNote(1046.50, 0.6), 300); // C6
+
+      // Trigger Fireworks blast
+      launchNeonFireworks();
+    }
+
+    // Touch & Mouse bindings for button
+    holdBtn.addEventListener('mousedown', startHold);
+    window.addEventListener('mouseup', cancelHold);
+    holdBtn.addEventListener('touchstart', startHold, { passive: false });
+    window.addEventListener('touchend', cancelHold);
+    window.addEventListener('touchcancel', cancelHold);
+
+    // ==============================================
+    // NEON FIREWORKS CANVAS PARTICLES ENGINE
+    // ==============================================
+    const canvas = document.getElementById('fireworks-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class FireworkParticle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 7 + 2;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.alpha = 1;
+        this.decay = Math.random() * 0.018 + 0.012;
+        this.radius = Math.random() * 3 + 1.5;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.08; // gravity
+        this.vx *= 0.98;
+        this.vy *= 0.98;
+        this.alpha -= this.decay;
+      }
+
+      draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(this.alpha, 0);
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = this.color;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function createExplosion(x, y) {
+      const colors = ['#00f0ff', '#a855f7', '#ec4899', '#ffffff', '#22d3ee', '#c084fc'];
+      const chosenColor = colors[Math.floor(Math.random() * colors.length)];
+      for (let i = 0; i < 65; i++) {
+        particles.push(new FireworkParticle(x, y, chosenColor));
+      }
+    }
+
+    function launchNeonFireworks() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      // Burst sequences across screen
+      createExplosion(w * 0.5, h * 0.45);
+      
+      setTimeout(() => createExplosion(w * 0.25, h * 0.35), 250);
+      setTimeout(() => createExplosion(w * 0.75, h * 0.38), 450);
+      setTimeout(() => createExplosion(w * 0.5, h * 0.25), 700);
+      setTimeout(() => createExplosion(w * 0.35, h * 0.55), 950);
+      setTimeout(() => createExplosion(w * 0.65, h * 0.5), 1150);
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update();
+        particles[i].draw(ctx);
+        if (particles[i].alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  </script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

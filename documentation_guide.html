@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Understanding My Website: File-by-File Documentation & AI Token-Saving Handbook</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 14mm 18mm 14mm;
+    @bottom-center {
+      content: counter(page);
+    }
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.55;
+    font-size: 12.5px;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+  .no-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Cover Page */
+  .cover {
+    height: 94vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 30px 20px;
+    box-sizing: border-box;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+    color: white;
+    border-radius: 12px;
+  }
+  .cover h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+    line-height: 1.25;
+  }
+  .cover h2 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #93c5fd;
+    margin-bottom: 24px;
+  }
+  .badge {
+    background: rgba(59, 130, 246, 0.25);
+    border: 1px solid #60a5fa;
+    color: #bfdbfe;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    display: inline-block;
+  }
+  .meta-box {
+    margin-top: 36px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 18px 26px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #e2e8f0;
+    text-align: left;
+    max-width: 480px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  /* Typography */
+  h1, h2, h3, h4 {
+    color: #0f172a;
+    font-weight: 700;
+  }
+  h1 { font-size: 22px; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; margin-top: 26px; margin-bottom: 14px; }
+  h2 { font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; color: #1e3a8a; }
+  h3 { font-size: 14px; margin-top: 14px; margin-bottom: 6px; color: #1e293b; }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0 10px 18px; padding: 0; }
+  li { margin-bottom: 4px; }
+  code {
+    background-color: #f1f5f9;
+    color: #0f766e;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  pre {
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.45;
+    overflow-x: auto;
+    margin: 10px 0;
+  }
+  pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 11px;
+  }
+  th, td {
+    padding: 7px 9px;
+    border: 1px solid #cbd5e1;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background-color: #f8fafc;
+    color: #0f172a;
+    font-weight: 700;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
+  /* Badges & Callouts */
+  .tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .tag-essential { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+  .tag-used { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+  .tag-unused { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+  .tag-generated { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+  .tag-dev { background-color: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+
+  .callout {
+    border-left: 4px solid #3b82f6;
+    background-color: #eff6ff;
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0;
+  }
+  .callout-warning {
+    border-left-color: #f59e0b;
+    background-color: #fffbeb;
+  }
+  .callout-danger {
+    border-left-color: #ef4444;
+    background-color: #fef2f2;
+  }
+  .callout-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #1e3a8a;
+  }
+  .callout-warning .callout-title { color: #b45309; }
+
+  /* Diagram Box */
+  .diagram-box {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 12px;
+    font-family: 'Consolas', monospace;
+    font-size: 10.5px;
+    line-height: 1.4;
+    color: #334155;
+    white-space: pre;
+    margin: 10px 0;
+  }
+
+  /* Prompt Card */
+  .prompt-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    page-break-inside: avoid;
+  }
+  .prompt-header {
+    font-weight: 700;
+    color: #2563eb;
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+  .prompt-body {
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    color: #0f172a;
+    line-height: 1.4;
+  }
+  .prompt-why {
+    margin-top: 4px;
+    font-size: 10.5px;
+    color: #64748b;
+  }
+</style>
+</head>
+<body>
+
+<!-- Cover Page -->
+<div class="cover page-break">
+  <div class="badge">Verified Codebase Guide & Reference Manual</div>
+  <h1>Understanding My Website</h1>
+  <h2>File-by-File Documentation & AI Token-Saving Handbook</h2>
+  <div class="meta-box">
+    <strong>Project Name:</strong> Tempo Event Website Builder<br>
+    <strong>Core Architecture:</strong> React 18, Vite 6, TypeScript 5 & Tailwind CSS 3<br>
+    <strong>Backend Architecture:</strong> Embedded SQLite (better-sqlite3) & Supabase Client<br>
+    <strong>Target Audience:</strong> Beginners learning modern web development with AI<br>
+    <strong>Workspace Path:</strong> <code>C:\Users\Lenovo\Desktop\Other\d</code><br>
+    <strong>Status:</strong> 100% verified against actual project files
+  </div>
+</div>
+
+<!-- Table of Contents -->
+<div class="page-break">
+  <h1>Table of Contents</h1>
+  <ol style="font-size: 13px; line-height: 1.9;">
+    <li><strong>Part 1: Understand My Entire Project</strong>
+      <ul>
+        <li>1.1 Verified Technology Stack</li>
+        <li>1.2 Complete Project Folder Hierarchy Tree</li>
+      </ul>
+    </li>
+    <li><strong>Part 2: Deep Dive File-by-File Explanation</strong>
+      <ul>
+        <li>2.1 Root Configuration & Tooling Files</li>
+        <li>2.2 Backend & API Architecture (<code>server/</code>, <code>api/</code>, <code>data/</code>)</li>
+        <li>2.3 Core Application Files (<code>src/main.tsx</code>, <code>src/App.tsx</code>)</li>
+        <li>2.4 Application Pages & Views (<code>src/pages/</code>)</li>
+        <li>2.5 UI Component Hierarchy (<code>src/components/</code>)</li>
+        <li>2.6 Event Templates Engine (<code>src/templates/</code>)</li>
+        <li>2.7 State Management, Services & Utilities (<code>src/context/</code>, <code>src/services/</code>, <code>src/utils/</code>)</li>
+        <li>2.8 Static Assets & Public Files (<code>public/</code>)</li>
+      </ul>
+    </li>
+    <li><strong>Part 3: Identify Unnecessary Files Safely</strong>
+      <ul>
+        <li>3.1 Safe Cleanup Assessment Table</li>
+        <li>3.2 Step-by-Step Safe Cleanup Plan</li>
+      </ul>
+    </li>
+    <li><strong>Part 4: Explain How My Website Runs</strong>
+      <ul>
+        <li>4.1 Runtime Flowchart: From Dev Command to Screen Pixels</li>
+        <li>4.2 Exact Terminal Commands for Everyday Use</li>
+      </ul>
+    </li>
+    <li><strong>Part 5: AI Token-Saving Guide</strong>
+      <ul>
+        <li>5.1 Token Mechanics: Input, Output, and Context Windows</li>
+        <li>5.2 The 10 Golden Rules to Save 80% AI Tokens</li>
+      </ul>
+    </li>
+    <li><strong>Part 6: Ready-to-Use AI Prompts (Copy & Paste)</strong></li>
+    <li><strong>Part 7: VS Code Beginner Workflow & Windows Shortcuts</strong></li>
+    <li><strong>Part 8: Practical Codebase Walkthroughs (3 Real Files)</strong></li>
+    <li><strong>Part 9: One-Page Quick-Reference Checklist & Beginner Glossary</strong></li>
+  </ol>
+</div>
+
+<!-- PART 1 -->
+<div>
+  <h1>Part 1: Understand My Entire Project</h1>
+  
+  <h2>1.1 Verified Technology Stack</h2>
+  <p>Every technology below was directly verified by examining your project files (<code>package.json</code>, <code>vite.config.ts</code>, <code>tailwind.config.js</code>, and <code>server/</code>):</p>
+
+  <table>
+    <tr>
+      <th style="width: 24%;">Layer / Category</th>
+      <th style="width: 34%;">Technology Detected</th>
+      <th style="width: 42%;">Role in Your Website</th>
+    </tr>
+    <tr>
+      <td><strong>Frontend Framework</strong></td>
+      <td><code>React 18.3.1</code></td>
+      <td>Builds your user interface using reusable component bricks (buttons, cards, forms, live preview frame).</td>
+    </tr>
+    <tr>
+      <td><strong>Language & Types</strong></td>
+      <td><code>TypeScript 5.6.3</code> & <code>ES Modules</code></td>
+      <td>Adds strict type checks to catch typos, missing variables, and bugs before code runs in the browser.</td>
+    </tr>
+    <tr>
+      <td><strong>Build Tool & Bundler</strong></td>
+      <td><code>Vite 6.0.1</code></td>
+      <td>Ultra-fast development server with instant Hot Module Replacement (HMR) and optimized production builder.</td>
+    </tr>
+    <tr>
+      <td><strong>Styling & Design System</strong></td>
+      <td><code>Tailwind CSS 3.4.16</code> + <code>PostCSS</code></td>
+      <td>Utility-first CSS styling directly in markup; includes custom color palettes (brand, coral) and glassmorphism.</td>
+    </tr>
+    <tr>
+      <td><strong>Client-Side Routing</strong></td>
+      <td><code>react-router-dom 6.28.0</code></td>
+      <td>Enables page switching (Home, Templates, Dashboard, Creator) smoothly without reloading the entire page.</td>
+    </tr>
+    <tr>
+      <td><strong>Local Backend / API</strong></td>
+      <td><code>better-sqlite3</code> + Vite Dev Middleware</td>
+      <td>Runs an embedded API inside Vite's dev server; stores user accounts, templates, orders, and websites locally in <code>data/tempo.db</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Cloud Backend (Optional)</strong></td>
+      <td><code>@supabase/supabase-js 2.117.2</code></td>
+      <td>Optional hosted database and file storage for production cloud deployments.</td>
+    </tr>
+    <tr>
+      <td><strong>Icons & Helpers</strong></td>
+      <td><code>lucide-react</code>, <code>qrcode</code>, <code>clsx</code>, <code>tailwind-merge</code></td>
+      <td>Modern SVG icons, QR code generation for mobile event RSVPs, and safe Tailwind class merging.</td>
+    </tr>
+  </table>
+
+  <h2>1.2 Complete Project Folder Hierarchy</h2>
+  <div class="diagram-box">C:UsersLenovoDesktopOtherd
+├── .env / .env.example       <-- Environment configuration (API keys, ports)
+├── package.json              <-- Dependencies list and npm scripts
+├── vite.config.ts            <-- Vite bundler config + custom API router middleware
+├── tailwind.config.js        <-- Custom design tokens, colors, animations
+├── tsconfig.json             <-- TypeScript compilation settings
+├── index.html                <-- Single Page Application HTML root shell
+│
+├── api/                      <-- Serverless endpoint handlers (Vercel style)
+│   ├── cron/payments.js
+│   └── payments/             <-- Orders, approvals, and access controllers
+│
+├── server/                   <-- Local SQLite API server
+│   ├── apiRouter.js          <-- Routes incoming /api requests
+│   ├── db.js                 <-- SQLite schema and query helpers
+│   ├── paymentRoutes.js      <-- Payment processing endpoints
+│   └── payments.js           <-- Payment state management
+│
+├── data/
+│   └── tempo.db              <-- Embedded SQLite database holding websites & users
+│
+├── public/                   <-- Static files served directly (images, audio, templates)
+│   ├── html-templates/       <-- Standalone HTML/CSS event invitation pages
+│   ├── music/                <-- Audio tracks for invitations
+│   ├── robots.txt & sitemap  <-- SEO discovery files
+│   └── upi-payment.gif       <-- Payment instructions visual guide
+│
+├── src/                      <-- Core React & TypeScript application source
+│   ├── main.tsx              <-- App entry point; mounts React to DOM
+│   ├── App.tsx               <-- Root router mapping all URL paths to pages
+│   ├── index.css             <-- Global CSS base styles and Tailwind directives
+│   ├── components/           <-- Modular UI blocks
+│   │   ├── common/           <-- Buttons, Modals, Navbar, Footer, Toast
+│   │   ├── dashboard/        <-- Website cards and stats displays
+│   │   ├── editor/           <-- Tabbed website customize forms & live preview
+│   │   └── templates/        <-- Template cards, filters, and preview modals
+│   ├── context/              <-- Global state (AuthContext.tsx)
+│   ├── pages/                <-- Full-screen route views (Home, Creator, Dashboard)
+│   ├── services/             <-- API clients, Supabase, Local Storage, Events
+│   ├── templates/            <-- Built-in interactive template engines & registry
+│   ├── types/                <-- TypeScript interface definitions
+│   └── utils/                <-- Helper functions (date formatting, RSVP links)
+│
+├── dist/                     <-- Built production output (generated by npm run build)
+├── node_modules/             <-- Downloaded third-party packages (managed by npm)
+└── [Loose Artifact Folders]  <-- Birthady party/, tempo/, stitch_*/ (Safe to clean)</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PART 2 -->
+<div>
+  <h1>Part 2: Deep Dive File-by-File Explanation</h1>
+  <p>Below is the complete analysis of every file and directory verified in your actual project.</p>
+
+  <h2>2.1 Root Configuration & Tooling Files</h2>
+
+  <div class="no-break">
+    <h3>1. <code>package.json</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/package.json</code></li>
+      <li><strong>Simple Explanation:</strong> The ID card and blueprint of your project. It lists every external library your website uses, project metadata, and shortcut commands (like <code>npm run dev</code>).</li>
+      <li><strong>Why it exists:</strong> Node.js and Vite need to know which libraries to download and how to launch your project.</li>
+      <li><strong>Which part uses it:</strong> The entire development workflow, npm, and build tools.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+      <li><strong>What breaks if modified:</strong> Deleting it destroys your project's ability to install packages or run commands. Incorrect edits can cause dependency conflicts.</li>
+      <li><strong>Beginner safety:</strong> Do not touch manually unless adding a package via <code>npm install</code>.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>2. <code>package-lock.json</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/package-lock.json</code></li>
+      <li><strong>Simple Explanation:</strong> A detailed security seal that records the exact version of every single file downloaded into <code>node_modules</code>.</li>
+      <li><strong>Why it exists:</strong> Ensures that when you or someone else runs <code>npm install</code> on another machine, identical code is installed down to the last digit.</li>
+      <li><strong>Which part uses it:</strong> <code>npm</code> during package installation.</li>
+      <li><strong>Status:</strong> <span class="tag tag-generated">Generated automatically</span>.</li>
+      <li><strong>What breaks if modified:</strong> Inconsistent builds or unexpected version updates across installations.</li>
+      <li><strong>Beginner safety:</strong> Never edit this file by hand. Leave it alone.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>3. <code>vite.config.ts</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/vite.config.ts</code></li>
+      <li><strong>Simple Explanation:</strong> The control center for Vite. It activates the React plugin, sets the local port to <code>3000</code>, creates the <code>@/</code> alias pointing to <code>src/</code>, and injects the <code>tempoBackendPlugin()</code> middleware so requests to <code>/api</code> connect directly to your local database without running a separate server process.</li>
+      <li><strong>Why it exists:</strong> Configures bundling rules and local server behavior.</li>
+      <li><strong>Which part uses it:</strong> Vite dev server and build pipeline.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+      <li><strong>What breaks if modified:</strong> The local website will stop loading, paths starting with <code>@/</code> will fail, and API calls to <code>/api</code> will return 404 errors.</li>
+      <li><strong>Beginner safety:</strong> Do not change unless specifically instructed to adjust port or proxy settings.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>4. <code>tailwind.config.js</code> & <code>postcss.config.js</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/tailwind.config.js</code>, <code>/postcss.config.js</code></li>
+      <li><strong>Simple Explanation:</strong> Custom styling configuration. Contains custom color palettes (e.g. <code>coral</code>, <code>brand</code>), animations, and font settings. PostCSS ensures vendor prefixes are added for cross-browser compatibility.</li>
+      <li><strong>Why it exists:</strong> Allows you to write utility classes like <code>bg-brand-500</code> and compiles them into pure CSS.</li>
+      <li><strong>Which part uses it:</strong> Every component and page styled with Tailwind.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+      <li><strong>What breaks if modified:</strong> All custom colors, rounded corners, and animations across your website will revert to default or look broken.</li>
+      <li><strong>Beginner safety:</strong> Safe to leave alone. Only edit when you want to add new theme colors.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>5. <code>tsconfig.json</code> & <code>tsconfig.node.json</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/tsconfig.json</code>, <code>/tsconfig.node.json</code></li>
+      <li><strong>Simple Explanation:</strong> Rules for TypeScript compiler. Tells TypeScript how strictly to verify your code and how to resolve imports like <code>@/components/...</code>.</li>
+      <li><strong>Why it exists:</strong> Enforces code health and type safety across your React components.</li>
+      <li><strong>Which part uses it:</strong> VS Code editor and the <code>tsc</code> build step.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+      <li><strong>What breaks if modified:</strong> VS Code will show red underline errors everywhere, and <code>npm run build</code> will fail.</li>
+      <li><strong>Beginner safety:</strong> Leave completely alone.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>6. <code>index.html</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/index.html</code></li>
+      <li><strong>Simple Explanation:</strong> The master web page frame. Contains the <code>&lt;div id="root"&gt;&lt;/div&gt;</code> where React mounts the entire application, loads Google Fonts (Inter, Playfair Display), and has the script tag loading <code>/src/main.tsx</code>.</li>
+      <li><strong>Why it exists:</strong> Browsers only load HTML files directly. Vite uses this as its entry gate.</li>
+      <li><strong>Which part uses it:</strong> The browser entry point.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+      <li><strong>What breaks if modified:</strong> Deleting the <code>#root</code> div causes a completely blank white screen.</li>
+      <li><strong>Beginner safety:</strong> Safe to leave alone, or edit only to update the <code>&lt;title&gt;</code> tag or favicon.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>7. <code>.env</code> & <code>.env.example</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/.env</code>, <code>/.env.example</code></li>
+      <li><strong>Simple Explanation:</strong> Secret key configuration. Contains sensitive credentials such as your Supabase Project URL and Anonymous Public Key. <code>.env.example</code> is a blank template showing what variables are required.</li>
+      <li><strong>Why it exists:</strong> Prevents hardcoding secret keys inside code files.</li>
+      <li><strong>Which part uses it:</strong> <code>src/services/supabase.ts</code> via <code>import.meta.env</code>.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+      <li><strong>What breaks if modified:</strong> Supabase authentication and database cloud storage will fail to connect.</li>
+      <li><strong>Beginner safety:</strong> Keep your <code>.env</code> file private. Never share it publicly or upload it to GitHub.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>8. <code>firebase.json</code> & <code>.firebaserc</code> / <code>vercel.json</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/firebase.json</code>, <code>/.firebaserc</code>, <code>/vercel.json</code></li>
+      <li><strong>Simple Explanation:</strong> Deployment routing configs. They tell Firebase Hosting or Vercel to route all web traffic to <code>index.html</code> so React Router can handle pages on reload.</li>
+      <li><strong>Why it exists:</strong> Prevents 404 Not Found errors when refreshing sub-pages on production hosts.</li>
+      <li><strong>Which part uses it:</strong> Cloud hosting providers when deployed.</li>
+      <li><strong>Status:</strong> <span class="tag tag-used">Used by the project</span> (for deployment).</li>
+      <li><strong>What breaks if modified:</strong> Direct URL visits to <code>/dashboard</code> on deployed hosts would fail.</li>
+      <li><strong>Beginner safety:</strong> Leave alone.</li>
+    </ul>
+  </div>
+
+  <h2>2.2 Server & Backend Directory (<code>server/</code> & <code>data/</code>)</h2>
+  
+  <div class="no-break">
+    <h3>1. <code>server/apiRouter.js</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/server/apiRouter.js</code></li>
+      <li><strong>Simple Explanation:</strong> The API dispatcher. It intercepts any web request starting with <code>/api/</code> (such as <code>/api/auth/register</code>, <code>/api/events</code>, <code>/api/orders</code>) and calls the matching database logic in <code>server/db.js</code>.</li>
+      <li><strong>Why it exists:</strong> Provides a self-contained local backend without requiring you to run a separate Node server in a second terminal.</li>
+      <li><strong>Which part uses it:</strong> <code>vite.config.ts</code> middleware.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span> for local database mode.</li>
+      <li><strong>What breaks if modified:</strong> Account creation, event saving, and payments will fail.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>2. <code>server/db.js</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/server/db.js</code></li>
+      <li><strong>Simple Explanation:</strong> The SQLite database manager. Creates tables for <code>users</code>, <code>events</code>, <code>orders</code>, and <code>guestbook</code>, and provides helper functions to insert and query records.</li>
+      <li><strong>Why it exists:</strong> Direct interface to the local SQLite database file.</li>
+      <li><strong>Which part uses it:</strong> <code>server/apiRouter.js</code>.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>3. <code>data/tempo.db</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/data/tempo.db</code></li>
+      <li><strong>Simple Explanation:</strong> Your actual local database file. Stores all your saved birthday events, website customizations, and registered user accounts on your hard drive.</li>
+      <li><strong>Why it exists:</strong> Keeps your data persistent across website restarts.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span> (Data Store).</li>
+      <li><strong>Beginner safety:</strong> Never edit this file with VS Code text editor; it is a binary database file.</li>
+    </ul>
+  </div>
+
+  <h2>2.3 Application Core (<code>src/</code>)</h2>
+
+  <div class="no-break">
+    <h3>1. <code>src/main.tsx</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/src/main.tsx</code></li>
+      <li><strong>Simple Explanation:</strong> The ignite button. It finds the <code>#root</code> element in <code>index.html</code> and renders your <code>&lt;App /&gt;</code> component inside React's StrictMode. Also imports <code>index.css</code>.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>2. <code>src/App.tsx</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/src/App.tsx</code></li>
+      <li><strong>Simple Explanation:</strong> The site-wide map. Configures all URLs using React Router:
+        <ul>
+          <li><code>/</code> &rarr; <code>HomePage</code></li>
+          <li><code>/templates</code> &rarr; <code>TemplatesPage</code></li>
+          <li><code>/create/:templateId</code> &rarr; <code>WebsiteCreatorPage</code></li>
+          <li><code>/dashboard</code> &rarr; <code>DashboardPage</code> (Protected)</li>
+          <li><code>/signin</code> & <code>/signup</code> &rarr; Authentication Pages</li>
+          <li><code>/e/:slug</code> &rarr; <code>PublicEventPage</code> (Live published websites)</li>
+        </ul>
+      </li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+    </ul>
+  </div>
+
+  <div class="no-break">
+    <h3>3. <code>src/context/AuthContext.tsx</code></h3>
+    <ul>
+      <li><strong>Path:</strong> <code>/src/context/AuthContext.tsx</code></li>
+      <li><strong>Simple Explanation:</strong> The global user memory. Remembers whether you are currently logged in, stores your user profile, and provides <code>signIn()</code>, <code>signUp()</code>, and <code>signOut()</code> functions to all components.</li>
+      <li><strong>Status:</strong> <span class="tag tag-essential">Essential</span>.</li>
+    </ul>
+  </div>
+
+  <h2>2.4 Key Feature Pages (<code>src/pages/</code>)</h2>
+  <table>
+    <tr>
+      <th style="width: 30%;">Page File</th>
+      <th style="width: 50%;">Simple Description & Purpose</th>
+      <th style="width: 20%;">Status</th>
+    </tr>
+    <tr>
+      <td><code>HomePage.tsx</code></td>
+      <td>The marketing landing page. Features hero banners, template highlights, testimonials, feature badges, and a call-to-action button.</td>
+      <td><span class="tag tag-essential">Essential</span></td>
+    </tr>
+    <tr>
+      <td><code>TemplatesPage.tsx</code></td>
+      <td>The template catalog. Lets users search, filter by category (Birthday, Wedding, Portfolio), and preview invitation themes.</td>
+      <td><span class="tag tag-essential">Essential</span></td>
+    </tr>
+    <tr>
+      <td><code>WebsiteCreatorPage.tsx</code></td>
+      <td>The flagship visual website builder. Has a live two-panel workspace: controls on the left (text, music, photos, RSVP) and a real-time updating live preview phone frame on the right.</td>
+      <td><span class="tag tag-essential">Essential</span></td>
+    </tr>
+    <tr>
+      <td><code>DashboardPage.tsx</code></td>
+      <td>User dashboard showing all websites you have created, edit shortcuts, shareable links, and QR codes.</td>
+      <td><span class="tag tag-essential">Essential</span></td>
+    </tr>
+    <tr>
+      <td><code>PublicEventPage.tsx</code></td>
+      <td>The published view that guests see when opening an event link (e.g. <code>mysite.com/e/sarah-10th-birthday</code>).</td>
+      <td><span class="tag tag-essential">Essential</span></td>
+    </tr>
+    <tr>
+      <td><code>SignInPage.tsx</code> & <code>SignUpPage.tsx</code></td>
+      <td>Login and registration forms with validation and error toasts.</td>
+      <td><span class="tag tag-essential">Essential</span></td>
+    </tr>
+    <tr>
+      <td><code>AdminPaymentsPage.tsx</code></td>
+      <td>Back-office interface to review UPI transaction proofs and approve premium template purchases.</td>
+      <td><span class="tag tag-used">Used by the project</span></td>
+    </tr>
+  </table>
+
+  <h2>2.5 Template Engine Architecture (<code>src/templates/</code>)</h2>
+  <p>Your website builder contains rich, ready-to-use celebration themes:</p>
+  <ul>
+    <li><strong><code>registry.ts</code>:</strong> The central catalog defining each template's ID, title, category, thumbnail, default colors, and which React component renders it.</li>
+    <li><strong><code>NovaBirthdayWorldTemplate.tsx</code>:</strong> High-energy, colorful celebration template featuring interactive confetti and guestbook.</li>
+    <li><strong><code>KeepsakeBirthdayTemplate.tsx</code>:</strong> Elegant scrapbook-style birthday memory template with timeline and photo galleries.</li>
+    <li><strong><code>KomorebiDiningTemplate.tsx</code> & <code>SolsticeSageTemplate.tsx</code>:</strong> Modern restaurant menu and botanical wedding celebration templates.</li>
+    <li><strong><code>HtmlIframeTemplate.tsx</code>:</strong> Powerful fallback renderer that displays standalone HTML templates safely inside an isolated iframe.</li>
+  </ul>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PART 3 -->
+<div>
+  <h1>Part 3: Identify Unnecessary Files Safely</h1>
+  <p>During the codebase inspection, several non-essential, backup, and duplicate files were detected. Below is the safe assessment audit table.</p>
+
+  <table>
+    <tr>
+      <th style="width: 22%;">File / Folder</th>
+      <th style="width: 24%;">Purpose</th>
+      <th style="width: 18%;">Status</th>
+      <th style="width: 16%;">Safe Action</th>
+      <th style="width: 20%;">Reason</th>
+    </tr>
+    <tr>
+      <td><code>tempo/</code> (folder)</td>
+      <td>Old duplicate backup snapshot of the entire project.</td>
+      <td><span class="tag tag-unused">Possibly unused</span></td>
+      <td>Archive to external backup folder or delete</td>
+      <td>It contains 110 redundant files duplicating your main root files.</td>
+    </tr>
+    <tr>
+      <td><code>Birthady party/</code> (folder)</td>
+      <td>HTML prototyping artifacts and exported designs.</td>
+      <td><span class="tag tag-unused">Possibly unused</span></td>
+      <td>Move to safe <code>_archive/</code></td>
+      <td>Not imported by any file in <code>src/</code>. It contains experimental mockups.</td>
+    </tr>
+    <tr>
+      <td><code>stitch_atelier_templates_marketplace/</code></td>
+      <td>Standalone downloaded template kit.</td>
+      <td><span class="tag tag-unused">Possibly unused</span></td>
+      <td>Move to safe <code>_archive/</code></td>
+      <td>Templates have already been integrated into <code>src/templates/</code>.</td>
+    </tr>
+    <tr>
+      <td><code>new index htmls/</code> (folder)</td>
+      <td>Draft HTML designs and poster videos.</td>
+      <td><span class="tag tag-unused">Possibly unused</span></td>
+      <td>Archive or delete</td>
+      <td>Loose working drafts from earlier design iterations.</td>
+    </tr>
+    <tr>
+      <td><code>test.html</code></td>
+      <td>Temporary 20-byte scratch file.</td>
+      <td><span class="tag tag-unused">Possibly unused</span></td>
+      <td>Delete safely</td>
+      <td>Contains no production code or references.</td>
+    </tr>
+    <tr>
+      <td><code>share_image4113068545197211153 - Copy.gif</code></td>
+      <td>Duplicate GIF in the root directory.</td>
+      <td><span class="tag tag-unused">Possibly unused</span></td>
+      <td>Delete safely</td>
+      <td>Identical asset already exists at <code>public/upi-payment.gif</code>.</td>
+    </tr>
+    <tr>
+      <td><code>dist/</code> (folder)</td>
+      <td>Compiled production build output.</td>
+      <td><span class="tag tag-generated">Generated automatically</span></td>
+      <td>Leave alone (or clean with gitignore)</td>
+      <td>Automatically recreated every time you run <code>npm run build</code>.</td>
+    </tr>
+    <tr>
+      <td><code>node_modules/</code> (folder)</td>
+      <td>Downloaded npm dependencies (11,500+ files).</td>
+      <td><span class="tag tag-generated">Generated automatically</span></td>
+      <td>Never edit or commit</td>
+      <td>Can be re-downloaded at any time by running <code>npm install</code>.</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-warning">
+    <div class="callout-title">Safe 3-Step Cleanup Plan (Never Delete Blindly!)</div>
+    <ol style="margin-bottom: 0;">
+      <li><strong>Create a Backup:</strong> Before moving or deleting any file, make a compressed ZIP backup of your entire folder, or create a git commit:
+        <pre><code>git add .
+git commit -m "Backup before cleaning unused folders"</code></pre>
+      </li>
+      <li><strong>Move to an <code>_archive/</code> Folder:</strong> Instead of deleting, move <code>Birthady party/</code>, <code>tempo/</code>, and <code>new index htmls/</code> into a separate folder outside your project.</li>
+      <li><strong>Verify Local Build:</strong> Run <code>npm run build</code> in your terminal. If the build succeeds with zero errors and your dev server runs smoothly, the files were 100% unused.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PART 4 -->
+<div>
+  <h1>Part 4: Explain How My Website Runs</h1>
+  <p>Here is what happens under the hood from the second you run the start command until pixels appear on your monitor.</p>
+
+  <h2>4.1 The Lifecycle Flowchart</h2>
+  <div class="diagram-box">[You type: npm run dev in Terminal]
+               │
+               ▼
+┌───────────────────────────────────────────────┐
+│ 1. Vite Development Server Starts (Port 3000)  │
+│    - Reads vite.config.ts                     │
+│    - Mounts tempoBackendPlugin() for /api     │
+│    - Connects to SQLite (data/tempo.db)       │
+└──────────────────────┬────────────────────────┘
+                       │
+                       ▼
+┌───────────────────────────────────────────────┐
+│ 2. Browser opens: http://localhost:3000       │
+│    - Loads /index.html                        │
+│    - Reads &lt;div id="root"&gt;&lt;/div&gt;              │
+│    - Executes &lt;script src="/src/main.tsx"&gt;    │
+└──────────────────────┬────────────────────────┘
+                       │
+                       ▼
+┌───────────────────────────────────────────────┐
+│ 3. React Mounts & Initial Providers Activate   │
+│    - src/main.tsx renders &lt;App /&gt;             │
+│    - AuthContext checks localStorage for user  │
+│    - Tailwind CSS styles are injected         │
+└──────────────────────┬────────────────────────┘
+                       │
+                       ▼
+┌───────────────────────────────────────────────┐
+│ 4. React Router Evaluates the URL Path        │
+│    - If "/" &rarr; Renders HomePage               │
+│    - If "/create/nova" &rarr; WebsiteCreatorPage    │
+│    - If "/dashboard" &rarr; Checks login state     │
+└──────────────────────┬────────────────────────┘
+                       │
+                       ▼
+┌───────────────────────────────────────────────┐
+│ 5. Dynamic Data & Template Rendering          │
+│    - Fetches event data via apiService / db   │
+│    - LivePreviewFrame displays the invitation │
+│    - Browser displays interactive UI!         │
+└───────────────────────────────────────────────┘</div>
+
+  <h2>4.2 Exact Terminal Commands for Your Project</h2>
+  <table>
+    <tr>
+      <th style="width: 30%;">Task</th>
+      <th style="width: 35%;">Terminal Command</th>
+      <th style="width: 35%;">What It Does</th>
+    </tr>
+    <tr>
+      <td><strong>Install Dependencies</strong></td>
+      <td><code>npm install</code></td>
+      <td>Reads <code>package.json</code> and installs all required packages into <code>node_modules</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Start Local Website</strong></td>
+      <td><code>npm run dev</code></td>
+      <td>Launches Vite on <code>http://localhost:3000</code> with live auto-refresh as you edit files.</td>
+    </tr>
+    <tr>
+      <td><strong>Check Code & Build</strong></td>
+      <td><code>npm run build</code></td>
+      <td>Runs TypeScript type-checks (<code>tsc</code>) and compiles production assets into <code>dist/</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Preview Production Build</strong></td>
+      <td><code>npm run preview</code></td>
+      <td>Simulates your production deployment locally on your machine.</td>
+    </tr>
+  </table>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PART 5 -->
+<div>
+  <h1>Part 5: AI Token-Saving Guide</h1>
+  
+  <h2>5.1 Understanding Tokens: The Fuel of AI</h2>
+  <p>AI models do not read files as traditional text or words; they read chunks of characters called <strong>Tokens</strong> (roughly 1 token &approx; 4 characters or 0.75 words in English). Everything exchanged with the AI has a token cost:</p>
+
+  <ul>
+    <li><strong>Input Tokens:</strong> Every single word in your prompt PLUS every file or snippet you attach. <em>Pasting your whole project consumes massive input tokens on every turn.</em></li>
+    <li><strong>Context Window:</strong> The AI's working memory limit. As your conversation gets longer, older messages and large pasted files accumulate, causing the AI to become sluggish, lose focus, or hallucinate.</li>
+    <li><strong>Output Tokens:</strong> The code and text the AI writes back to you. Generating full 500-line files consumes heavy output tokens and takes much longer to complete.</li>
+  </ul>
+
+  <h2>5.2 The 10 Golden Rules to Save 80% of AI Tokens</h2>
+
+  <div class="no-break">
+    <h3>Rule 1: Never Paste Entire Files When Changing Small Sections</h3>
+    <p>If you want to modify a button in <code>WebsiteCreatorPage.tsx</code> (which is 1,200+ lines long), do not paste all 1,200 lines. Paste only the button JSX and its handler function (approx. 20 lines). This saves over 95% of your tokens.</p>
+  </div>
+
+  <div class="no-break">
+    <h3>Rule 2: Ask for Diffs or Targeted Snippets, Not Full File Rewrites</h3>
+    <p>Tell the AI: <em>"Show me only the modified function or a standard Git diff. Do not rewrite the entire file."</em> This drastically cuts output tokens.</p>
+  </div>
+
+  <div class="no-break">
+    <h3>Rule 3: Have AI Diagnose Root Causes Before Writing Code</h3>
+    <p>Instead of saying <em>"My payments are broken, rewrite my payment code"</em>, ask: <em>"Here is the error message: [paste error]. What are the top 2 possible root causes in my logic?"</em> Fix the diagnosis first, then write 5 lines of code instead of 300.</p>
+  </div>
+
+  <div class="no-break">
+    <h3>Rule 4: Use VS Code Search to Find the Exact Needle</h3>
+    <p>Press <code>Ctrl + Shift + F</code> to search for the specific button text or class name. Find the exact 10 lines responsible, and provide only those lines to the AI.</p>
+  </div>
+
+  <div class="no-break">
+    <h3>Rule 5: Reuse Existing UI Components Instead of Creating New Ones</h3>
+    <p>Your codebase already has <code>Button.tsx</code>, <code>Modal.tsx</code>, <code>Input.tsx</code>, and <code>Badge.tsx</code> in <code>src/components/common/</code>. Tell AI: <em>"Use my existing Button and Modal components from <code>@/components/common/</code> rather than creating new custom elements."</em></p>
+  </div>
+
+  <div class="no-break">
+    <h3>Rule 6: Maintain a Concise System Context Note</h3>
+    <p>Instead of explaining your entire tech stack every time, use a two-line summary: <em>"React 18 + Vite + TypeScript + Tailwind CSS. Path alias '@' points to '/src'."</em></p>
+  </div>
+
+  <div class="no-break">
+    <h3>Rule 7: Request 'Explanation Only on Request'</h3>
+    <p>Tell the AI: <em>"Be concise. Return only the updated snippet and a 1-sentence summary of why it solves the problem."</em> This saves hundreds of conversational output tokens.</p>
+  </div>
+
+  <div class="no-break">
+    <h3>Rule 8: Inspect Imports Before Writing Duplicate Helper Utilities</h3>
+    <p>Check <code>src/utils/</code>. You already have <code>cn.ts</code>, <code>formatting.ts</code>, and <code>countdown.ts</code>. Reusing them keeps your codebase clean and token spend low.</p>
+  </div>
+
+  <div class="no-break">
+    <h3>Rule 9: Start Fresh AI Conversations for Unrelated Tasks</h3>
+    <p>Do not keep a single chat open for weeks. Once a feature is done, start a new chat so previous conversations do not count against your input token quota.</p>
+  </div>
+
+  <div class="no-break">
+    <h3>Rule 10: Use Terminal Commands to Filter Bug Information</h3>
+    <p>Instead of pasting 500 lines of terminal logs, copy only the top 5 lines of the error stack trace showing the filename and line number.</p>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PART 6 -->
+<div>
+  <h1>Part 6: Ready-to-Use AI Prompts</h1>
+  <p>Copy and paste these battle-tested, token-efficient prompt templates directly into Gemini or your AI assistant.</p>
+
+  <div class="prompt-card">
+    <div class="prompt-header">Prompt 1: Understanding an Unfamiliar File</div>
+    <div class="prompt-body">"Explain the purpose of [FILENAME] in 3 bullet points: 1) What it does, 2) Which other files depend on it, and 3) Whether it is safe for a beginner to modify. Keep your answer under 100 words."</div>
+    <div class="prompt-why">Why it saves tokens: Limits output length strictly and prevents long generic lectures.</div>
+  </div>
+
+  <div class="prompt-card">
+    <div class="prompt-header">Prompt 2: Finding Files Responsible for a Feature</div>
+    <div class="prompt-body">"In my React+Vite project, I want to modify [FEATURE NAME, e.g. the RSVP WhatsApp share button]. Which file and function contains this logic? List only the file paths and line ranges."</div>
+    <div class="prompt-why">Why it saves tokens: Produces an instant roadmap without generating unnecessary code.</div>
+  </div>
+
+  <div class="prompt-card">
+    <div class="prompt-header">Prompt 3: Fixing a Bug Without Rewriting Everything</div>
+    <div class="prompt-body">"Here is the error message from my terminal: [PASTE ERROR]. Below is the relevant 15-line function from [FILENAME]: [PASTE FUNCTION]. What is the root cause? Return only the corrected lines to replace."</div>
+    <div class="prompt-why">Why it saves tokens: Targets only the broken lines, avoiding entire file regenerations.</div>
+  </div>
+
+  <div class="prompt-card">
+    <div class="prompt-header">Prompt 4: Adding a Feature with Existing Components</div>
+    <div class="prompt-body">"I want to add a [NEW FEATURE, e.g. confirmation popup] to [FILENAME]. Use my existing Modal and Button components from '@/components/common/'. Show only the import line and the new JSX snippet."</div>
+    <div class="prompt-why">Why it saves tokens: Prevents AI from generating duplicate modal components or huge files.</div>
+  </div>
+
+  <div class="prompt-card">
+    <div class="prompt-header">Prompt 5: Finding Potentially Unused Files Safely</div>
+    <div class="prompt-body">"I am auditing my project to remove clutter. Check if [FILENAME] is imported anywhere in 'src/' or referenced in configs. Answer with either 'ACTIVE' or 'CANDIDATE FOR CLEANUP' and a 1-sentence reason."</div>
+  </div>
+
+  <div class="prompt-card">
+    <div class="prompt-header">Prompt 6: Asking AI to Explain Proposed Changes First</div>
+    <div class="prompt-body">"Before writing any code, outline your proposed plan in 3 steps to implement [CHANGE]. Do not write the code yet. Wait for my approval."</div>
+    <div class="prompt-why">Why it saves tokens: Prevents generating large amounts of incorrect code that has to be discarded.</div>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PART 7 -->
+<div>
+  <h1>Part 7: VS Code Beginner Workflow</h1>
+  <p>Master these core skills in VS Code to inspect your codebase effortlessly without relying on AI for simple lookups.</p>
+
+  <h2>7.1 Visual Studio Code Key Shortcuts (Windows)</h2>
+  <table>
+    <tr>
+      <th style="width: 30%;">Shortcut</th>
+      <th style="width: 35%;">Action</th>
+      <th style="width: 35%;">Beginner Use Case</th>
+    </tr>
+    <tr>
+      <td><code>Ctrl + P</code></td>
+      <td><strong>Quick Open File</strong></td>
+      <td>Type any file name (e.g. <code>App.tsx</code>) to jump straight to it instantly.</td>
+    </tr>
+    <tr>
+      <td><code>Ctrl + Shift + F</code></td>
+      <td><strong>Global Search</strong></td>
+      <td>Search for any text, function name, or CSS class across your whole project.</td>
+    </tr>
+    <tr>
+      <td><code>F12</code></td>
+      <td><strong>Go to Definition</strong></td>
+      <td>Click on any component or function and press <code>F12</code> to jump to where it was created.</td>
+    </tr>
+    <tr>
+      <td><code>Shift + F12</code></td>
+      <td><strong>Find All References</strong></td>
+      <td>See every file in the project that uses this specific component.</td>
+    </tr>
+    <tr>
+      <td><code>Ctrl + &#96;</code> (Backtick)</td>
+      <td><strong>Toggle Terminal</strong></td>
+      <td>Opens or hides your terminal window to run <code>npm run dev</code>.</td>
+    </tr>
+    <tr>
+      <td><code>Ctrl + /</code></td>
+      <td><strong>Toggle Line Comment</strong></td>
+      <td>Quickly disable a line of code for testing without deleting it.</td>
+    </tr>
+    <tr>
+      <td><code>Ctrl + Shift + G</code></td>
+      <td><strong>Source Control (Git)</strong></td>
+      <td>See a colored side-by-side diff of every file changed by AI.</td>
+    </tr>
+  </table>
+
+  <h2>7.2 How to Safely Review AI Changes Before Accepting</h2>
+  <ol>
+    <li><strong>Open Source Control Panel (<code>Ctrl + Shift + G</code>):</strong> Whenever files are changed, VS Code lists them under "Changes".</li>
+    <li><strong>Click the File Name:</strong> VS Code opens a split-screen comparison:
+      <ul>
+        <li><strong>Red (Left side):</strong> The original code that was removed.</li>
+        <li><strong>Green (Right side):</strong> The new code added by the AI.</li>
+      </ul>
+    </li>
+    <li><strong>Verify the Changes:</strong> Check that your existing comments were preserved and no important functions were accidentally wiped out.</li>
+    <li><strong>Test in Browser:</strong> Check your browser window at <code>http://localhost:3000</code> to verify everything looks and behaves as expected.</li>
+  </ol>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PART 8 -->
+<div>
+  <h1>Part 8: Practical Examples Using My Actual Project</h1>
+  <p>Here are three real-world walkthroughs examining active files from your project.</p>
+
+  <h2>Walkthrough 1: <code>src/components/common/Button.tsx</code></h2>
+  <ul>
+    <li><strong>Understanding the File:</strong> A reusable button component. Supports 4 visual styles (<code>primary</code>, <code>secondary</code>, <code>outline</code>, <code>ghost</code>) and 3 sizes (<code>sm</code>, <code>md</code>, <code>lg</code>). Uses the <code>cn()</code> helper to merge Tailwind classes cleanly.</li>
+    <li><strong>Tracing Connections:</strong> Imported by <code>Navbar.tsx</code>, <code>WebsiteCreatorPage.tsx</code>, <code>TemplateCard.tsx</code>, and <code>Modal.tsx</code>. It is the visual building block for every button on your site.</li>
+    <li><strong>Token-Efficient AI Prompt:</strong>
+      <div class="prompt-body" style="margin-top: 6px;">"In src/components/common/Button.tsx, I want to add a 'danger' variant with red styling. Show me only the new variant object to add to the variants dictionary."</div>
+    </li>
+    <li><strong>How to Verify:</strong> Run <code>npm run dev</code>, open any page, and pass <code>variant="danger"</code> to a button to confirm it displays red.</li>
+  </ul>
+
+  <h2>Walkthrough 2: <code>src/context/AuthContext.tsx</code></h2>
+  <ul>
+    <li><strong>Understanding the File:</strong> The security and user state center. Manages user login tokens in <code>localStorage</code>, communicates with <code>/api/auth</code> or Supabase, and exposes <code>user</code>, <code>signIn</code>, and <code>signOut</code>.</li>
+    <li><strong>Tracing Connections:</strong> Wraps your entire app inside <code>App.tsx</code>. Used by <code>ProtectedRoute.tsx</code> to lock the dashboard from unauthorized visitors.</li>
+    <li><strong>Token-Efficient AI Prompt:</strong>
+      <div class="prompt-body" style="margin-top: 6px;">"In src/context/AuthContext.tsx, which function handles logout? Show me only the signOut function definition and how it clears localStorage."</div>
+    </li>
+    <li><strong>How to Verify:</strong> Click "Sign Out" in your navigation bar; verify that you are redirected to the login page and your token is cleared.</li>
+  </ul>
+
+  <h2>Walkthrough 3: <code>src/templates/registry.ts</code></h2>
+  <ul>
+    <li><strong>Understanding the File:</strong> The master template catalog array. Holds definitions for every theme: ID, title, description, category, tags, and which component renders it.</li>
+    <li><strong>Tracing Connections:</strong> Consumed by <code>TemplatesPage.tsx</code> to render the catalog grid and by <code>WebsiteCreatorPage.tsx</code> to load the chosen theme.</li>
+    <li><strong>Token-Efficient AI Prompt:</strong>
+      <div class="prompt-body" style="margin-top: 6px;">"Here is the structure of one item from TEMPLATES in src/templates/registry.ts. Generate a new entry for a 'Retro 90s Disco' theme following the exact same schema. Return only the object snippet."</div>
+    </li>
+    <li><strong>How to Verify:</strong> Save the file and visit <code>http://localhost:3000/templates</code>. Your new theme card will automatically appear in the list!</li>
+  </ul>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PART 9 & 10 -->
+<div>
+  <h1>Part 9: One-Page Quick Reference Checklist & Glossary</h1>
+
+  <h2>9.1 Daily Development Checklist</h2>
+  <table>
+    <tr>
+      <th style="width: 35%;">Step</th>
+      <th style="width: 65%;">Command or Action</th>
+    </tr>
+    <tr>
+      <td>1. Open Project</td>
+      <td>Open the folder <code>C:\Users\Lenovo\Desktop\Other\d</code> in VS Code.</td>
+    </tr>
+    <tr>
+      <td>2. Start Local Server</td>
+      <td>Press <code>Ctrl + &#96;</code>, type <code>npm run dev</code>, press Enter.</td>
+    </tr>
+    <tr>
+      <td>3. Open in Browser</td>
+      <td>Navigate to <code>http://localhost:3000</code> in Chrome or Edge.</td>
+    </tr>
+    <tr>
+      <td>4. Before Asking AI</td>
+      <td>Locate the specific file with <code>Ctrl + P</code>. Copy only the relevant 10-20 lines.</td>
+    </tr>
+    <tr>
+      <td>5. Before Risky Changes</td>
+      <td>Commit changes or create a quick ZIP backup of your project folder.</td>
+    </tr>
+    <tr>
+      <td>6. Check for Errors</td>
+      <td>Run <code>npm run build</code> in the terminal to verify zero TypeScript errors.</td>
+    </tr>
+  </table>
+
+  <h2>9.2 Beginner Glossary of Terms</h2>
+  <ul>
+    <li><strong>Component:</strong> A self-contained, reusable piece of user interface (like a Navbar, Button, or Card) written in React.</li>
+    <li><strong>Vite:</strong> The ultra-fast development server and asset packager that runs your local website.</li>
+    <li><strong>HMR (Hot Module Replacement):</strong> Vite's feature that instantly updates changes in your browser without requiring a full page refresh.</li>
+    <li><strong>Props:</strong> Arguments passed into a React component (like passing a title or button color).</li>
+    <li><strong>State:</strong> Internal component memory that triggers a screen re-render whenever its value changes (e.g. text typed in a form).</li>
+    <li><strong>Context:</strong> Global memory shared across the entire website (like user login state) without having to pass props through every component level.</li>
+    <li><strong>Tailwind CSS:</strong> A styling system that lets you design directly inside HTML tags using utility classes like <code>text-lg font-bold p-4</code>.</li>
+    <li><strong>SQLite (tempo.db):</strong> A lightweight, file-based database that stores your website data locally on your computer without needing complex server setups.</li>
+  </ul>
+</div>
+
+</body>
+</html>

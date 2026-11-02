@@ -1,3 +1,4 @@
+import { universalTemplateSearch } from '@/utils/searchHelper';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllTemplates } from '@/templates/registry';
@@ -33,6 +34,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ compact = false, className
   const [mobileExpanded, setMobileExpanded] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [didYouMean, setDidYouMean] = useState<string | null>(null);
   const [userWebsites, setUserWebsites] = useState<EventWebsite[]>([]);
   const [websitesLoaded, setWebsitesLoaded] = useState(false);
 
@@ -60,35 +62,41 @@ export const SearchBar: React.FC<SearchBarProps> = ({ compact = false, className
     }
   }, [isAuthenticated]);
 
-  // Perform search
+  // Perform universal fuzzy search with suggestion
   const performSearch = useCallback(
     (q: string) => {
       const trimmed = q.trim().toLowerCase();
       if (!trimmed) {
         setResults([]);
+        setDidYouMean(null);
         return;
+      }
+
+      const allTemplates: TemplateMetadata[] = getAllTemplates();
+      const outcome = universalTemplateSearch(allTemplates, trimmed, 'all');
+
+      if (outcome.suggestion && outcome.suggestion.toLowerCase() !== trimmed) {
+        setDidYouMean(outcome.suggestion);
+      } else {
+        setDidYouMean(null);
       }
 
       const matched: SearchResult[] = [];
 
-      // Search templates
-      const allTemplates: TemplateMetadata[] = getAllTemplates();
-      for (const tpl of allTemplates) {
-        const searchable = `${tpl.name} ${tpl.categoryLabel} ${tpl.description} ${tpl.subtitle || ''} ${tpl.badge || ''}`.toLowerCase();
-        if (searchable.includes(trimmed)) {
-          matched.push({
-            id: tpl.id,
-            type: 'template',
-            title: tpl.name,
-            subtitle: tpl.categoryLabel,
-            icon: 'palette',
-            href: `/templates/${tpl.id}`,
-            image: tpl.previewImage,
-          });
-        }
+      // 1. Matched templates from universal search
+      for (const tpl of outcome.results) {
+        matched.push({
+          id: tpl.id,
+          type: 'template',
+          title: tpl.name,
+          subtitle: `${tpl.category.toUpperCase()} · ${tpl.categoryLabel}`,
+          icon: 'palette',
+          href: `/templates/${tpl.id}`,
+          image: tpl.previewImage,
+        });
       }
 
-      // Search user websites
+      // 2. Search user websites
       if (isAuthenticated) {
         for (const site of userWebsites) {
           const searchable = `${site.title} ${site.eventType} ${site.slug}`.toLowerCase();
@@ -270,6 +278,28 @@ export const SearchBar: React.FC<SearchBarProps> = ({ compact = false, className
           } top-full mt-1.5 w-[calc(100vw-32px)] md:w-[420px] bg-surface-container-lowest rounded-xl shadow-xl border border-surface-container z-50 overflow-hidden`}
           role="listbox"
         >
+          {didYouMean && (
+            <div className="px-3.5 py-2.5 bg-amber-50 border-b border-amber-200/80 flex items-center justify-between text-xs text-amber-900">
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[16px] text-amber-600">help</span>
+                <span>
+                  Did you mean{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setQuery(didYouMean);
+                      performSearch(didYouMean);
+                    }}
+                    className="font-bold underline text-primary cursor-pointer hover:opacity-80"
+                  >
+                    "{didYouMean}"
+                  </button>
+                  ?
+                </span>
+              </div>
+            </div>
+          )}
+
           {results.length === 0 ? (
             <div className="px-4 py-6 text-center">
               <span className="material-symbols-outlined text-[32px] text-outline/50 mb-2 block">search_off</span>

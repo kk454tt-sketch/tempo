@@ -1,0 +1,25 @@
+# robots.txt for Tempo (https://tempo-a85d9.web.app)
+User-agent: *
+Allow: /
+Allow: /templates
+Allow: /templates/*
+Allow: /blog
+Allow: /blog/*
+Allow: /pricing
+Allow: /earn
+Allow: /about
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+
+# Disallow private user workspaces, editor app state, checkout sessions, and APIs
+Disallow: /editor/*
+Disallow: /dashboard/*
+Disallow: /account/*
+Disallow: /login
+Disallow: /api/*
+Disallow: /preview/*
+
+# Host & Sitemap definition
+Host: https://tempo-a85d9.web.app
+Sitemap: https://tempo-a85d9.web.app/sitemap.xml

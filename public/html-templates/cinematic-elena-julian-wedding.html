@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#0a0706]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Elena & Julian — Wedding Invitation</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Editorial / Romantic Serifs & Clean Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <!-- GSAP & Three.js from CDNJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            cinzel: ['"Cinzel"', 'serif'],
+            script: ['"Pinyon Script"', 'cursive'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            amberGlow: '#f5c378',
+            warmGold: '#dfb76c',
+            terracotta: '#863b2f',
+            parchment: '#f8f4ec',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Grain Overlay with 12fps animation */
+    @keyframes grainShift {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-2%, -3%); }
+      20% { transform: translate(3%, 1%); }
+      30% { transform: translate(-1%, 3%); }
+      40% { transform: translate(2%, -1%); }
+      50% { transform: translate(-3%, 2%); }
+      60% { transform: translate(1%, -2%); }
+      70% { transform: translate(3%, 3%); }
+      80% { transform: translate(-2%, 1%); }
+      90% { transform: translate(1%, -3%); }
+    }
+    .grain-layer {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+      animation: grainShift 0.8s steps(10) infinite;
+      pointer-events: none;
+    }
+
+    /* Soft breathing glow for RSVP */
+    @keyframes breatheGlow {
+      0%, 100% {
+        box-shadow: 0 0 15px rgba(223, 183, 108, 0.35), 0 0 30px rgba(245, 195, 120, 0.2);
+        transform: translateY(0);
+      }
+      50% {
+        box-shadow: 0 0 25px rgba(223, 183, 108, 0.65), 0 0 45px rgba(245, 195, 120, 0.4);
+        transform: translateY(-2px);
+      }
+    }
+    .breathing-glow {
+      animation: breatheGlow 3.5s ease-in-out infinite;
+    }
+
+    /* Envelope idle float */
+    @keyframes envelopeFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(0.4deg); }
+    }
+    .floating-envelope {
+      animation: envelopeFloat 4s ease-in-out infinite;
+    }
+
+    /* 3D Perspective Context */
+    .perspective-1000 {
+      perspective: 1200px;
+    }
+    .transform-style-preserve-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+
+    /* Custom scrollbar for modern mobile/desktop */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(223, 183, 108, 0.3);
+      border-radius: 9999px;
+    }
+
+    /* Paper Texture effect */
+    .paper-texture {
+      background-color: #faf6f0;
+      background-image: radial-gradient(#d3c5b4 0.65px, transparent 0.65px), radial-gradient(#ece3d6 0.65px, #faf6f0 0.65px);
+      background-size: 26px 26px;
+      background-position: 0 0, 13px 13px;
+    }
+
+    /* Wax Seal styling */
+    .wax-seal {
+      background: radial-gradient(circle at 35% 30%, #a83e30, #671d15 75%, #42110c 100%);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.6);
+    }
+  </style>
+</head>
+<body class="h-full w-full overflow-hidden text-neutral-100 select-none bg-[#090706] font-sans antialiased">
+
+  <!-- ==================== THREE.JS 3D BACKGROUND ==================== -->
+  <div id="webgl-container" class="absolute inset-0 z-0 overflow-hidden pointer-events-none"></div>
+
+  <!-- Parallax Tree Silhouettes (Front & Mid atmospheric framing) -->
+  <div id="parallax-trees" class="absolute inset-0 z-1 pointer-events-none opacity-40 transition-transform duration-300 ease-out">
+    <svg class="absolute -bottom-10 -left-12 w-[120%] h-64 md:h-96 text-[#040303] fill-current" viewBox="0 0 1000 300" preserveAspectRatio="none">
+      <path d="M0,300 L0,180 Q60,140 120,200 Q200,90 280,190 Q380,60 480,210 Q600,100 700,200 Q820,80 920,180 Q960,140 1000,190 L1000,300 Z"></path>
+    </svg>
+    <svg class="absolute -top-12 -right-8 w-[110%] h-48 md:h-64 text-[#060404] fill-current opacity-60" viewBox="0 0 1000 200" preserveAspectRatio="none">
+      <path d="M0,0 L1000,0 L1000,60 Q850,140 720,50 Q560,150 420,40 Q250,130 110,40 Q50,70 0,50 Z"></path>
+    </svg>
+  </div>
+
+  <!-- Film Grain Overlay & Vignette -->
+  <div class="grain-layer absolute inset-0 z-40 pointer-events-none"></div>
+  <div class="absolute inset-0 z-30 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_35%,rgba(5,3,3,0.75)_80%,rgba(2,1,1,0.95)_100%)]"></div>
+
+  <!-- Audio Mute/Unmute Toggle Floating Icon -->
+  <button id="soundToggle" class="absolute top-5 right-5 z-50 p-2.5 rounded-full bg-black/40 border border-amber-300/20 backdrop-blur-md text-amber-200/80 hover:text-amber-100 hover:border-amber-300/40 transition-all duration-300 active:scale-95 shadow-lg group" aria-label="Sound Toggle">
+    <!-- Sound On Icon (muted by default until tapped) -->
+    <svg id="soundIconOn" class="w-4 h-4 hidden text-amber-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.757 3.63 8.25 4.51 8.25H6.75z" />
+    </svg>
+    <!-- Sound Off Icon -->
+    <svg id="soundIconOff" class="w-4 h-4 text-amber-200/60 group-hover:text-amber-200" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-3.75l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.757 3.63 8.25 4.51 8.25H6.75z" />
+    </svg>
+  </button>
+
+  <!-- Ambient Invitation Wrapper (Centered Mobile Canvas, responsive up to desktop) -->
+  <main class="relative z-20 w-full h-full flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+    
+    <!-- Outer Envelope & Card Stage Container -->
+    <div id="stageContainer" class="perspective-1000 relative w-full max-w-[420px] aspect-[1/1.42] max-h-[88vh] flex items-center justify-center">
+
+      <!-- ==================== 1. FLOATING 3D ENVELOPE ==================== -->
+      <div id="envelopeWrapper" class="floating-envelope absolute inset-0 w-full h-full flex flex-col justify-end items-center cursor-pointer group">
+        
+        <!-- Subtle interactive call-to-action hint above envelope -->
+        <div id="tapPrompt" class="absolute -top-10 text-center text-amber-200/80 font-cinzel text-[11px] tracking-[0.28em] uppercase transition-opacity duration-500 animate-pulse">
+          ✦ Tap to open invitation ✦
+        </div>
+
+        <!-- Envelope Body (3D Structure) -->
+        <div class="relative w-full aspect-[1/0.74] bg-[#221714] rounded-lg shadow-[0_24px_50px_rgba(0,0,0,0.8),0_4px_12px_rgba(223,183,108,0.15)] border border-[#3f2a24] overflow-visible transform-style-preserve-3d">
+          
+          <!-- Back Interior Paper (Lining with botanical gold foil motif) -->
+          <div class="absolute inset-2 rounded bg-[#18110f] border border-[#3b2721] overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#dfb76c_1px,transparent_1px)] [background-size:12px_12px]"></div>
+            <span class="font-script text-4xl text-amber-200/20 italic">E & J</span>
+          </div>
+
+          <!-- Inside Slide preview card top edge -->
+          <div id="cardPeek" class="absolute inset-x-4 top-2 h-14 bg-[#f8f4ec] rounded-t shadow-inner border border-[#dec9ab] flex justify-center pt-2">
+            <div class="w-12 h-0.5 bg-amber-800/20 rounded-full"></div>
+          </div>
+
+          <!-- Left & Right Fold Flaps (Pocket front) -->
+          <div class="absolute inset-0 pointer-events-none z-10">
+            <!-- Left pocket flap -->
+            <div class="absolute bottom-0 left-0 w-1/2 h-full bg-gradient-to-tr from-[#1b120f] to-[#2a1d19] border-t border-r border-[#3a2822]/60 [clip-path:polygon(0_0,0_100%,100%_100%)]"></div>
+            <!-- Right pocket flap -->
+            <div class="absolute bottom-0 right-0 w-1/2 h-full bg-gradient-to-tl from-[#1a110e] to-[#271a17] border-t border-l border-[#3a2822]/60 [clip-path:polygon(100%_0,0_100%,100%_100%)]"></div>
+            <!-- Bottom front flap -->
+            <div class="absolute bottom-0 inset-x-0 h-[62%] bg-gradient-to-t from-[#251915] via-[#201512] to-transparent [clip-path:polygon(0_100%,50%_18%,100%_100%)] shadow-[0_-4px_12px_rgba(0,0,0,0.4)]"></div>
+          </div>
+
+          <!-- Top Fold 3D Flap (Flips open via rotateX in GSAP) -->
+          <div id="envelopeFlap" class="absolute top-0 inset-x-0 h-[65%] origin-top transform-style-preserve-3d z-20 [clip-path:polygon(0_0,100%_0,50%_100%)] bg-gradient-to-b from-[#2e1f1a] to-[#1c1310] shadow-md border-t border-[#462e26]">
+            <!-- Inner lining visible when flipped -->
+            <div class="absolute inset-0 bg-[#160f0d] opacity-90 backface-hidden transform rotate-x-180"></div>
+          </div>
+
+          <!-- Wax Seal (Splits into left & right halves upon click) -->
+          <div id="waxSealContainer" class="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center cursor-pointer">
+            <div id="sealLeft" class="wax-seal w-8 h-16 rounded-l-full relative overflow-hidden flex items-center justify-end pr-0.5 border-r border-black/30">
+              <span class="font-cinzel text-amber-200/90 font-bold text-xs tracking-wider translate-x-1 drop-shadow">E</span>
+            </div>
+            <div id="sealRight" class="wax-seal w-8 h-16 rounded-r-full relative overflow-hidden flex items-center justify-start pl-0.5 border-l border-white/20">
+              <span class="font-cinzel text-amber-200/90 font-bold text-xs tracking-wider -translate-x-1 drop-shadow">J</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== 2. MAIN WEDDING INVITATION CARD ==================== -->
+      <div id="invitationCard" class="absolute inset-0 w-full h-full paper-texture text-[#2b211a] rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_0_1px_rgba(223,183,108,0.35)] opacity-0 pointer-events-none overflow-y-auto flex flex-col justify-between p-6 sm:p-8 z-30 transition-shadow duration-700">
+        
+        <!-- Ornate Outer Foil Border -->
+        <div class="absolute inset-3 border border-[#c4a676]/40 rounded-xl pointer-events-none">
+          <div class="absolute inset-1 border border-[#c4a676]/25 rounded-lg pointer-events-none"></div>
+          <!-- Decorative Corner Flourishes -->
+          <span class="absolute top-1 left-1.5 text-xs text-[#b8955e]/70 font-cinzel">✤</span>
+          <span class="absolute top-1 right-1.5 text-xs text-[#b8955e]/70 font-cinzel">✤</span>
+          <span class="absolute bottom-1 left-1.5 text-xs text-[#b8955e]/70 font-cinzel">✤</span>
+          <span class="absolute bottom-1 right-1.5 text-xs text-[#b8955e]/70 font-cinzel">✤</span>
+        </div>
+
+        <!-- Top Header & Ceremony Vignette -->
+        <div class="relative z-10 text-center pt-2">
+          <div class="card-line filter-blur opacity-0 text-[10px] font-cinzel tracking-[0.3em] uppercase text-[#7a5a40]">
+            The Wedding Celebration Of
+          </div>
+          
+          <h1 class="card-line filter-blur opacity-0 mt-3 font-serif text-3xl sm:text-4xl text-[#1e140e] font-normal tracking-wide leading-tight">
+            Elena Rostova
+            <span class="block font-script text-3xl sm:text-4xl text-[#9e4235] my-0.5">&</span>
+            Julian Vance
+          </h1>
+
+          <div class="card-line filter-blur opacity-0 mt-2 flex items-center justify-center gap-3">
+            <span class="h-[1px] w-8 bg-[#c4a676]/60"></span>
+            <span class="text-[11px] font-cinzel tracking-[0.2em] text-[#825c38]">TOGETHER WITH THEIR FAMILIES</span>
+            <span class="h-[1px] w-8 bg-[#c4a676]/60"></span>
+          </div>
+        </div>
+
+        <!-- Core Details -->
+        <div class="relative z-10 text-center my-3 py-3 border-y border-[#c4a676]/30">
+          <p class="card-line filter-blur opacity-0 font-serif italic text-base sm:text-lg text-[#4a392d]">
+            Invite you to share in the joy of their union under the starlight
+          </p>
+
+          <div class="card-line filter-blur opacity-0 mt-3 grid grid-cols-3 items-center divide-x divide-[#c4a676]/30">
+            <div>
+              <span class="block text-[10px] font-cinzel tracking-wider text-[#8d6948] uppercase">Saturday</span>
+              <span class="font-serif text-lg text-[#251710] font-semibold">OCTOBER</span>
+            </div>
+            <div>
+              <span class="block font-cinzel text-3xl sm:text-4xl text-[#9e4235] font-normal leading-none">18</span>
+              <span class="text-[10px] font-cinzel tracking-wider text-[#735235]">2025</span>
+            </div>
+            <div>
+              <span class="block text-[10px] font-cinzel tracking-wider text-[#8d6948] uppercase">At Five</span>
+              <span class="font-serif text-lg text-[#251710] font-semibold">O'CLOCK</span>
+            </div>
+          </div>
+
+          <div class="card-line filter-blur opacity-0 mt-3">
+            <p class="font-cinzel text-xs tracking-[0.16em] uppercase text-[#291b14] font-medium">Villa Bellissima Estate</p>
+            <p class="font-sans text-[11px] text-[#695444] mt-0.5">3800 Cypress Vista Ridge • Florence Valley</p>
+          </div>
+        </div>
+
+        <!-- Bottom Action & Schedule Footer -->
+        <div class="relative z-10 text-center pb-2">
+          <div class="card-line filter-blur opacity-0 text-[10px] font-sans tracking-widest uppercase text-[#88684d] mb-3">
+            Reception, Feast & Dancing to follow
+          </div>
+
+          <!-- RSVP Interactive Trigger Button -->
+          <div id="rsvpBtnWrapper" class="opacity-0 transition-opacity duration-700">
+            <button id="openRsvpBtn" class="breathing-glow w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#983e31] via-[#aa4739] to-[#8d362a] text-[#fbf7f0] font-cinzel text-xs tracking-[0.24em] uppercase font-semibold border border-amber-300/40 shadow-xl transition-all duration-300 hover:brightness-110 active:scale-[0.98]">
+              Respond with Honor (RSVP)
+            </button>
+            <p class="mt-2 text-[10px] font-serif italic text-[#7e6451]">Kindly reply by September 15th</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== 3. RSVP BOTTOM SHEET MODAL ==================== -->
+    <div id="rsvpModal" class="fixed inset-0 z-50 pointer-events-none flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-md opacity-0 transition-opacity duration-300">
+      
+      <!-- Bottom Sheet Drawer Surface -->
+      <div id="sheetSurface" class="w-full max-w-lg bg-[#191210] border-t sm:border border-[#553b32] rounded-t-3xl sm:rounded-2xl shadow-2xl p-6 sm:p-8 transform translate-y-full transition-transform duration-400 ease-out text-neutral-200 pointer-events-auto max-h-[90vh] overflow-y-auto">
+        
+        <!-- Handle for touch swipe -->
+        <div class="w-12 h-1 bg-amber-400/25 rounded-full mx-auto mb-4 sm:hidden"></div>
+
+        <div class="flex items-center justify-between border-b border-[#3d2a23] pb-3">
+          <div>
+            <span class="text-[10px] font-cinzel tracking-[0.25em] text-amber-300/70 uppercase">Celebration RSVP</span>
+            <h2 class="font-serif text-2xl text-amber-100 font-normal">Reserve Your Place</h2>
+          </div>
+          <button id="closeRsvpBtn" class="text-neutral-400 hover:text-neutral-100 p-2 rounded-full hover:bg-white/5 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <form id="rsvpForm" class="mt-5 space-y-4">
+          <!-- Full Name -->
+          <div>
+            <label class="block text-xs font-cinzel tracking-wider text-amber-200/80 mb-1.5 uppercase">Guest Full Name(s)</label>
+            <input type="text" required placeholder="e.g. Clara Oswald & Guest" class="w-full bg-[#100b09] border border-[#48332a] focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/50 rounded-lg px-3.5 py-2.5 text-sm text-neutral-100 placeholder-neutral-500 outline-none transition">
+          </div>
+
+          <!-- Attendance Yes / Regret Toggle -->
+          <div>
+            <label class="block text-xs font-cinzel tracking-wider text-amber-200/80 mb-1.5 uppercase">Will you be attending?</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="cursor-pointer">
+                <input type="radio" name="attending" value="yes" checked class="peer sr-only">
+                <div class="py-2.5 text-center text-xs font-cinzel tracking-wider uppercase rounded-lg border border-[#48332a] peer-checked:border-amber-400 peer-checked:bg-amber-500/20 peer-checked:text-amber-200 text-neutral-400 hover:border-neutral-500 transition-all">
+                  Joyfully Accepts
+                </div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="attending" value="no" class="peer sr-only">
+                <div class="py-2.5 text-center text-xs font-cinzel tracking-wider uppercase rounded-lg border border-[#48332a] peer-checked:border-[#aa4739] peer-checked:bg-[#aa4739]/20 peer-checked:text-red-200 text-neutral-400 hover:border-neutral-500 transition-all">
+                  Regretfully Declines
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Stepper: Total Guests -->
+          <div id="guestsStepperContainer">
+            <label class="block text-xs font-cinzel tracking-wider text-amber-200/80 mb-1.5 uppercase">Total Party Size</label>
+            <div class="flex items-center justify-between bg-[#100b09] border border-[#48332a] rounded-lg px-4 py-2">
+              <span class="text-xs text-neutral-300">Reserved Seats for You</span>
+              <div class="flex items-center gap-3">
+                <button type="button" id="guestDec" class="w-7 h-7 rounded bg-[#2b1c17] text-amber-200 hover:bg-[#3d2720] flex items-center justify-center font-bold text-sm transition">-</button>
+                <span id="guestCount" class="w-6 text-center font-cinzel text-amber-300 text-base font-semibold">2</span>
+                <button type="button" id="guestInc" class="w-7 h-7 rounded bg-[#2b1c17] text-amber-200 hover:bg-[#3d2720] flex items-center justify-center font-bold text-sm transition">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dietary / Warm Note to the Couple -->
+          <div>
+            <label class="block text-xs font-cinzel tracking-wider text-amber-200/80 mb-1.5 uppercase">Note or Dietary Requirements</label>
+            <textarea rows="2" placeholder="Vegetarian, allergies, or an affectionate cheer..." class="w-full bg-[#100b09] border border-[#48332a] focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/50 rounded-lg px-3.5 py-2 text-sm text-neutral-100 placeholder-neutral-500 outline-none transition resize-none"></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="submitRsvp" class="w-full mt-2 py-3 px-6 rounded-xl bg-gradient-to-r from-[#dfb76c] via-[#f5c378] to-[#c79c4d] text-[#19110d] font-cinzel text-xs tracking-[0.22em] uppercase font-bold shadow-lg hover:brightness-105 active:scale-[0.99] transition">
+            Confirm RSVP & Send Cheer
+          </button>
+        </form>
+
+        <!-- Sent Success Banner (Hidden by default) -->
+        <div id="rsvpSuccess" class="hidden text-center py-6">
+          <div class="w-12 h-12 mx-auto rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center border border-amber-300/40 mb-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h3 class="font-serif text-2xl text-amber-100 font-normal">Thank You So Much!</h3>
+          <p class="font-sans text-xs text-neutral-300 mt-2 max-w-xs mx-auto">Your confirmation has been saved. We cannot wait to raise a glass together under the Tuscan stars.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================== JAVASCRIPT & THREE.JS LOGIC ==================== -->
+  <script>
+    /* ==========================================================
+       1. SYNTHESIZED SOUND EFFECTS ENGINE (Zero external dependencies)
+       Provides seamless ambient guitar/jazz chords + crickets,
+       paper rustle effect on envelope open, and glassware 'tink' on RSVP.
+       ========================================================== */
+    class AmbientSoundSystem {
+      constructor() {
+        this.ctx = null;
+        this.isMuted = true;
+        this.ambientGain = null;
+        this.cricketGain = null;
+        this.loopTimer = null;
+        this.cricketInterval = null;
+      }
+
+      init() {
+        if (this.ctx) return;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioCtx();
+        this.ambientGain = this.ctx.createGain();
+        this.ambientGain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+        this.ambientGain.connect(this.ctx.destination);
+      }
+
+      startAmbient() {
+        this.init();
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+        this.isMuted = false;
+        
+        // Fade in to ~35% volume over 2 seconds
+        this.ambientGain.gain.cancelScheduledValues(this.ctx.currentTime);
+        this.ambientGain.gain.linearRampToValueAtTime(0.35, this.ctx.currentTime + 2.0);
+
+        this.scheduleAcousticChords();
+        this.startCricketAmbience();
+      }
+
+      // Soft Warm Acoustic Chords (80 BPM, Warm Major 7ths / Jazz progression)
+      scheduleAcousticChords() {
+        if (!this.ctx || this.isMuted) return;
+        
+        // Warm progression in D Major: Dmaj7 - F#m7 - Gmaj7 - A7sus
+        const chords = [
+          [146.83, 220.00, 277.18, 369.99], // D3, A3, C#4, F#4
+          [185.00, 220.00, 277.18, 329.63], // F#3, A3, C#4, E4
+          [196.00, 246.94, 293.66, 369.99], // G3, B3, D4, F#4
+          [220.00, 293.66, 329.63, 440.00]  // A3, D4, E4, A4
+        ];
+        
+        let chordIndex = 0;
+        const playNextBar = () => {
+          if (this.isMuted) return;
+          const currentChord = chords[chordIndex % chords.length];
+          const now = this.ctx.currentTime;
+
+          // Arpeggiate lightly like an acoustic fingerpicking sequence
+          currentChord.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const filter = this.ctx.createBiquadFilter();
+
+            // Warm lowpass for acoustic wooden timbre
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(800, now);
+
+            // Triangle / sine blend for tender guitar body
+            osc.type = idx === 0 ? 'sine' : 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+
+            const noteTime = now + (idx * 0.14);
+            gain.gain.setValueAtTime(0.0001, noteTime);
+            gain.gain.exponentialRampToValueAtTime(0.08, noteTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, noteTime + 2.8);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.ambientGain);
+
+            osc.start(noteTime);
+            osc.stop(noteTime + 3.0);
+          });
+
+          chordIndex++;
+          this.loopTimer = setTimeout(playNextBar, 3000); // 80 BPM roughly 4 beats per bar
+        };
+
+        playNextBar();
+      }
+
+      startCricketAmbience() {
+        if (!this.ctx) return;
+        this.cricketGain = this.ctx.createGain();
+        this.cricketGain.gain.setValueAtTime(0.015, this.ctx.currentTime);
+        this.cricketGain.connect(this.ctx.destination);
+
+        const chirpHum = () => {
+          if (this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const g = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(4500 + Math.random() * 500, now);
+          
+          g.gain.setValueAtTime(0.001, now);
+          g.gain.linearRampToValueAtTime(0.02, now + 0.04);
+          g.gain.linearRampToValueAtTime(0.001, now + 0.1);
+
+          osc.connect(g);
+          g.connect(this.cricketGain);
+          osc.start(now);
+          osc.stop(now + 0.12);
+
+          this.cricketInterval = setTimeout(chirpHum, 700 + Math.random() * 1400);
+        };
+        chirpHum();
+      }
+
+      // Paper rustle effect for envelope flap
+      playPaperRustle() {
+        this.init();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const bufferSize = this.ctx.sampleRate * 0.45;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.2;
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1400, this.ctx.currentTime);
+        filter.Q.setValueAtTime(1.5, this.ctx.currentTime);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.12, this.ctx.currentTime + 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.4);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start();
+      }
+
+      // Elegant tink of crystal glass upon RSVP submit
+      playCrystalTink() {
+        this.init();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(2489, now); // D#7 champagne glass ping
+        osc.frequency.exponentialRampToValueAtTime(2480, now + 1.2);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 1.3);
+      }
+
+      toggleMute() {
+        if (!this.ctx) {
+          this.startAmbient();
+          return false;
+        }
+        if (this.isMuted) {
+          this.isMuted = false;
+          this.ambientGain.gain.linearRampToValueAtTime(0.35, this.ctx.currentTime + 0.4);
+          this.scheduleAcousticChords();
+          this.startCricketAmbience();
+          return false;
+        } else {
+          this.isMuted = true;
+          this.ambientGain.gain.linearRampToValueAtTime(0.0001, this.ctx.currentTime + 0.3);
+          clearTimeout(this.loopTimer);
+          clearTimeout(this.cricketInterval);
+          return true;
+        }
+      }
+    }
+
+    const soundSystem = new AmbientSoundSystem();
+
+    // Sound Toggle Button Handler
+    const soundToggle = document.getElementById('soundToggle');
+    const soundIconOn = document.getElementById('soundIconOn');
+    const soundIconOff = document.getElementById('soundIconOff');
+
+    soundToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const muted = soundSystem.toggleMute();
+      if (muted) {
+        soundIconOn.classList.add('hidden');
+        soundIconOff.classList.remove('hidden');
+      } else {
+        soundIconOn.classList.remove('hidden');
+        soundIconOff.classList.add('hidden');
+      }
+    });
+
+    /* ==========================================================
+       2. THREE.JS 3D SCENE: CATENARY LIGHT STRINGS & FIREFLIES
+       ========================================================== */
+    let scene, camera, renderer, stringBulbs = [], firefliesGroup, lightStrings = [];
+    let baseBulbIntensity = 1.0;
+    let isTabVisible = true;
+
+    function initThreeScene() {
+      const container = document.getElementById('webgl-container');
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // 1. Scene & Camera
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      camera.position.set(0, 0.8, 7.5);
+
+      // 2. Renderer with Alpha and Soft Tone Mapping
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.1;
+      container.appendChild(renderer.domElement);
+
+      // 3. Gentle Ambient Lighting (Night Blue & Warm Amber bounce)
+      const hemiLight = new THREE.HemisphereLight(0x1a2130, 0x090706, 0.6);
+      scene.add(hemiLight);
+
+      // Create glowing sprite texture for warm 2700K bloom bulb halo
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      gradient.addColorStop(0, 'rgba(255, 235, 195, 1)');
+      gradient.addColorStop(0.2, 'rgba(245, 195, 120, 0.7)');
+      gradient.addColorStop(0.5, 'rgba(223, 140, 50, 0.25)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 128, 128);
+      const glowTexture = new THREE.CanvasTexture(canvas);
+
+      // 4. Construct 4 Catenary Light Strings at Various Depths
+      const catenaryConfigs = [
+        { z: -1.5, yOffset: 2.8, sag: 1.1, numBulbs: 11, bulbScale: 0.14, bokeh: 1.0 }, // Mid-foreground
+        { z: -3.2, yOffset: 2.5, sag: 0.85, numBulbs: 13, bulbScale: 0.10, bokeh: 0.7 }, // Mid-distance
+        { z: -5.0, yOffset: 2.9, sag: 0.65, numBulbs: 15, bulbScale: 0.08, bokeh: 0.4 }, // Soft far bokeh
+        { z: -0.2, yOffset: 3.4, sag: 1.3, numBulbs: 9, bulbScale: 0.18, bokeh: 1.15 }  // Front foreground canopy
+      ];
+
+      catenaryConfigs.forEach((cfg, strIndex) => {
+        const stringObj = new THREE.Group();
+        stringObj.position.z = cfg.z;
+
+        // Catenary Curve Points (y = a * cosh(x/a) approximation)
+        const xSpan = 9;
+        const curvePoints = [];
+        const segments = 40;
+        for (let i = 0; i <= segments; i++) {
+          const t = (i / segments) * 2 - 1; // -1 to 1
+          const x = t * (xSpan / 2);
+          const y = cfg.yOffset - Math.cos((t * Math.PI) / 2) * cfg.sag;
+          curvePoints.push(new THREE.Vector3(x, y, 0));
+        }
+
+        // Draw the dark wire cord
+        const curve = new THREE.CatmullRomCurve3(curvePoints);
+        const wireGeo = new THREE.TubeGeometry(curve, 40, 0.012, 6, false);
+        const wireMat = new THREE.MeshBasicMaterial({ color: 0x1a1512 });
+        const wireMesh = new THREE.Mesh(wireGeo, wireMat);
+        stringObj.add(wireMesh);
+
+        // Place Emissive 2700K Warm Bulbs along the curve
+        for (let b = 1; b < cfg.numBulbs; b++) {
+          const u = b / cfg.numBulbs;
+          const pos = curve.getPoint(u);
+
+          // Small glass bulb sphere
+          const bulbGeo = new THREE.SphereGeometry(cfg.bulbScale * 0.45, 12, 12);
+          const bulbMat = new THREE.MeshBasicMaterial({ color: 0xfff1dc });
+          const bulbMesh = new THREE.Mesh(bulbGeo, bulbMat);
+          bulbMesh.position.copy(pos);
+
+          // Soft Bloom Glow Sprite around each filament
+          const spriteMat = new THREE.SpriteMaterial({
+            map: glowTexture,
+            color: 0xf5c378,
+            transparent: true,
+            opacity: 0.85 * cfg.bokeh,
+            blending: THREE.AdditiveBlending
+          });
+          const sprite = new THREE.Sprite(spriteMat);
+          const spriteSize = cfg.bulbScale * 3.8;
+          sprite.scale.set(spriteSize, spriteSize, 1);
+          bulbMesh.add(sprite);
+
+          // Store reference for breeze sway & flicker
+          const bulbData = {
+            mesh: bulbMesh,
+            sprite: sprite,
+            baseScale: spriteSize,
+            baseOpacity: 0.85 * cfg.bokeh,
+            flickerPhase: Math.random() * Math.PI * 2,
+            flickerSpeed: 0.5 + Math.random() * 1.5,
+            curveU: u,
+            strIndex: strIndex
+          };
+          stringBulbs.push(bulbData);
+          stringObj.add(bulbMesh);
+        }
+
+        lightStrings.push({ group: stringObj, sag: cfg.sag, index: strIndex });
+        scene.add(stringObj);
+      });
+
+      // 5. Fireflies / Gold Dust Particles (40 upward drifting points)
+      firefliesGroup = new THREE.Group();
+      const fireflyGeo = new THREE.BufferGeometry();
+      const fireflyCount = 40;
+      const positions = new Float32Array(fireflyCount * 3);
+      const phases = new Float32Array(fireflyCount);
+      const speeds = new Float32Array(fireflyCount);
+
+      for (let i = 0; i < fireflyCount; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 8;     // x
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 6; // y
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 5; // z
+        phases[i] = Math.random() * Math.PI * 2;
+        speeds[i] = 0.003 + Math.random() * 0.007;
+      }
+
+      fireflyGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      
+      const fireflyMat = new THREE.PointsMaterial({
+        color: 0xffd27d,
+        size: 0.12,
+        map: glowTexture,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+
+      const fireflyPoints = new THREE.Points(fireflyGeo, fireflyMat);
+      firefliesGroup.add(fireflyPoints);
+      firefliesGroup.userData = { positions, phases, speeds, count: fireflyCount, geo: fireflyGeo };
+      scene.add(firefliesGroup);
+
+      // Responsive resize
+      window.addEventListener('resize', onWindowResize, false);
+    }
+
+    function onWindowResize() {
+      if (!camera || !renderer) return;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    }
+
+    // 6. Animation Render Loop with Invisible Breeze & Firefly drift
+    let clock = new THREE.Clock();
+    function animateThreeScene() {
+      requestAnimationFrame(animateThreeScene);
+      if (!isTabVisible) return; // Pause for battery & frame budget
+
+      const elapsedTime = clock.getElapsedTime();
+
+      // String sway simulation (invisible gentle summer breeze)
+      lightStrings.forEach((str) => {
+        const sway = Math.sin(elapsedTime * 0.8 + str.index * 1.2) * 0.035;
+        str.group.rotation.x = sway;
+      });
+
+      // Individual bulb flicker + Global intensity scaler
+      stringBulbs.forEach((bulb) => {
+        const flicker = Math.sin(elapsedTime * bulb.flickerSpeed + bulb.flickerPhase) * 0.08 +
+                        Math.cos(elapsedTime * 3.1 + bulb.flickerPhase) * 0.04;
+        const currentOpacity = Math.max(0.1, (bulb.baseOpacity + flicker) * baseBulbIntensity);
+        bulb.sprite.material.opacity = currentOpacity;
+        const currentScale = bulb.baseScale * (0.95 + flicker * 0.3) * (0.9 + baseBulbIntensity * 0.1);
+        bulb.sprite.scale.set(currentScale, currentScale, 1);
+      });
+
+      // Fireflies upward drift & waver
+      if (firefliesGroup && firefliesGroup.userData.positions) {
+        const data = firefliesGroup.userData;
+        const pos = data.positions;
+        for (let i = 0; i < data.count; i++) {
+          // Drifting upward
+          pos[i * 3 + 1] += data.speeds[i];
+          // Gentle horizontal waver
+          pos[i * 3] += Math.sin(elapsedTime + data.phases[i]) * 0.003;
+
+          // Wrap back to bottom when passing top of frustum
+          if (pos[i * 3 + 1] > 4) {
+            pos[i * 3 + 1] = -3.5;
+            pos[i * 3] = (Math.random() - 0.5) * 8;
+          }
+        }
+        data.geo.attributes.position.needsUpdate = true;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // Initialize 3D Engine
+    initThreeScene();
+    animateThreeScene();
+
+    // Respect page visibility to guarantee 60fps and device battery
+    document.addEventListener('visibilitychange', () => {
+      isTabVisible = !document.hidden;
+      if (isTabVisible) clock.start();
+    });
+
+    /* ==========================================================
+       3. PARALLAX (Cursor & Device Orientation / Gyroscope)
+       ========================================================== */
+    const parallaxTrees = document.getElementById('parallax-trees');
+    let targetParallaxX = 0, targetParallaxY = 0;
+    let currentParallaxX = 0, currentParallaxY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      const normX = (e.clientX / window.innerWidth) - 0.5;
+      const normY = (e.clientY / window.innerHeight) - 0.5;
+      targetParallaxX = normX;
+      targetParallaxY = normY;
+    });
+
+    // Mobile Gyro Support
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.gamma !== null && e.beta !== null) {
+          targetParallaxX = Math.min(Math.max(e.gamma / 30, -1), 1) * 0.5;
+          targetParallaxY = Math.min(Math.max((e.beta - 45) / 30, -1), 1) * 0.5;
+        }
+      });
+    }
+
+    // Parallax update ticker
+    gsap.ticker.add(() => {
+      currentParallaxX += (targetParallaxX - currentParallaxX) * 0.05;
+      currentParallaxY += (targetParallaxY - currentParallaxY) * 0.05;
+
+      // Foreground trees shift most
+      parallaxTrees.style.transform = `translate3d(${currentParallaxX * 24}px, ${currentParallaxY * 18}px, 0)`;
+
+      // Three.js camera moves in mid-range parallax
+      if (camera) {
+        camera.position.x = currentParallaxX * 0.7;
+        camera.position.y = 0.8 - currentParallaxY * 0.5;
+        camera.lookAt(0, 0.4, 0);
+      }
+    });
+
+    /* ==========================================================
+       4. ENVELOPE OPENING & CARD REVEAL ANIMATION SEQUENCE
+       ========================================================== */
+    let isEnvelopeOpened = false;
+    const envelopeWrapper = document.getElementById('envelopeWrapper');
+    const sealLeft = document.getElementById('sealLeft');
+    const sealRight = document.getElementById('sealRight');
+    const envelopeFlap = document.getElementById('envelopeFlap');
+    const invitationCard = document.getElementById('invitationCard');
+    const tapPrompt = document.getElementById('tapPrompt');
+    const rsvpBtnWrapper = document.getElementById('rsvpBtnWrapper');
+
+    function openEnvelopeSequence() {
+      if (isEnvelopeOpened) return;
+      isEnvelopeOpened = true;
+
+      // 1. Audio Trigger: Start warm acoustic guitar chords & ambient crickets
+      soundSystem.startAmbient();
+      soundIconOn.classList.remove('hidden');
+      soundIconOff.classList.add('hidden');
+
+      // Stop idle float animation
+      envelopeWrapper.classList.remove('floating-envelope');
+      tapPrompt.style.opacity = '0';
+
+      const tl = gsap.timeline();
+
+      // Step 1: Wax seal cracks into two pieces and falls away (0.5s)
+      tl.to(sealLeft, {
+        x: -36,
+        y: 28,
+        rotation: -45,
+        opacity: 0,
+        duration: 0.55,
+        ease: "power2.in"
+      }, 0);
+
+      tl.to(sealRight, {
+        x: 36,
+        y: 32,
+        rotation: 40,
+        opacity: 0,
+        duration: 0.55,
+        ease: "power2.in",
+        onStart: () => {
+          // Play subtle paper rustle
+          soundSystem.playPaperRustle();
+        }
+      }, 0);
+
+      // Step 2: Flap opens in 3D (rotateX, 0.9s, power2.inOut)
+      tl.to(envelopeFlap, {
+        rotateX: 180,
+        duration: 0.9,
+        ease: "power2.inOut",
+        boxShadow: "0 -2px 10px rgba(0,0,0,0.2)"
+      }, 0.35);
+
+      // Step 3: Card slides up, scales to full screen, bulbs brighten 30% (1.2s)
+      tl.set(invitationCard, {
+        y: 90,
+        scale: 0.85,
+        opacity: 0,
+        pointerEvents: 'auto'
+      }, 0.7);
+
+      tl.to(invitationCard, {
+        y: 0,
+        scale: 1.0,
+        opacity: 1,
+        duration: 1.2,
+        ease: "power3.out"
+      }, 0.75);
+
+      // Envelope body fades back smoothly into the depth
+      tl.to(envelopeWrapper, {
+        y: 40,
+        opacity: 0,
+        duration: 0.9,
+        ease: "power2.out",
+        onComplete: () => {
+          envelopeWrapper.style.display = 'none';
+        }
+      }, 0.85);
+
+      // Brighten 3D Three.js Bulbs about 30%
+      tl.to({ val: 1.0 }, {
+        val: 1.35,
+        duration: 1.2,
+        onUpdate: function() {
+          baseBulbIntensity = this.targets()[0].val;
+        }
+      }, 0.75);
+
+      // Step 4: Text appears line by line with soft blur-to-sharp reveal, 150ms stagger
+      const cardLines = document.querySelectorAll('.card-line');
+      cardLines.forEach((line) => {
+        line.style.filter = "blur(10px)";
+        line.style.transform = "translateY(12px)";
+      });
+
+      tl.to(cardLines, {
+        opacity: 1,
+        filter: "blur(0px)",
+        y: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power2.out"
+      }, 1.3);
+
+      // Step 5: RSVP button fades up last with slow breathing glow
+      tl.to(rsvpBtnWrapper, {
+        opacity: 1,
+        duration: 0.9,
+        ease: "power2.out"
+      }, "+=0.1");
+    }
+
+    envelopeWrapper.addEventListener('click', openEnvelopeSequence);
+
+    /* ==========================================================
+       5. RSVP BOTTOM SHEET & CONFETTI PULSE
+       ========================================================== */
+    const rsvpModal = document.getElementById('rsvpModal');
+    const sheetSurface = document.getElementById('sheetSurface');
+    const openRsvpBtn = document.getElementById('openRsvpBtn');
+    const closeRsvpBtn = document.getElementById('closeRsvpBtn');
+    const rsvpForm = document.getElementById('rsvpForm');
+    const rsvpSuccess = document.getElementById('rsvpSuccess');
+
+    // Guest Stepper Logic
+    const guestCountEl = document.getElementById('guestCount');
+    let guestVal = 2;
+    document.getElementById('guestInc').addEventListener('click', () => {
+      if (guestVal < 8) guestVal++;
+      guestCountEl.textContent = guestVal;
+    });
+    document.getElementById('guestDec').addEventListener('click', () => {
+      if (guestVal > 1) guestVal--;
+      guestCountEl.textContent = guestVal;
+    });
+
+    function openRsvpSheet() {
+      rsvpModal.classList.remove('pointer-events-none');
+      gsap.to(rsvpModal, { opacity: 1, duration: 0.3 });
+      gsap.to(sheetSurface, { y: 0, duration: 0.45, ease: "power3.out" });
+    }
+
+    function closeRsvpSheet() {
+      gsap.to(sheetSurface, {
+        y: '100%',
+        duration: 0.35,
+        ease: "power3.in",
+        onComplete: () => {
+          gsap.to(rsvpModal, {
+            opacity: 0,
+            duration: 0.2,
+            onComplete: () => {
+              rsvpModal.classList.add('pointer-events-none');
+            }
+          });
+        }
+      });
+    }
+
+    openRsvpBtn.addEventListener('click', openRsvpSheet);
+    closeRsvpBtn.addEventListener('click', closeRsvpSheet);
+    rsvpModal.addEventListener('click', (e) => {
+      if (e.target === rsvpModal) closeRsvpSheet();
+    });
+
+    // Form submission: Sound tink, bulb pulse, and warm confetti-light bursts
+    rsvpForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // 1. Play crystal glass sound
+      soundSystem.playCrystalTink();
+
+      // 2. Pulse Three.js bulbs briefly
+      gsap.timeline()
+        .to({ val: baseBulbIntensity }, {
+          val: 2.1,
+          duration: 0.25,
+          ease: "power2.out",
+          onUpdate: function() { baseBulbIntensity = this.targets()[0].val; }
+        })
+        .to({ val: 2.1 }, {
+          val: 1.35,
+          duration: 0.7,
+          ease: "power2.inOut",
+          onUpdate: function() { baseBulbIntensity = this.targets()[0].val; }
+        });
+
+      // 3. Warm Confetti-light bursts falling
+      createWarmConfettiBurst();
+
+      // 4. Show success in bottom sheet
+      rsvpForm.classList.add('hidden');
+      rsvpSuccess.classList.remove('hidden');
+
+      setTimeout(() => {
+        closeRsvpSheet();
+      }, 2600);
+    });
+
+    // Confetti particles generator using DOM/CSS for lightweight 60fps execution
+    function createWarmConfettiBurst() {
+      const colors = ['#f5c378', '#dfb76c', '#ffffff', '#e88f56', '#a83e30'];
+      const burstContainer = document.createElement('div');
+      burstContainer.className = 'fixed inset-0 pointer-events-none z-50 overflow-hidden';
+      document.body.appendChild(burstContainer);
+
+      const count = 45;
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        const size = Math.random() * 8 + 5;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        particle.style.position = 'absolute';
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = '-20px';
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size * (Math.random() > 0.5 ? 1 : 1.6)}px`;
+        particle.style.backgroundColor = color;
+        particle.style.borderRadius = Math.random() > 0.3 ? '50%' : '2px';
+        particle.style.boxShadow = `0 0 10px ${color}`;
+        burstContainer.appendChild(particle);
+
+        gsap.to(particle, {
+          y: window.innerHeight + 40,
+          x: (Math.random() - 0.5) * 220,
+          rotation: Math.random() * 720,
+          duration: 2.2 + Math.random() * 1.8,
+          ease: "power1.out",
+          delay: Math.random() * 0.4
+        });
+      }
+
+      setTimeout(() => {
+        burstContainer.remove();
+      }, 4500);
+    }
+
+    // Prefers-reduced-motion check for accessibility
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      if (envelopeWrapper) envelopeWrapper.classList.remove('floating-envelope');
+      lightStrings.forEach(str => str.group.rotation.x = 0);
+    }
+  </script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

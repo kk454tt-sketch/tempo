@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Evelyn's 30th Birthday Invitation</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#E9DFD0',
+            cream: '#F6EFE3',
+            olive: '#4B5440',
+            'olive-hover': '#3D4434',
+            'dusty-rose': '#C99A8E',
+            'ink-brown': '#2E241D',
+            gold: '#B8935A',
+            'gold-light': '#D4AF37'
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"DM Sans"', 'sans-serif'],
+            script: ['"Pinyon Script"', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* CSS Paper Grain Texture & Lighting */
+    body {
+      background-color: #E9DFD0;
+      color: #2E241D;
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .paper-texture {
+      background-color: #E9DFD0;
+      background-image: 
+        radial-gradient(ellipse at 25% 15%, rgba(255, 255, 255, 0.45) 0%, transparent 60%),
+        radial-gradient(circle at 80% 85%, rgba(46, 36, 29, 0.07) 0%, transparent 55%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+    }
+
+    /* 3D Perspective setup */
+    .perspective-1200 {
+      perspective: 1200px;
+    }
+    
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+
+    /* Wax seal realistic styling */
+    .wax-seal {
+      background: radial-gradient(circle at 35% 30%, #D4AF37 0%, #B8935A 45%, #8B6B34 100%);
+      box-shadow: 
+        inset 0 1px 2px rgba(255,255,255,0.4),
+        inset 0 -2px 4px rgba(0,0,0,0.3),
+        0 4px 10px rgba(46,36,29,0.3),
+        0 1px 3px rgba(46,36,29,0.2);
+    }
+
+    .wax-rim {
+      border: 1.5px solid rgba(255, 245, 220, 0.4);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
+    }
+
+    /* Envelope geometry and drop shadows */
+    .envelope-shadow {
+      box-shadow: 
+        0 18px 36px -10px rgba(46, 36, 29, 0.16),
+        0 8px 16px -6px rgba(46, 36, 29, 0.1);
+    }
+
+    .card-shadow {
+      box-shadow: 
+        0 24px 48px -12px rgba(46, 36, 29, 0.18),
+        0 8px 20px -6px rgba(46, 36, 29, 0.1);
+    }
+
+    /* Botanical envelope inner lining pattern */
+    .envelope-lining {
+      background-color: #F2E4DF;
+      background-image: radial-gradient(#C99A8E 0.75px, transparent 0.75px), radial-gradient(#B8935A 0.5px, #F2E4DF 0.5px);
+      background-size: 16px 16px;
+      background-position: 0 0, 8px 8px;
+    }
+
+    /* Stamp jagged edge */
+    .postage-stamp {
+      background: #FDFBF7;
+      border: 1px dashed #C99A8E;
+      box-shadow: 0 2px 6px rgba(46,36,29,0.12);
+    }
+
+    /* Particle canvas */
+    #petalCanvas {
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+    }
+
+    /* Accessible reduced motion override */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body class="paper-texture min-h-screen flex items-center justify-center relative overflow-hidden">
+
+  <!-- Drifting Paper-Petal Background Canvas -->
+  <canvas id="petalCanvas"></canvas>
+
+  <!-- Ambient Light Vignette Layer -->
+  <div class="fixed inset-0 pointer-events-none shadow-[inset_0_0_120px_rgba(46,36,29,0.06)] z-10"></div>
+
+  <!-- MAIN WRAPPER: Constrained to Mobile Frame Dimensions (390x844 approx) -->
+  <main class="relative w-full max-w-[420px] h-[100dvh] max-h-[880px] flex items-center justify-center overflow-hidden z-20 px-4">
+
+    <!-- ========================================== -->
+    <!-- STAGE 1 & 2: THE ENVELOPE (INTERACTIVE)   -->
+    <!-- ========================================== -->
+    <div id="envelopeScene" class="relative w-full flex flex-col items-center justify-center cursor-pointer select-none">
+      
+      <!-- Postage Stamp (Screen 1 & 2 position) -->
+      <div id="envelopeStamp" class="absolute -top-32 right-3 w-14 h-16 postage-stamp p-1 flex flex-col items-center justify-center transform rotate-6 z-10 transition-transform hover:scale-105">
+        <div class="border border-dusty-rose/40 w-full h-full flex flex-col items-center justify-center text-center p-0.5">
+          <svg class="w-4 h-4 text-dusty-rose/80 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v10M7 12h10"/>
+          </svg>
+          <span class="font-sans text-[8px] uppercase tracking-wider text-dusty-rose font-medium">Nº 28</span>
+          <span class="font-serif italic text-[7px] text-ink-brown/70 leading-none">2025</span>
+        </div>
+      </div>
+
+      <!-- Calligraphy Guest Name Tag -->
+      <div id="recipientLine" class="text-center mb-6">
+        <p class="font-script text-3xl sm:text-4xl text-ink-brown tracking-wide opacity-95">for Evelyn Vance</p>
+      </div>
+
+      <!-- 3D Perspective Envelope Container -->
+      <div id="envelopeWrapper" class="relative w-[310px] sm:w-[325px] h-[205px] perspective-1200 transition-all duration-300">
+        
+        <!-- The Main Envelope Base Body (with subtle -3deg tilt on load) -->
+        <div id="envelopeBox" class="relative w-full h-full transform-style-3d envelope-shadow rounded-[3px] bg-[#EDE4D5]">
+
+          <!-- Envelope Back Interior / Lining -->
+          <div class="absolute inset-0 envelope-lining rounded-[3px] overflow-hidden">
+            <!-- Decorative botanical foil accents inside lining -->
+            <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#4B5440_1px,transparent_1px)] [background-size:12px_12px]"></div>
+          </div>
+
+          <!-- ============================================== -->
+          <!-- THE INVITATION CARD (PEEKING / SLIDING OUT)    -->
+          <!-- ============================================== -->
+          <div id="slidingCard" class="absolute left-[12px] right-[12px] bottom-[6px] h-[270px] bg-cream rounded-[2px] card-shadow z-20 overflow-hidden transform translate-y-0">
+            <!-- Subtle Card Border -->
+            <div class="absolute inset-2 border border-gold/45 p-3 flex flex-col items-center text-center justify-start pointer-events-none">
+              <span class="font-sans text-[7.5px] uppercase tracking-[0.2em] text-ink-brown/70 mt-1">You Are Invited To</span>
+              <span class="font-script text-2xl text-ink-brown mt-0.5">Evelyn's</span>
+              <span class="font-serif italic text-lg text-ink-brown -mt-1 font-medium">30th Birthday</span>
+              <div class="w-8 h-[1px] bg-gold/50 my-1.5"></div>
+              <span class="font-sans text-[7px] uppercase tracking-[0.15em] text-ink-brown/80 font-medium">Saturday, June 14th</span>
+              
+              <!-- Subtle decorative corner ticks -->
+              <span class="absolute top-1 left-1 w-1.5 h-1.5 border-t border-l border-gold/60"></span>
+              <span class="absolute top-1 right-1 w-1.5 h-1.5 border-t border-r border-gold/60"></span>
+            </div>
+          </div>
+
+          <!-- Envelope Front Pocket (Left & Right & Bottom triangular folds) -->
+          <div class="absolute inset-0 z-30 pointer-events-none">
+            <!-- Left Flap Fold -->
+            <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 325 205">
+              <!-- Left Triangle -->
+              <polygon points="0,0 0,205 162.5,108" fill="#F8F3EA" />
+              <!-- Right Triangle -->
+              <polygon points="325,0 325,205 162.5,108" fill="#F3ECE0" />
+              <!-- Bottom Triangle -->
+              <polygon points="0,205 325,205 162.5,95" fill="#FAF5ED" />
+              <!-- Delicate edge seams -->
+              <line x1="0" y1="205" x2="162.5" y2="95" stroke="rgba(46,36,29,0.06)" stroke-width="1.2"/>
+              <line x1="325" y1="205" x2="162.5" y2="95" stroke="rgba(46,36,29,0.06)" stroke-width="1.2"/>
+            </svg>
+          </div>
+
+          <!-- Top Foldable Flap with 3D Flip capability (rotateX around top) -->
+          <div id="envelopeFlap" class="absolute top-0 left-0 w-full h-[115px] z-40 origin-top transform-style-3d cursor-pointer">
+            
+            <!-- Flap Outer Face (Cream Paper with wax point) -->
+            <div class="absolute inset-0 backface-hidden">
+              <svg class="w-full h-full filter drop-shadow(0 2px 3px rgba(46,36,29,0.08))" preserveAspectRatio="none" viewBox="0 0 325 115">
+                <polygon points="0,0 325,0 162.5,115" fill="#F6EFE3" />
+                <line x1="0" y1="0" x2="162.5" y2="115" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+                <line x1="325" y1="0" x2="162.5" y2="115" stroke="rgba(46,36,29,0.06)" stroke-width="1"/>
+              </svg>
+            </div>
+
+            <!-- Flap Inner Face (Reveals when flipped open 180deg) -->
+            <div class="absolute inset-0 backface-hidden [transform:rotateX(180deg)] overflow-hidden">
+              <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 325 115">
+                <polygon points="0,115 325,115 162.5,0" fill="#E8D5CE" />
+              </svg>
+              <div class="absolute inset-0 envelope-lining opacity-90 [clip-path:polygon(0_100%,325px_100%,162.5px_0)]"></div>
+            </div>
+          </div>
+
+          <!-- Wax Seal on the Flap Tip (Split into two cracking fragments) -->
+          <div id="waxSealGroup" class="absolute left-1/2 top-[115px] -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-auto transition-transform hover:scale-105 active:scale-95">
+            
+            <!-- Left Fragment -->
+            <div id="sealLeft" class="absolute -left-[23px] -top-[23px] w-[24px] h-[46px] overflow-hidden origin-right">
+              <div class="w-[46px] h-[46px] rounded-full wax-seal flex items-center justify-center relative">
+                <div class="w-8 h-8 rounded-full wax-rim flex items-center justify-center">
+                  <span class="font-serif italic font-semibold text-lg text-[#F6EFE3]/90 drop-shadow-sm select-none">E</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Fragment -->
+            <div id="sealRight" class="absolute left-[0.5px] -top-[23px] w-[24px] h-[46px] overflow-hidden origin-left">
+              <div class="w-[46px] h-[46px] -ml-[23px] rounded-full wax-seal flex items-center justify-center relative">
+                <div class="w-8 h-8 rounded-full wax-rim flex items-center justify-center">
+                  <span class="font-serif italic font-semibold text-lg text-[#F6EFE3]/90 drop-shadow-sm select-none">E</span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /waxSealGroup -->
+
+        </div><!-- /envelopeBox -->
+
+      </div><!-- /envelopeWrapper -->
+
+      <!-- Action Prompt Hint below envelope -->
+      <div id="tapPrompt" class="flex flex-col items-center mt-7 transition-opacity duration-300">
+        <span class="font-sans text-[10px] tracking-[0.24em] uppercase text-ink-brown/70 font-medium">Tap to open</span>
+        <div class="w-6 h-[1px] bg-gold/50 mt-1.5 animate-pulse"></div>
+      </div>
+
+      <!-- Dried Pressed Botanical Flower (Screen 1 & 2 bottom-left accent) -->
+      <div id="ambientFlower" class="absolute -bottom-8 -left-2 w-14 h-24 pointer-events-none opacity-85 z-40 transform -rotate-12">
+        <svg viewBox="0 0 100 160" fill="none" class="w-full h-full drop-shadow-sm">
+          <!-- Stem -->
+          <path d="M48 150 Q46 100 50 60 Q52 40 49 20" stroke="#4B5440" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Leaves -->
+          <path d="M49 110 Q32 105 34 90 Q44 95 48 102" fill="#4B5440" opacity="0.85"/>
+          <path d="M50 85 Q66 78 63 64 Q54 72 50 78" fill="#4B5440" opacity="0.9"/>
+          <!-- Pressed Petals (Dusty rose) -->
+          <ellipse cx="49" cy="18" rx="9" ry="12" fill="#C99A8E" transform="rotate(-15 49 18)"/>
+          <ellipse cx="44" cy="22" rx="8" ry="10" fill="#B3867B" opacity="0.9"/>
+          <ellipse cx="55" cy="22" rx="8" ry="10" fill="#D4A79C" opacity="0.9"/>
+          <circle cx="49" cy="20" r="3.5" fill="#B8935A"/>
+        </svg>
+      </div>
+
+    </div><!-- /envelopeScene -->
+
+
+    <!-- ============================================== -->
+    <!-- STAGE 3: THE FULL INVITATION CARD             -->
+    <!-- ============================================== -->
+    <section id="fullCardSection" class="absolute inset-0 w-full h-full flex items-center justify-center p-4 pointer-events-none opacity-0 z-30">
+      
+      <!-- Invitation Card Surface -->
+      <div id="fullCard" class="relative w-full max-w-[350px] bg-cream card-shadow rounded-[3px] py-10 px-6 sm:px-8 border border-gold/20 flex flex-col items-center justify-between min-h-[580px] sm:min-h-[620px] max-h-[92vh] overflow-y-auto">
+        
+        <!-- Vintage Postage Stamp (Screen 3 top-right) -->
+        <div class="inv-line absolute top-3.5 right-3.5 w-12 h-14 postage-stamp p-1 flex flex-col items-center justify-center transform rotate-2">
+          <div class="border border-dusty-rose/40 w-full h-full flex flex-col items-center justify-center text-center">
+            <span class="font-sans text-[6px] tracking-wider text-dusty-rose uppercase">Postage</span>
+            <span class="font-serif italic text-[11px] text-gold font-semibold leading-tight">30</span>
+            <span class="font-sans text-[6.5px] text-ink-brown/60">2025</span>
+          </div>
+        </div>
+
+        <!-- Inner Delicate Gold Frame -->
+        <div class="absolute inset-3 border border-gold/40 pointer-events-none">
+          <!-- Corner Accents -->
+          <span class="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-gold"></span>
+          <span class="absolute top-1 right-1 w-2.5 h-2.5 border-t border-r border-gold"></span>
+          <span class="absolute bottom-1 left-1 w-2.5 h-2.5 border-b border-l border-gold"></span>
+          <span class="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-gold"></span>
+        </div>
+
+        <!-- Pressed Flower Motif overlapping bottom-left corner -->
+        <div class="absolute -bottom-3 -left-3 w-16 h-28 pointer-events-none z-20">
+          <svg viewBox="0 0 100 160" fill="none" class="w-full h-full drop-shadow">
+            <path d="M48 155 Q45 105 50 65 Q52 45 49 25" stroke="#4B5440" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M48 115 Q30 110 32 94 Q43 99 48 107" fill="#4B5440" opacity="0.9"/>
+            <path d="M50 88 Q68 80 65 65 Q55 74 50 80" fill="#4B5440" opacity="0.95"/>
+            <ellipse cx="49" cy="24" rx="10" ry="13" fill="#C99A8E" transform="rotate(-10 49 24)"/>
+            <ellipse cx="43" cy="28" rx="8" ry="11" fill="#B3867B" opacity="0.95"/>
+            <ellipse cx="56" cy="28" rx="8" ry="11" fill="#D4A79C" opacity="0.95"/>
+            <circle cx="49" cy="26" r="3.5" fill="#B8935A"/>
+          </svg>
+        </div>
+
+        <!-- Header Titles -->
+        <div class="w-full text-center pt-2 flex flex-col items-center">
+          <p class="inv-line font-sans text-[9px] uppercase tracking-[0.24em] text-ink-brown/75 font-medium mb-3">
+            You Are Invited To
+          </p>
+
+          <h2 class="inv-line font-script text-5xl sm:text-6xl text-ink-brown leading-tight tracking-wide">
+            Evelyn's
+          </h2>
+
+          <h1 class="inv-line font-serif italic text-3xl sm:text-4xl text-ink-brown tracking-normal font-normal -mt-1">
+            30th Birthday
+          </h1>
+
+          <div class="inv-line w-12 h-[1px] bg-gold/50 my-5"></div>
+        </div>
+
+        <!-- Event Particulars (Stacked small-caps) -->
+        <div class="w-full text-center space-y-2 py-1">
+          <p class="inv-line font-sans text-[10px] sm:text-[10.5px] uppercase tracking-[0.16em] text-ink-brown/85 font-medium">
+            Saturday, June Fourteenth
+          </p>
+          <p class="inv-line font-sans text-[9.5px] sm:text-[10px] uppercase tracking-[0.16em] text-ink-brown/80 font-normal">
+            Six O'Clock in the Evening
+          </p>
+          <p class="inv-line font-sans text-[9px] sm:text-[9.5px] uppercase tracking-[0.14em] text-ink-brown/75">
+            The Glasshouse Conservatory · Hudson Valley
+          </p>
+        </div>
+
+        <!-- Dress code & Editorial Quote -->
+        <div class="w-full text-center my-3 max-w-[280px]">
+          <div class="inv-line w-6 h-[1px] bg-dusty-rose/60 mx-auto mb-3"></div>
+          
+          <p class="inv-line font-sans text-[8.5px] uppercase tracking-[0.18em] text-ink-brown/70 mb-2">
+            Dress Code: Garden Formal & Earth Tones
+          </p>
+          
+          <p class="inv-line font-serif italic text-sm sm:text-[15px] text-ink-brown/90 leading-relaxed px-2">
+            “Join us under the dusk lanterns for an evening of shared wine, laughter, and timeless memories.”
+          </p>
+          
+          <div class="inv-line w-6 h-[1px] bg-dusty-rose/60 mx-auto mt-3"></div>
+        </div>
+
+        <!-- Footer RSVP Button Section -->
+        <div class="w-full flex flex-col items-center pt-2 pb-1 z-30">
+          <button id="rsvpBtn" class="inv-line relative px-10 py-3 rounded-full bg-olive hover:bg-olive-hover text-cream font-sans text-[11px] tracking-[0.2em] uppercase font-medium shadow-md hover:shadow-lg transition-all transform active:scale-95 cursor-pointer">
+            RSVP
+          </button>
+          
+          <span class="inv-line font-sans text-[8px] uppercase tracking-[0.16em] text-ink-brown/60 mt-3 font-medium">
+            Kindly Respond by May 20th
+          </span>
+        </div>
+
+      </div><!-- /fullCard -->
+
+    </section><!-- /fullCardSection -->
+
+    <!-- ============================================== -->
+    <!-- RSVP MODAL DIALOG (Interactive Overlay)        -->
+    <!-- ============================================== -->
+    <div id="rsvpModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-brown/40 backdrop-blur-[2px] opacity-0 pointer-events-none transition-opacity duration-300">
+      
+      <div id="rsvpContent" class="relative w-full max-w-[340px] bg-cream rounded-sm p-6 sm:p-7 card-shadow border border-gold/30 transform scale-95 transition-transform duration-300">
+        
+        <!-- Close Button -->
+        <button id="closeModalBtn" class="absolute top-3 right-3 text-ink-brown/60 hover:text-ink-brown p-1" aria-label="Close RSVP form">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+        <div class="text-center mb-5">
+          <span class="font-sans text-[8px] uppercase tracking-[0.2em] text-gold font-medium">Celebration of Evelyn</span>
+          <h3 class="font-serif italic text-2xl text-ink-brown font-medium mt-0.5">Will You Join Us?</h3>
+        </div>
+
+        <form id="rsvpForm" class="space-y-4 text-left">
+          
+          <!-- Name Input -->
+          <div>
+            <label class="block font-sans text-[9px] uppercase tracking-[0.14em] text-ink-brown/80 mb-1" for="guestName">
+              Full Name(s) *
+            </label>
+            <input type="text" id="guestName" required placeholder="E.g. Evelyn Vance" class="w-full bg-[#FAF5ED] border border-ink-brown/20 rounded-none px-3 py-2 text-xs font-sans text-ink-brown placeholder:text-ink-brown/30 focus:outline-none focus:border-olive">
+          </div>
+
+          <!-- Attendance Choice -->
+          <div>
+            <label class="block font-sans text-[9px] uppercase tracking-[0.14em] text-ink-brown/80 mb-1.5">
+              Attendance *
+            </label>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <label class="flex items-center space-x-2 bg-[#FAF5ED] p-2 border border-ink-brown/15 cursor-pointer has-[:checked]:border-olive has-[:checked]:bg-cream">
+                <input type="radio" name="attendance" value="Joyfully Attending" checked class="accent-olive">
+                <span class="font-sans text-[11px] text-ink-brown">Joyfully Accept</span>
+              </label>
+              <label class="flex items-center space-x-2 bg-[#FAF5ED] p-2 border border-ink-brown/15 cursor-pointer has-[:checked]:border-olive has-[:checked]:bg-cream">
+                <input type="radio" name="attendance" value="Regretfully Decline" class="accent-olive">
+                <span class="font-sans text-[11px] text-ink-brown">Regretfully Decline</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Number of Guests -->
+          <div>
+            <label class="block font-sans text-[9px] uppercase tracking-[0.14em] text-ink-brown/80 mb-1" for="guestCount">
+              Number of Guests
+            </label>
+            <select id="guestCount" class="w-full bg-[#FAF5ED] border border-ink-brown/20 rounded-none px-3 py-2 text-xs font-sans text-ink-brown focus:outline-none focus:border-olive">
+              <option value="1">1 Guest</option>
+              <option value="2" selected>2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4 Guests</option>
+            </select>
+          </div>
+
+          <!-- Dietary or Note -->
+          <div>
+            <label class="block font-sans text-[9px] uppercase tracking-[0.14em] text-ink-brown/80 mb-1" for="guestNotes">
+              Dietary Restrictions or Note
+            </label>
+            <input type="text" id="guestNotes" placeholder="Optional notes for the host" class="w-full bg-[#FAF5ED] border border-ink-brown/20 rounded-none px-3 py-2 text-xs font-sans text-ink-brown placeholder:text-ink-brown/30 focus:outline-none focus:border-olive">
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button type="submit" class="w-full py-2.5 bg-olive hover:bg-olive-hover text-cream font-sans text-[10px] tracking-[0.2em] uppercase font-medium rounded-full transition-all">
+              Send RSVP Confirmation
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Success Message confirmation -->
+        <div id="rsvpSuccess" class="hidden text-center py-6">
+          <svg class="w-8 h-8 text-olive mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/>
+          </svg>
+          <h4 class="font-serif italic text-2xl text-ink-brown">Thank You!</h4>
+          <p class="font-sans text-[11px] text-ink-brown/70 mt-1 max-w-[200px] mx-auto">
+            Your response has been noted. We look forward to celebrating together.
+          </p>
+          <button id="doneBtn" class="mt-4 px-6 py-1.5 border border-olive text-olive font-sans text-[9px] uppercase tracking-[0.18em] rounded-full">
+            Close
+          </button>
+        </div>
+
+      </div>
+    </div><!-- /rsvpModal -->
+
+  </main>
+
+  <!-- ============================================== -->
+  <!-- JAVASCRIPT & GSAP INTERACTIVE LOGIC           -->
+  <!-- ============================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check user reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Element Selectors
+      const envelopeScene = document.getElementById('envelopeScene');
+      const envelopeWrapper = document.getElementById('envelopeWrapper');
+      const envelopeBox = document.getElementById('envelopeBox');
+      const envelopeFlap = document.getElementById('envelopeFlap');
+      const waxSealGroup = document.getElementById('waxSealGroup');
+      const sealLeft = document.getElementById('sealLeft');
+      const sealRight = document.getElementById('sealRight');
+      const slidingCard = document.getElementById('slidingCard');
+      const recipientLine = document.getElementById('recipientLine');
+      const tapPrompt = document.getElementById('tapPrompt');
+      const envelopeStamp = document.getElementById('envelopeStamp');
+      const ambientFlower = document.getElementById('ambientFlower');
+      
+      const fullCardSection = document.getElementById('fullCardSection');
+      const fullCard = document.getElementById('fullCard');
+      const invLines = document.querySelectorAll('.inv-line');
+      
+      const rsvpBtn = document.getElementById('rsvpBtn');
+      const rsvpModal = document.getElementById('rsvpModal');
+      const rsvpContent = document.getElementById('rsvpContent');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      const rsvpForm = document.getElementById('rsvpForm');
+      const rsvpSuccess = document.getElementById('rsvpSuccess');
+      const doneBtn = document.getElementById('doneBtn');
+
+      // Set initial 3-degree rotation tilt from prompt specification
+      gsap.set(envelopeBox, { rotation: -3, transformOrigin: 'center center' });
+
+      // ----------------------------------------------------
+      // Idle Animation: Subtle slow float (4s loop) on sealed envelope
+      // ----------------------------------------------------
+      let idleTween = null;
+      if (!prefersReducedMotion) {
+        idleTween = gsap.to(envelopeWrapper, {
+          y: -7,
+          rotation: 0.5,
+          duration: 4,
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true
+        });
+      }
+
+      // ----------------------------------------------------
+      // Canvas: Drifting Paper-Petal Particles
+      // ----------------------------------------------------
+      const canvas = document.getElementById('petalCanvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let width, height;
+
+      function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Petal particle constructor
+      class Petal {
+        constructor() {
+          this.reset(true);
+        }
+        reset(initial = false) {
+          this.x = Math.random() * width;
+          this.y = initial ? Math.random() * height : -20;
+          this.size = Math.random() * 6 + 3.5;
+          this.speedY = Math.random() * 0.45 + 0.3;
+          this.speedX = Math.random() * 0.4 - 0.2;
+          this.rotation = Math.random() * Math.PI * 2;
+          this.rotSpeed = (Math.random() - 0.5) * 0.015;
+          this.color = Math.random() > 0.4 ? 'rgba(201, 154, 142, 0.28)' : 'rgba(246, 239, 227, 0.4)';
+          this.wobble = Math.random() * Math.PI * 2;
+          this.wobbleSpeed = Math.random() * 0.02 + 0.01;
+        }
+        update() {
+          this.y += this.speedY;
+          this.wobble += this.wobbleSpeed;
+          this.x += this.speedX + Math.sin(this.wobble) * 0.3;
+          this.rotation += this.rotSpeed;
+
+          if (this.y > height + 20 || this.x < -20 || this.x > width + 20) {
+            this.reset(false);
+          }
+        }
+        draw() {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.rotate(this.rotation);
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, this.size * 0.7, this.size * 1.3, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      const petalCount = window.innerWidth < 640 ? 18 : 28;
+      for (let i = 0; i < petalCount; i++) {
+        particles.push(new Petal());
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, width, height);
+        for (let p of particles) {
+          p.update();
+          p.draw();
+        }
+        requestAnimationFrame(animateParticles);
+      }
+      animateParticles();
+
+      // ----------------------------------------------------
+      // Tap Interaction: Master Timeline sequence
+      // 1. Wax seal cracks and falls (0.5s)
+      // 2. Flap rotates open in 3D (rotateX 0 to 180deg, origin top, 0.9s, ease power2.inOut)
+      // 3. Card slides up out of envelope (0.9s), scales & moves to full screen while envelope drops/fades
+      // 4. Invitation text fades in line by line (120ms stagger)
+      // ----------------------------------------------------
+      let isOpened = false;
+
+      function openInvitation() {
+        if (isOpened) return;
+        isOpened = true;
+
+        // Stop idle float
+        if (idleTween) idleTween.pause();
+
+        // Remove cursor pointer and interactive clicks
+        envelopeScene.style.cursor = 'default';
+        envelopeScene.removeEventListener('click', openInvitation);
+
+        if (prefersReducedMotion) {
+          // Instant fallback transition for accessibility
+          gsap.set(envelopeScene, { display: 'none' });
+          gsap.set(fullCardSection, { opacity: 1, pointerEvents: 'auto' });
+          gsap.set(invLines, { opacity: 1, y: 0 });
+          return;
+        }
+
+        const tl = gsap.timeline({
+          defaults: { ease: 'power2.inOut' }
+        });
+
+        // Step 0: Fade out 'tap to open' prompt and recipient name immediately
+        tl.to([tapPrompt, recipientLine], {
+          opacity: 0,
+          y: -10,
+          duration: 0.35,
+          ease: 'power2.out'
+        });
+
+        // Step 1: Wax seal cracks and falls (0.5s)
+        tl.to(sealLeft, {
+          x: -18,
+          y: 28,
+          rotation: -28,
+          opacity: 0,
+          duration: 0.5,
+          ease: 'power2.in'
+        }, "-=0.1");
+
+        tl.to(sealRight, {
+          x: 18,
+          y: 30,
+          rotation: 32,
+          opacity: 0,
+          duration: 0.5,
+          ease: 'power2.in'
+        }, "<");
+
+        // Step 2: Flap rotates open in 3D (rotateX 0 to 180deg, origin top, 0.9s, ease power2.inOut)
+        tl.to(envelopeFlap, {
+          rotateX: 180,
+          duration: 0.9,
+          ease: 'power2.inOut'
+        }, "-=0.2");
+
+        // Envelope un-tilts gently to neutral alignment as it opens
+        tl.to(envelopeBox, {
+          rotation: 0,
+          duration: 0.8,
+          ease: 'power2.out'
+        }, "<");
+
+        // Step 3: Card slides up out of the envelope (0.9s)
+        tl.to(slidingCard, {
+          y: -140,
+          duration: 0.9,
+          ease: 'power2.out'
+        }, "-=0.35");
+
+        // Transition: Envelope and decorative stamps fade and gently drop down
+        tl.to([envelopeBox, envelopeStamp, ambientFlower], {
+          y: 80,
+          opacity: 0,
+          duration: 0.75,
+          ease: 'power2.in'
+        }, "+=0.1");
+
+        // Full Card appears and expands smoothly to fill the focal viewpoint
+        tl.set(fullCardSection, { pointerEvents: 'auto' });
+        tl.fromTo(fullCard, 
+          { scale: 0.88, opacity: 0, y: 25 },
+          { scale: 1, opacity: 1, y: 0, duration: 0.85, ease: 'power2.out' },
+          "-=0.6"
+        );
+
+        tl.to(fullCardSection, {
+          opacity: 1,
+          duration: 0.3
+        }, "<");
+
+        // Step 4: Invitation text fades in line by line, 120ms stagger
+        tl.fromTo(invLines, 
+          { opacity: 0, y: 14 },
+          { 
+            opacity: 1, 
+            y: 0, 
+            duration: 0.65, 
+            stagger: 0.12, 
+            ease: 'power2.out' 
+          },
+          "-=0.4"
+        );
+      }
+
+      envelopeScene.addEventListener('click', openInvitation);
+      waxSealGroup.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openInvitation();
+      });
+
+      // ----------------------------------------------------
+      // RSVP Modal Interactions
+      // ----------------------------------------------------
+      function openModal() {
+        rsvpModal.classList.remove('pointer-events-none');
+        rsvpModal.classList.add('opacity-100');
+        rsvpContent.classList.remove('scale-95');
+        rsvpContent.classList.add('scale-100');
+      }
+
+      function closeModal() {
+        rsvpModal.classList.add('pointer-events-none');
+        rsvpModal.classList.remove('opacity-100');
+        rsvpContent.classList.add('scale-95');
+        rsvpContent.classList.remove('scale-100');
+      }
+
+      rsvpBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModal();
+      });
+
+      closeModalBtn.addEventListener('click', closeModal);
+      doneBtn.addEventListener('click', closeModal);
+
+      // Close on clicking backdrop outside content
+      rsvpModal.addEventListener('click', (e) => {
+        if (e.target === rsvpModal) closeModal();
+      });
+
+      // Handle RSVP Submission (Simulating or formatting to WhatsApp / Sheet)
+      rsvpForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('guestName').value;
+        const attendance = document.querySelector('input[name="attendance"]:checked').value;
+        const count = document.getElementById('guestCount').value;
+        const note = document.getElementById('guestNotes').value || 'None';
+
+        // Prepare structured data
+        const rsvpMessage = encodeURIComponent(
+          `RSVP for Evelyn's 30th Birthday:\n` +
+          `• Name: ${name}\n` +
+          `• Status: ${attendance}\n` +
+          `• Guests: ${count}\n` +
+          `• Note: ${note}`
+        );
+
+        // Show thank you confirmation view
+        rsvpForm.classList.add('hidden');
+        rsvpSuccess.classList.remove('hidden');
+
+        // Optional: Open pre-filled WhatsApp link in background
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${rsvpMessage}`;
+        console.log("RSVP dispatched to WhatsApp/Sheet handler:", whatsappUrl);
+      });
+
+    });
+  </script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

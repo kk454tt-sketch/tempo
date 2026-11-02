@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>An Enchanted Celebration | Birthday Invitation</title>
+<!-- Google Fonts: Playfair Display & Montserrat & Cinzel -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&amp;family=Montserrat:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            cinzel: ['Cinzel', 'serif'],
+            sans: ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            gold: {
+              300: '#FDE68A',
+              400: '#F59E0B',
+              500: '#D97706',
+              glow: '#FEF3C7'
+            }
+          },
+          boxShadow: {
+            'lantern': '0 0 25px rgba(245, 158, 11, 0.6), 0 4px 12px rgba(0, 0, 0, 0.5)',
+            'modal': '0 20px 40px -10px rgba(0, 0, 0, 0.8)'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="app-shell-rules">
+    /* Prevent any screen bounce or overflow on mobile devices */
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      touch-action: pan-x pan-y;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* Subtle glimmer keyframes for the golden badge */
+    @keyframes subtleGlow {
+      0%, 100% { opacity: 0.9; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5)); }
+      50% { opacity: 1; filter: drop-shadow(0 0 16px rgba(253, 230, 138, 0.8)); }
+    }
+    .badge-glow {
+      animation: subtleGlow 3.5s ease-in-out infinite;
+    }
+
+    /* Cinematic text shadows for reading over the vivid background without opaque overlays */
+    .cinematic-title-shadow {
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9), 0 4px 24px rgba(0, 0, 0, 0.75), 0 0 35px rgba(0, 0, 0, 0.85);
+    }
+    .cinematic-text-shadow {
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.95), 0 2px 14px rgba(0, 0, 0, 0.9);
+    }
+
+    /* 3D Motion, Perspective & Hover Styles */
+    .perspective-container {
+      perspective: 1000px;
+      transform-style: preserve-3d;
+    }
+
+    .pill-hover-3d {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      will-change: transform;
+    }
+    .pill-hover-3d:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+    .pill-hover-3d:active {
+      transform: scale(0.98) translateY(0);
+    }
+
+    .hero-title-3d {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.4s ease;
+      cursor: default;
+      will-change: transform;
+      display: inline-block;
+    }
+    .hero-title-3d:hover {
+      transform: perspective(600px) translateZ(10px);
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.95), 0 0 35px rgba(253, 230, 138, 0.45);
+    }
+
+    .card-hover-3d {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-style: preserve-3d;
+      will-change: transform, box-shadow;
+    }
+    .card-hover-3d:hover {
+      transform: perspective(800px) rotateX(4deg) translateY(-3px) scale(1.01);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    .btn-details-3d {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-style: preserve-3d;
+      will-change: transform, background;
+    }
+    .btn-details-3d:hover {
+      transform: perspective(600px) translateY(-3px) translateZ(12px) scale(1.02);
+      background: rgba(255, 255, 255, 0.14) !important;
+    }
+    .btn-details-3d:active {
+      transform: scale(0.98) translateY(0) translateZ(0) !important;
+    }
+
+    .btn-rsvp-3d {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-style: preserve-3d;
+      will-change: transform, box-shadow;
+    }
+    .btn-rsvp-3d:hover {
+      transform: perspective(600px) translateY(-4px) translateZ(18px) scale(1.03);
+      box-shadow: 0 16px 36px -6px rgba(245, 158, 11, 0.6), 0 0 24px rgba(245, 158, 11, 0.45);
+    }
+    .btn-rsvp-3d:active {
+      transform: scale(0.98) translateY(0) translateZ(0) !important;
+    }
+  </style>
+<!-- END: Custom Styles -->
+
+<style id="tempo-responsive-override">
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  /* Prevent animated ping or oversized elements from overflowing viewport */
+  .animate-ping {
+    max-width: 100% !important;
+  }
+</style>
+
+</head>
+<body class="h-full bg-slate-950 font-sans text-amber-50 select-none overflow-hidden relative">
+<!-- BEGIN: Fullbleed Background Visual (100% Clear, No Dark Masks, No heavy scrims) -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none" data-purpose="cinematic-background">
+<img alt="Festive Starlit Village Stream" class="w-full h-full object-cover object-center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnEsunb0_ELVjbTyqrMNzQZZ_SHHicnXeDmaICoHKmsOGrkc-tY-L_0_i--58JUpROzhSFV4R6JkcuKGBzg4APQFANisnCQQJ891FrNP-NsiM83eVDHid5c6RjpO7XDjwnq8XpPb6c6PqCSFU9LBla_jYbsuasA-DIN8XsLnL8QSSLc-FWc-Skx2Xqo-ZCTKTzX3qXjGJrr2o7dzBJGPzOzUggGam90Vp-LQoHX5cThgX8NZoAzFzRONwTqNwU914kRuw"/>
+</div>
+<!-- END: Fullbleed Background Visual -->
+<!-- BEGIN: Main Screen Frame -->
+<main class="h-full w-full max-w-md mx-auto flex flex-col justify-between px-5 pt-8 pb-6 relative z-10 perspective-container" data-purpose="mobile-viewport-container" id="interactive-viewport">
+<!-- BEGIN: Header & Invitation Title Section -->
+<header class="flex flex-col items-center text-center space-y-2 perspective-container">
+<!-- Top Brand Capsule Badge (Transparent with subtle golden outline) -->
+<div class="badge-glow pill-hover-3d inline-flex items-center space-x-2 px-3.5 py-1 rounded-full shadow-lg" style="background: rgba(10, 15, 25, 0.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: none; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);">
+<svg class="w-3.5 h-3.5 text-amber-300 fill-current animate-pulse" fill="currentColor" viewbox="0 0 20 20">
+<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+</svg>
+<span class="text-[10px] tracking-[0.25em] font-cinzel font-semibold uppercase text-amber-200">
+        An Enchanted Celebration
+      </span>
+<svg class="w-3.5 h-3.5 text-amber-300 fill-current animate-pulse" fill="currentColor" viewbox="0 0 20 20">
+<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+</svg>
+</div>
+<!-- Main Invitation Header with Zero Blur & Visible Background Behind -->
+<section class="w-full text-center pt-2">
+<h1 class="hero-title-3d font-serif text-3xl sm:text-4xl font-semibold tracking-wide text-amber-100 cinematic-title-shadow">
+        You Are Invited
+      </h1>
+<p class="mt-1 text-xs sm:text-sm text-amber-100 font-medium leading-relaxed tracking-wide cinematic-text-shadow">
+        Join us for a magical evening of starlight, laughter, and birthday wonder.
+      </p>
+</section>
+</header>
+<!-- END: Header & Invitation Title Section -->
+<!-- Spacer element letting the central festive village scenery & party characters shine completely -->
+<div aria-hidden="true" class="flex-1 min-h-[140px] pointer-events-none"></div>
+<!-- BEGIN: Lower Highlights & Action Deck -->
+<footer class="w-full flex flex-col space-y-2.5 pb-2 perspective-container">
+<!-- Event Quick Highlight Cards (Clear glassy styling, fully transparent, image 100% visible) -->
+<section class="space-y-2 perspective-container" data-purpose="quick-info-highlights">
+<!-- Date & Time Capsule -->
+<div class="tilt-card card-hover-3d rounded-xl px-4 py-2 flex items-center shadow-lg" style="background: rgba(10, 18, 30, 0.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: none;">
+<div class="w-7 h-7 rounded-lg bg-amber-400/30 flex items-center justify-center mr-3 text-amber-300 shrink-0">
+<svg class="w-4 h-4 drop-shadow" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<div class="leading-tight text-left">
+<span class="text-[10px] uppercase font-semibold text-amber-300 tracking-widest block cinematic-text-shadow">Date &amp; Moment</span>
+<span class="text-xs font-semibold text-amber-50 tracking-wide cinematic-text-shadow">Saturday, Oct 14 • 6:30 PM</span>
+</div>
+</div>
+<!-- Venue / Riverside Location Capsule -->
+<div class="tilt-card card-hover-3d rounded-xl px-4 py-2 flex items-center shadow-lg" style="background: rgba(10, 18, 30, 0.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: none;">
+<div class="w-7 h-7 rounded-lg bg-amber-400/30 flex items-center justify-center mr-3 text-amber-300 shrink-0">
+<svg class="w-4 h-4 drop-shadow" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+<path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<div class="leading-tight text-left">
+<span class="text-[10px] uppercase font-semibold text-amber-300 tracking-widest block cinematic-text-shadow">Sanctuary</span>
+<span class="text-xs font-semibold text-amber-50 tracking-wide truncate cinematic-text-shadow">Whispering Pines &amp; Riverside</span>
+</div>
+</div>
+</section>
+<!-- Primary & Secondary Interactive Action Buttons -->
+<div class="grid grid-cols-2 gap-2.5 pt-1 perspective-container" data-purpose="button-actions">
+<!-- Details Trigger Button -->
+<button class="btn-details-3d tilt-card w-full py-3 px-3 rounded-xl hover:bg-slate-900/60 text-amber-100 text-xs font-semibold tracking-wider flex items-center justify-center space-x-1.5 transition shadow-md focus:outline-none" id="btn-open-details" style="background: rgba(10, 18, 30, 0.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: none;" type="button">
+<svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="cinematic-text-shadow">Event Details</span>
+</button>
+<!-- RSVP Trigger Button -->
+<button class="btn-rsvp-3d tilt-card w-full py-3 px-3 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 text-xs font-bold tracking-wider uppercase flex items-center justify-center space-x-1.5 shadow-lantern transition focus:outline-none" id="btn-open-rsvp" type="button">
+<svg class="w-3.5 h-3.5 text-slate-950" fill="currentColor" viewbox="0 0 20 20">
+<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+</svg>
+<span class="">RSVP Now</span>
+</button>
+</div>
+</footer>
+<!-- END: Lower Highlights & Action Deck -->
+</main>
+<!-- END: Main Screen Frame -->
+<!-- BEGIN: Interactive Event Details Modal / Sheet -->
+<aside aria-hidden="true" class="fixed inset-0 z-50 flex items-end justify-center bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300" data-purpose="details-modal" id="modal-details">
+<div class="w-full max-w-md bg-slate-950/95 border-t border-amber-300/40 rounded-t-3xl p-5 shadow-modal transform translate-y-full transition-transform duration-300 flex flex-col space-y-4" style="background: rgba(10, 18, 30, 0.95); border-top: 1px solid rgba(255, 220, 150, 0.4); box-shadow: rgba(0, 0, 0, 0.8) 0px -8px 32px;">
+<!-- Modal Header Bar -->
+<div class="flex items-center justify-between border-b border-amber-300/20 pb-3">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-amber-400"></span>
+<h2 class="font-serif text-lg text-amber-100 font-semibold tracking-wide">Celebration Details</h2>
+</div>
+<button class="w-8 h-8 rounded-full bg-slate-800/80 text-amber-200/80 hover:text-amber-100 flex items-center justify-center focus:outline-none" id="btn-close-details" type="button">
+        ✕
+      </button>
+</div>
+<!-- Modal Content List -->
+<div class="space-y-3.5 text-xs text-amber-100/90">
+<!-- Address -->
+<div class="flex items-start space-x-3">
+<div class="w-6 h-6 rounded-md bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0 mt-0.5">📍</div>
+<div>
+<h3 class="font-semibold text-amber-200">Address</h3>
+<p class="text-amber-100/80">742 Starlit Millway, Riverbrook Valley</p>
+</div>
+</div>
+<!-- Parking & Arrival -->
+<div class="flex items-start space-x-3">
+<div class="w-6 h-6 rounded-md bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0 mt-0.5">🚗</div>
+<div>
+<h3 class="font-semibold text-amber-200">Arrival &amp; Parking</h3>
+<p class="text-amber-100/80">Valet attendant available at the stone bridge entrance from 6:00 PM.</p>
+</div>
+</div>
+<!-- Dress Code -->
+<div class="flex items-start space-x-3">
+<div class="w-6 h-6 rounded-md bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0 mt-0.5">✨</div>
+<div>
+<h3 class="font-semibold text-amber-200">Attire</h3>
+<p class="text-amber-100/80">Cocktail &amp; Warm Cozy Festive (riverfront heating provided).</p>
+</div>
+</div>
+<!-- Registry & Contact -->
+<div class="flex items-start space-x-3">
+<div class="w-6 h-6 rounded-md bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0 mt-0.5">🎁</div>
+<div>
+<h3 class="font-semibold text-amber-200">Gifts &amp; Wishes</h3>
+<p class="text-amber-100/80">Your presence is our cherished gift. Festive toast at 8:00 PM.</p>
+</div>
+</div>
+</div>
+<!-- Action in modal -->
+<button class="w-full mt-2 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs uppercase tracking-wider transition active:scale-[0.98]" id="btn-details-to-rsvp">
+      Proceed to RSVP
+    </button>
+</div>
+</aside>
+<!-- END: Interactive Event Details Modal / Sheet -->
+<!-- BEGIN: Interactive RSVP Drawer Modal -->
+<aside aria-hidden="true" class="fixed inset-0 z-50 flex items-end justify-center bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300" data-purpose="rsvp-modal" id="modal-rsvp">
+<div class="w-full max-w-md bg-slate-950/95 border-t border-amber-300/40 rounded-t-3xl p-5 shadow-modal transform translate-y-full transition-transform duration-300 flex flex-col space-y-4" style="background: rgba(10, 18, 30, 0.95); border-top: 1px solid rgba(255, 220, 150, 0.4); box-shadow: rgba(0, 0, 0, 0.8) 0px -8px 32px;">
+<!-- Form Header -->
+<div class="flex items-center justify-between border-b border-amber-300/20 pb-3">
+<div>
+<h2 class="font-serif text-lg text-amber-100 font-semibold tracking-wide">Kindly RSVP</h2>
+<p class="text-[11px] text-amber-300/70">Let us know if you will celebrate under the stars.</p>
+</div>
+<button class="w-8 h-8 rounded-full bg-slate-800/80 text-amber-200/80 hover:text-amber-100 flex items-center justify-center focus:outline-none" id="btn-close-rsvp" type="button">
+        ✕
+      </button>
+</div>
+<!-- RSVP Form Body -->
+<form class="space-y-3" id="rsvp-form" onsubmit="return false;">
+<!-- Guest Full Name -->
+<div>
+<label class="block text-[11px] uppercase tracking-wider text-amber-200 font-medium mb-1">Your Name(s)</label>
+<input class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-amber-300/30 text-amber-100 placeholder-amber-200/30 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 focus:outline-none" placeholder="e.g. Eleanor &amp; Julian" required="" type="text"/>
+</div>
+<!-- Attendance Decision -->
+<div>
+<label class="block text-[11px] uppercase tracking-wider text-amber-200 font-medium mb-1">Will You Attend?</label>
+<div class="grid grid-cols-2 gap-2">
+<label class="flex items-center justify-center px-3 py-2 rounded-lg border border-amber-300/30 bg-slate-900/70 cursor-pointer text-xs font-medium has-[:checked]:border-amber-400 has-[:checked]:bg-amber-400/20">
+<input checked="" class="hidden" name="attendance" type="radio" value="attending"/>
+<span class="text-amber-100">✨ Joyfully Attending</span>
+</label>
+<label class="flex items-center justify-center px-3 py-2 rounded-lg border border-amber-300/30 bg-slate-900/70 cursor-pointer text-xs font-medium has-[:checked]:border-amber-400 has-[:checked]:bg-amber-400/20">
+<input class="hidden" name="attendance" type="radio" value="declining"/>
+<span class="text-amber-200/60">Regretfully Decline</span>
+</label>
+</div>
+</div>
+<!-- Guest Count Selection -->
+<div>
+<label class="block text-[11px] uppercase tracking-wider text-amber-200 font-medium mb-1">Total Guests</label>
+<select class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-amber-300/30 text-amber-100 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 focus:outline-none">
+<option value="1">1 Guest</option>
+<option selected="" value="2">2 Guests</option>
+<option value="3">3 Guests</option>
+<option value="4+">4+ Guests</option>
+</select>
+</div>
+<!-- Submit Button -->
+<button class="w-full mt-3 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 text-xs font-bold uppercase tracking-wider shadow-lantern transition active:scale-[0.98]" id="btn-submit-rsvp" type="button">
+        Confirm Reservation
+      </button>
+</form>
+<!-- Confirmation Feedback Toast / Alert inside modal -->
+<div class="hidden text-center py-4 space-y-2" id="rsvp-confirmation">
+<div class="w-10 h-10 mx-auto rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center text-lg">✓</div>
+<h3 class="font-serif text-base text-amber-100 font-semibold">Reservation Confirmed!</h3>
+<p class="text-[11px] text-amber-200/80">We can’t wait to celebrate under the village starlight with you.</p>
+<button class="mt-2 text-xs text-amber-400 underline underline-offset-4" id="btn-done-rsvp" type="button">
+        Return to Invitation
+      </button>
+</div>
+</div>
+</aside>
+<!-- END: Interactive RSVP Drawer Modal -->
+<!-- BEGIN: Modal Interactivity Logic -->
+<script data-purpose="modal-handlers">
+  // References for Details Modal
+  const detailsModal = document.getElementById('modal-details');
+  const btnOpenDetails = document.getElementById('btn-open-details');
+  const btnCloseDetails = document.getElementById('btn-close-details');
+  const btnDetailsToRsvp = document.getElementById('btn-details-to-rsvp');
+
+  // References for RSVP Modal
+  const rsvpModal = document.getElementById('modal-rsvp');
+  const btnOpenRsvp = document.getElementById('btn-open-rsvp');
+  const btnCloseRsvp = document.getElementById('btn-close-rsvp');
+  const btnSubmitRsvp = document.getElementById('btn-submit-rsvp');
+  const rsvpForm = document.getElementById('rsvp-form');
+  const rsvpConfirmation = document.getElementById('rsvp-confirmation');
+  const btnDoneRsvp = document.getElementById('btn-done-rsvp');
+
+  // Helper functions to open and close slide-up modals
+  function openModal(modal) {
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.classList.add('opacity-100', 'pointer-events-auto');
+    const inner = modal.querySelector('div');
+    inner.classList.remove('translate-y-full');
+    inner.classList.add('translate-y-0');
+  }
+
+  function closeModal(modal) {
+    const inner = modal.querySelector('div');
+    inner.classList.remove('translate-y-0');
+    inner.classList.add('translate-y-full');
+    modal.classList.remove('opacity-100', 'pointer-events-auto');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+  }
+
+  // Details Modal Handlers
+  btnOpenDetails.addEventListener('click', () => openModal(detailsModal));
+  btnCloseDetails.addEventListener('click', () => closeModal(detailsModal));
+  detailsModal.addEventListener('click', (e) => {
+    if (e.target === detailsModal) closeModal(detailsModal);
+  });
+
+  // Switch from Details directly to RSVP
+  btnDetailsToRsvp.addEventListener('click', () => {
+    closeModal(detailsModal);
+    setTimeout(() => openModal(rsvpModal), 250);
+  });
+
+  // RSVP Modal Handlers
+  btnOpenRsvp.addEventListener('click', () => openModal(rsvpModal));
+  btnCloseRsvp.addEventListener('click', () => closeModal(rsvpModal));
+  rsvpModal.addEventListener('click', (e) => {
+    if (e.target === rsvpModal) closeModal(rsvpModal);
+  });
+
+  // Form submission simulation
+  btnSubmitRsvp.addEventListener('click', () => {
+    rsvpForm.classList.add('hidden');
+    rsvpConfirmation.classList.remove('hidden');
+  });
+
+  btnDoneRsvp.addEventListener('click', () => {
+    closeModal(rsvpModal);
+    setTimeout(() => {
+      rsvpConfirmation.classList.add('hidden');
+      rsvpForm.classList.remove('hidden');
+    }, 350);
+  });
+
+  // Dynamic 3D mouse/pointer tilt effect that gently tracks pointer angle and tilts cards
+  const interactiveContainer = document.getElementById('interactive-viewport');
+  const tiltCards = document.querySelectorAll('.tilt-card');
+
+  function handlePointerTilt(e) {
+    if (!interactiveContainer) return;
+    const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : null);
+    const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : null);
+    if (clientX === null || clientY === null) return;
+
+    const rect = interactiveContainer.getBoundingClientRect();
+    const x = (clientX - rect.left) / rect.width;
+    const y = (clientY - rect.top) / rect.height;
+
+    // Constrain angles within gentle range (-5 to +5 deg)
+    const tiltX = (0.5 - y) * 9;
+    const tiltY = (x - 0.5) * 9;
+
+    tiltCards.forEach(card => {
+      card.style.transform = `perspective(800px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) translateY(-2px)`;
+    });
+  }
+
+  function resetPointerTilt() {
+    tiltCards.forEach(card => {
+      card.style.transform = '';
+    });
+  }
+
+  if (interactiveContainer) {
+    interactiveContainer.addEventListener('mousemove', handlePointerTilt, { passive: true });
+    interactiveContainer.addEventListener('touchmove', handlePointerTilt, { passive: true });
+    interactiveContainer.addEventListener('mouseleave', resetPointerTilt, { passive: true });
+    interactiveContainer.addEventListener('touchend', resetPointerTilt, { passive: true });
+  }
+</script>
+<!-- END: Modal Interactivity Logic -->
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body></html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_blank" name="shell-type"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#fbf9f6;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-container": "#684f1f", "inverse-on-surface": "#f2f0ed", "on-tertiary-fixed": "#2f121c", "on-primary-fixed": "#271900", "on-tertiary-container": "#6e4954", "error-container": "#ffdad6", "surface-variant": "#e4e2df", "surface-container-highest": "#e4e2df", "on-secondary": "#ffffff", "tertiary-fixed-dim": "#ebbac7", "on-surface": "#1b1c1a", "secondary": "#3e627f", "outline-variant": "#d0c5b6", "background": "#fbf9f6", "on-error-container": "#93000a", "on-surface-variant": "#4d463a", "on-error": "#ffffff", "surface-bright": "#fbf9f6", "tertiary-fixed": "#ffd9e2", "surface-container-lowest": "#ffffff", "error": "#ba1a1a", "primary-fixed-dim": "#e4c287", "surface-dim": "#dbdad7", "outline": "#7f7669", "surface-tint": "#745a29", "secondary-fixed": "#cce5ff", "on-secondary-container": "#3d617e", "inverse-primary": "#e4c287", "surface-container-high": "#eae8e5", "on-background": "#1b1c1a", "tertiary": "#7a545f", "on-primary": "#ffffff", "on-secondary-fixed": "#001d31", "secondary-container": "#b7dbfe", "primary": "#745a29", "inverse-surface": "#30312f", "surface-container": "#efeeeb", "primary-fixed": "#ffdea7", "surface": "#fbf9f6", "on-tertiary": "#ffffff", "on-primary-fixed-variant": "#5a4314", "primary-container": "#e5c388", "on-secondary-fixed-variant": "#254a66", "surface-container-low": "#f5f3f0", "secondary-fixed-dim": "#a6caec", "tertiary-container": "#ecbbc8", "on-tertiary-fixed-variant": "#603d47" }, "borderRadius": { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, "spacing": { "margin": "3rem", "space-xs": "0.25rem", "gutter": "1.5rem", "space-lg": "1.75rem", "margin-sm": "1.25rem", "space-md": "1rem", "space-xl": "2.5rem", "gutter-sm": "1rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-lg-mobile": ["Outfit"], "headline-sm": ["Outfit"], "title-lg": ["Outfit"], "headline-md": ["Outfit"], "body-md": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "display-hero-mobile": ["Outfit"], "display-hero": ["Outfit"], "headline-lg": ["Outfit"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "headline-sm": ["22px", { "lineHeight": "30px", "letterSpacing": "0em", "fontWeight": "600" }], "title-lg": ["18px", { "lineHeight": "26px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0.005em", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.04em", "fontWeight": "600" }], "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "700" }], "display-hero-mobile": ["38px", { "lineHeight": "46px", "letterSpacing": "-0.02em", "fontWeight": "400" }], "display-hero": ["56px", { "lineHeight": "68px", "letterSpacing": "-0.02em", "fontWeight": "400" }], "headline-lg": ["40px", { "lineHeight": "50px", "letterSpacing": "-0.015em", "fontWeight": "500" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "400" }] } } } }</script>
+<style id="tempo-responsive-override">
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  /* Prevent animated ping or oversized elements from overflowing viewport */
+  .animate-ping {
+    max-width: 100% !important;
+  }
+</style>
+
+</head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen relative overflow-x-hidden pt-safe pb-safe"><div class="pointer-events-none fixed inset-0 z-0 overflow-hidden"><div class="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-primary-fixed opacity-30 blur-[120px]"></div><div class="absolute top-1/2 -right-24 w-80 h-80 rounded-full bg-tertiary-fixed opacity-30 blur-[100px]"></div><div class="absolute -bottom-28 left-10 w-96 h-96 rounded-full bg-secondary-fixed opacity-25 blur-[120px]"></div></div><main class="flex flex-col relative z-10 w-full min-h-screen bg-surface px-margin-sm"><div class="flex flex-col w-full relative select-none">
+<!-- Audio Synthesis & Confetti Canvas Overlay -->
+<canvas class="fixed inset-0 pointer-events-none z-50 w-full h-full" id="confetti-canvas"></canvas>
+<!-- Sound Toggle & Progress Pill Header -->
+<aside aria-label="Invitation Controls" class="fixed top-4 left-0 right-0 z-40 px-margin-sm flex items-center justify-between pointer-events-none">
+<div class="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 backdrop-blur-xl shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary transition-all duration-300" id="step-dot-1"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant transition-all duration-300" id="step-dot-2"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant transition-all duration-300" id="step-dot-3"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant ml-1 uppercase tracking-wider" id="section-counter">01 / 03</span>
+</div>
+<button aria-label="Toggle chime soundtrack" class="pointer-events-auto w-9 h-9 rounded-full bg-white/75 backdrop-blur-xl shadow-sm flex items-center justify-center text-on-surface hover:bg-white active:scale-95 transition-all" id="audio-toggle-btn" type="button">
+<span class="material-symbols-outlined text-[18px]" id="audio-icon">volume_up</span>
+</button>
+</aside>
+<!-- Snap Container Wrapper -->
+<div class="w-full h-[100dvh] overflow-y-scroll snap-y snap-mandatory scroll-smooth relative overscroll-none" id="scroll-snap-deck">
+<!-- ==================== SECTION 1: HERO ==================== -->
+<section class="w-full h-[100dvh] snap-start snap-always relative flex flex-col items-center justify-between py-10 px-margin-sm overflow-hidden text-center" id="section-1">
+<!-- Floating Ambient Pastel Orbs -->
+<div class="absolute -top-12 left-1/4 w-52 h-52 rounded-full bg-tertiary-container/30 blur-3xl pointer-events-none animate-pulse"></div>
+<div class="absolute top-1/3 -right-16 w-60 h-60 rounded-full bg-secondary-fixed/40 blur-3xl pointer-events-none"></div>
+<!-- Header Pill -->
+<header class="pt-6 flex flex-col items-center">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md shadow-sm">
+<span class="material-symbols-outlined text-primary text-[14px]">auto_awesome</span>
+<span class="text-label-sm font-label-sm text-on-surface tracking-widest uppercase">A Celebration of Wonder • Chapter 05</span>
+</div>
+</header>
+<!-- Central 3D Balloon & Kinetic Typography -->
+<div class="flex flex-col items-center justify-center my-auto relative w-full">
+<!-- Inflated Balloon Numeral 5 Container -->
+<div class="relative w-48 h-56 flex items-center justify-center mb-1 animate-[bounce_4s_ease-in-out_infinite]">
+<!-- Glow halo -->
+<div class="absolute inset-0 bg-primary-fixed/50 rounded-full filter blur-2xl transform scale-90"></div>
+<!-- Sculpted 3D Pastel Balloon "5" SVG -->
+<svg class="w-full h-full drop-shadow-xl overflow-visible" fill="none" viewbox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="balloonGrad" x1="20%" x2="80%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#FFF5E4"></stop>
+<stop offset="35%" stop-color="#FDE8A9"></stop>
+<stop offset="70%" stop-color="#E5C388"></stop>
+<stop offset="100%" stop-color="#D4AA6A"></stop>
+</lineargradient>
+<lineargradient id="highlightGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"></stop>
+<stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"></stop>
+</lineargradient>
+<filter height="130%" id="balloonSoftShadow" width="120%" x="-10%" y="-10%">
+<fedropshadow dx="0" dy="12" flood-color="#80622C" flood-opacity="0.18" stddeviation="10"></fedropshadow>
+</filter>
+</defs>
+<!-- Balloon Main Shape (5) -->
+<path d="M60 38 C 55 38 48 42 48 50 L 50 102 C 58 96 72 90 92 90 C 130 90 156 112 156 148 C 156 186 126 210 88 210 C 62 210 44 198 34 184 C 30 178 34 170 42 170 C 46 170 50 174 54 178 C 62 188 74 194 88 194 C 114 194 136 176 136 148 C 136 122 114 106 84 106 C 68 106 54 112 44 118 C 38 122 32 118 32 110 L 30 46 C 30 36 38 26 50 26 L 140 26 C 148 26 154 32 154 38 C 154 44 148 50 140 50 L 60 50 Z" fill="url(#balloonGrad)" filter="url(#balloonSoftShadow)"></path>
+<!-- Balloon Specular Reflection Highlight (Upper curvature) -->
+<path d="M 60 34 L 132 34 C 138 34 142 38 140 42 C 136 40 120 38 100 38 L 60 38 Z" fill="url(#highlightGrad)"></path>
+<ellipse cx="136" cy="136" fill="url(#highlightGrad)" rx="10" ry="24" transform="rotate(22 136 136)"></ellipse>
+<ellipse cx="50" cy="74" fill="#FFFFFF" opacity="0.6" rx="4" ry="16"></ellipse>
+<!-- Balloon Tie Knot -->
+<path d="M 82 210 L 94 210 L 90 218 L 86 218 Z" fill="#D4AA6A"></path>
+<!-- Delicate Metallic Gold Hanging Ribbon -->
+<path d="M 88 218 Q 80 236 94 250 T 84 274 T 96 295" fill="none" opacity="0.85" stroke="#C9A15E" stroke-linecap="round" stroke-width="2.5"></path>
+</svg>
+</div>
+<!-- Hero Headline Typography -->
+<h1 class="text-display-hero-mobile font-display-hero-mobile tracking-tight text-on-surface m-0 leading-none">
+          LEO
+        </h1>
+<div class="mt-2 flex items-center justify-center gap-2">
+<span class="text-headline-sm font-headline-sm tracking-wide text-primary uppercase">is turning</span>
+<span class="text-headline-sm font-headline-sm px-3 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed-variant">5!</span>
+</div>
+<p class="mt-3 text-body-md font-body-md text-on-surface-variant max-w-[260px] mx-auto">
+          You are warmly invited to an afternoon of joy, sweets &amp; sunshine.
+        </p>
+</div>
+<!-- Action Indicator to Next Section -->
+<div class="pb-2 flex flex-col items-center">
+<button class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/75 backdrop-blur-xl shadow-sm text-on-surface transition-all active:scale-95" id="hero-scroll-btn" type="button">
+<span class="text-label-md font-label-md tracking-wider uppercase text-on-surface-variant">Scroll to Explore</span>
+<span class="material-symbols-outlined text-primary text-[18px] group-hover:translate-y-0.5 transition-transform">arrow_downward</span>
+</button>
+</div>
+</section>
+<!-- ==================== SECTION 2: WHEN & WHERE ==================== -->
+<section class="w-full h-[100dvh] snap-start snap-always relative flex flex-col justify-between py-10 px-margin-sm overflow-hidden" id="section-2">
+<!-- Section Header -->
+<div class="pt-6 flex flex-col items-center text-center">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md mb-2 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[14px]">star</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant tracking-wider uppercase">Event Details</span>
+</div>
+<h2 class="text-headline-md font-headline-md text-on-surface">When &amp; Where</h2>
+</div>
+<!-- 3 Glassmorphic Detail Cards -->
+<div class="my-auto flex flex-col gap-3.5 w-full">
+<!-- Card 1: Date -->
+<div class="p-4 rounded-lg bg-white/75 backdrop-blur-xl shadow-sm flex items-center gap-4 transition-transform active:scale-[0.99]">
+<div class="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0 shadow-inner">
+<span class="material-symbols-outlined text-on-tertiary-container text-[24px]">calendar_today</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">Date</span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-bold tracking-tight">32 Days to Go</span>
+</div>
+<div class="text-title-lg font-title-lg text-on-surface truncate">Saturday, June 14, 2025</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Midsummer Afternoon</span>
+</div>
+</div>
+<!-- Card 2: Time & Schedule -->
+<div class="p-4 rounded-lg bg-white/75 backdrop-blur-xl shadow-sm flex items-center gap-4 transition-transform active:scale-[0.99]">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0 shadow-inner">
+<span class="material-symbols-outlined text-on-secondary-fixed-variant text-[24px]">schedule</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">Time</span>
+<div class="text-title-lg font-title-lg text-on-surface truncate">2:00 PM – 6:00 PM</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="text-body-sm font-body-sm text-on-surface-variant truncate">Magic show &amp; Cake cutting at 4:00 PM</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Location -->
+<div class="p-4 rounded-lg bg-white/75 backdrop-blur-xl shadow-sm flex items-center gap-4 transition-transform active:scale-[0.99]">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 shadow-inner">
+<span class="material-symbols-outlined text-primary text-[24px]">pin_drop</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">Venue</span>
+<div class="text-title-lg font-title-lg text-on-surface truncate">The Secret Garden</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant truncate">Villa Belle • 144 Primrose Ave</span>
+</div>
+<button aria-label="Open Map for Villa Belle" class="shrink-0 px-3 py-2 rounded-full bg-surface-container-low text-on-surface hover:bg-secondary-fixed transition-colors flex items-center gap-1" id="map-trigger-btn" type="button">
+<span class="text-label-sm font-label-sm">Map</span>
+<span class="material-symbols-outlined text-[16px]">arrow_outward</span>
+</button>
+</div>
+</div>
+<!-- Scroll prompt to RSVP -->
+<div class="pb-2 flex justify-center">
+<button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md text-label-md font-label-md text-on-surface-variant" id="details-scroll-btn" type="button">
+<span>RSVP &amp; Party Pass</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</section>
+<!-- ==================== SECTION 3: INTERACTIVE RSVP & PASS ==================== -->
+<section class="w-full h-[100dvh] snap-start snap-always relative flex flex-col justify-between py-10 px-margin-sm overflow-hidden" id="section-3">
+<!-- Section Header -->
+<div class="pt-6 flex flex-col items-center text-center">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md mb-2 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[14px]">confirmation_number</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant tracking-wider uppercase">Official Invitation</span>
+</div>
+<h2 class="text-headline-md font-headline-md text-on-surface">Join the Adventure</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant max-w-[280px]">
+          Kindly confirm attendance for little guests &amp; parents by June 1st.
+        </p>
+</div>
+<!-- Flippable Card Interactive Container -->
+<div class="my-auto w-full max-w-sm mx-auto perspective-[1200px]">
+<div class="relative w-full transition-transform duration-700 [transform-style:preserve-3d]" id="rsvp-card-flip">
+<!-- STATE 1: RSVP Form Face -->
+<div class="w-full rounded-lg bg-white/80 backdrop-blur-xl p-5 shadow-md flex flex-col gap-4 [backface-visibility:hidden]" id="rsvp-front">
+<!-- Guest Count Selector -->
+<div>
+<label class="block text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant mb-2">Number of Guests</label>
+<div class="grid grid-cols-3 gap-2">
+<button class="guest-opt-btn active py-2 rounded-full bg-primary text-on-primary text-label-md font-label-md text-center transition-all" data-guest-btn="" type="button">
+                  1 Child
+                </button>
+<button class="guest-opt-btn py-2 rounded-full bg-surface-container text-on-surface text-label-md font-label-md text-center transition-all" data-guest-btn="" type="button">
+                  2 Children
+                </button>
+<button class="guest-opt-btn py-2 rounded-full bg-surface-container text-on-surface text-label-md font-label-md text-center transition-all" data-guest-btn="" type="button">
+                  + Parents
+                </button>
+</div>
+</div>
+<!-- Dietary Requirements -->
+<div>
+<label class="block text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant mb-2">Dietary Notes</label>
+<div class="flex flex-wrap gap-2">
+<button class="diet-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface text-label-sm font-label-sm transition-all flex items-center gap-1.5" data-diet-chip="" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant chip-dot"></span> Nut-Free
+                </button>
+<button class="diet-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface text-label-sm font-label-sm transition-all flex items-center gap-1.5" data-diet-chip="" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant chip-dot"></span> Gluten-Free
+                </button>
+<button class="diet-chip px-3 py-1.5 rounded-full bg-surface-container text-on-surface text-label-sm font-label-sm transition-all flex items-center gap-1.5" data-diet-chip="" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant chip-dot"></span> Dairy-Free
+                </button>
+</div>
+</div>
+<!-- Name Input (Subtle pill) -->
+<div>
+<label class="block text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant mb-1.5" for="family-name-input">Family / Guest Name</label>
+<input class="w-full px-4 py-2.5 rounded-full bg-white/70 text-on-surface text-body-md font-body-md outline-none focus:bg-white shadow-inner" id="family-name-input" placeholder="Your family name..." type="text" value="The Kensington Family"/>
+</div>
+<!-- Primary RSVP Submit Button -->
+<button class="w-full py-3.5 px-6 rounded-full bg-gradient-to-r from-primary-fixed-dim via-primary-container to-primary text-on-primary font-label-lg text-label-lg tracking-wide uppercase shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 mt-1" id="submit-rsvp-btn" type="button">
+<span>Join the Celebration</span>
+<span class="text-lg">🎈</span>
+</button>
+</div>
+<!-- STATE 2: Heirloom VIP Party Pass Face -->
+<div class="absolute inset-0 w-full rounded-lg bg-surface-container-lowest/95 backdrop-blur-2xl p-5 shadow-lg flex flex-col justify-between [transform:rotateY(180deg)] [backface-visibility:hidden]" id="rsvp-back">
+<!-- Gold Ribbon Overhead Header -->
+<div class="flex items-center justify-between pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">verified</span>
+<span class="text-label-sm font-label-sm text-primary tracking-widest uppercase">VIP Entry Pass</span>
+</div>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant">#LEO-05</span>
+</div>
+<!-- Pass Core Content -->
+<div class="flex flex-col items-center text-center my-auto py-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Admit Special Guests</span>
+<h3 class="text-title-lg font-title-lg text-on-surface mt-0.5" id="pass-guest-name">The Kensington Family</h3>
+<!-- Decorative QR Code Graphic -->
+<div class="w-24 h-24 my-3 p-2 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+<svg class="w-full h-full text-on-surface" fill="currentColor" viewbox="0 0 100 100">
+<path d="M10 10h30v30h-30z m6 6v18h18v-18z m6 6h6v6h-6z M60 10h30v30h-30z m6 6v18h18v-18z m6 6h6v6h-6z M10 60h30v30h-30z m6 6v18h18v-18z m6 6h6v6h-6z M60 60h10v10h-10z M80 60h10v10h-10z M70 70h10v10h-10z M60 80h10v10h-10z M80 80h10v10h-10z"></path>
+</svg>
+</div>
+<div class="text-body-sm font-body-sm text-primary font-medium flex items-center gap-1">
+<span>You're on the list! See you there</span>
+<span>✨</span>
+</div>
+</div>
+<!-- Pass Footer & Reset -->
+<div class="pt-2 flex items-center justify-between">
+<div class="text-left">
+<div class="text-label-sm font-label-sm text-on-surface">Secret Garden • Gate B</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant text-[11px]">Valid June 14, 2025</div>
+</div>
+<button class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors underline underline-offset-2" id="edit-pass-btn" type="button">
+                Edit RSVP
+              </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Signoff -->
+<footer class="pb-2 text-center">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">
+          Made with Love • Leo's 5th Birthday Atelier
+        </p>
+</footer>
+</section>
+</div>
+</div>
+<script>
+  (() => {
+    // --- 1. Audio Synthesis (Chime Effect) ---
+    let audioCtx = null;
+    let audioMuted = false;
+
+    function playCelebrationChime() {
+      if (audioMuted) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        // 3-tone harmonic chime: E5, G#5, B5, E6
+        const freqs = [659.25, 830.61, 987.77, 1318.51];
+        freqs.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+
+          gain.gain.setValueAtTime(0.001, audioCtx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.15, audioCtx.currentTime + idx * 0.08 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.08 + 1.2);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(audioCtx.currentTime + idx * 0.08);
+          osc.stop(audioCtx.currentTime + idx * 0.08 + 1.25);
+        });
+      } catch (err) {
+        // Fallback gracefully if Web Audio is restricted
+      }
+    }
+
+    const audioToggleBtn = document.getElementById('audio-toggle-btn');
+    const audioIcon = document.getElementById('audio-icon');
+    if (audioToggleBtn && audioIcon) {
+      audioToggleBtn.addEventListener('click', () => {
+        audioMuted = !audioMuted;
+        audioIcon.textContent = audioMuted ? 'volume_off' : 'volume_up';
+        if (!audioMuted) playCelebrationChime();
+      });
+    }
+
+    // --- 2. Confetti Particle Simulation ---
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let confettiParticles = [];
+    let isConfettiRunning = false;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const pastelPalette = ['#F7C5D2', '#A5C9EB', '#FDE8A9', '#BCE3D6', '#E5C388', '#FFFFFF'];
+
+    function createParticleBurst(x, y) {
+      const count = 70;
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 4 + Math.random() * 8;
+        confettiParticles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * velocity,
+          vy: Math.sin(angle) * velocity - 3,
+          size: 4 + Math.random() * 6,
+          color: pastelPalette[Math.floor(Math.random() * pastelPalette.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 8,
+          gravity: 0.22,
+          opacity: 1,
+          life: 90 + Math.random() * 30
+        });
+      }
+      if (!isConfettiRunning) {
+        isConfettiRunning = true;
+        requestAnimationFrame(updateConfetti);
+      }
+    }
+
+    function updateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = confettiParticles.length - 1; i >= 0; i--) {
+        const p = confettiParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.vx *= 0.98;
+        p.rotation += p.vRot;
+        p.life -= 1;
+        p.opacity = Math.max(0, p.life / 100);
+
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+
+        // Variety of soft stars, circles, or paper slips
+        if (i % 3 === 0) {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.7);
+        }
+        ctx.restore();
+
+        if (p.life <= 0 || p.y > canvas.height + 20) {
+          confettiParticles.splice(i, 1);
+        }
+      }
+
+      if (confettiParticles.length > 0) {
+        requestAnimationFrame(updateConfetti);
+      } else {
+        isConfettiRunning = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // --- 3. Scroll-Snap Observer & Dynamic Pill Counter ---
+    const deck = document.getElementById('scroll-snap-deck');
+    const dots = [
+      document.getElementById('step-dot-1'),
+      document.getElementById('step-dot-2'),
+      document.getElementById('step-dot-3')
+    ];
+    const counterEl = document.getElementById('section-counter');
+    const sections = [
+      document.getElementById('section-1'),
+      document.getElementById('section-2'),
+      document.getElementById('section-3')
+    ];
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const idx = sections.indexOf(entry.target);
+          if (idx !== -1) {
+            dots.forEach((dot, dIdx) => {
+              if (dIdx === idx) {
+                dot.className = 'w-2 h-2 rounded-full bg-primary transition-all duration-300';
+              } else {
+                dot.className = 'w-1.5 h-1.5 rounded-full bg-outline-variant transition-all duration-300';
+              }
+            });
+            if (counterEl) {
+              counterEl.textContent = `0${idx + 1} / 03`;
+            }
+          }
+        }
+      });
+    }, { threshold: 0.55 });
+
+    sections.forEach((sec) => sec && observer.observe(sec));
+
+    // Smooth navigation buttons
+    const heroScrollBtn = document.getElementById('hero-scroll-btn');
+    if (heroScrollBtn) {
+      heroScrollBtn.addEventListener('click', () => {
+        sections[1]?.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+
+    const detailsScrollBtn = document.getElementById('details-scroll-btn');
+    if (detailsScrollBtn) {
+      detailsScrollBtn.addEventListener('click', () => {
+        sections[2]?.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+
+    // --- 4. Interactive RSVP Logic & Card Flip ---
+    const guestBtns = document.querySelectorAll('[data-guest-btn]');
+    guestBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        guestBtns.forEach((b) => {
+          b.className = 'guest-opt-btn py-2 rounded-full bg-surface-container text-on-surface text-label-md font-label-md text-center transition-all';
+        });
+        btn.className = 'guest-opt-btn active py-2 rounded-full bg-primary text-on-primary text-label-md font-label-md text-center transition-all';
+      });
+    });
+
+    const dietChips = document.querySelectorAll('[data-diet-chip]');
+    dietChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const isSelected = chip.classList.contains('bg-secondary-fixed');
+        const dot = chip.querySelector('.chip-dot');
+        if (isSelected) {
+          chip.classList.remove('bg-secondary-fixed', 'text-on-secondary-fixed-variant');
+          chip.classList.add('bg-surface-container', 'text-on-surface');
+          if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-outline-variant chip-dot';
+        } else {
+          chip.classList.remove('bg-surface-container', 'text-on-surface');
+          chip.classList.add('bg-secondary-fixed', 'text-on-secondary-fixed-variant');
+          if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-secondary chip-dot';
+        }
+      });
+    });
+
+    const rsvpFlip = document.getElementById('rsvp-card-flip');
+    const submitRsvpBtn = document.getElementById('submit-rsvp-btn');
+    const editPassBtn = document.getElementById('edit-pass-btn');
+    const nameInput = document.getElementById('family-name-input');
+    const passNameEl = document.getElementById('pass-guest-name');
+
+    if (submitRsvpBtn && rsvpFlip) {
+      submitRsvpBtn.addEventListener('click', (e) => {
+        // Sync custom family name
+        if (nameInput && passNameEl && nameInput.value.trim() !== '') {
+          passNameEl.textContent = nameInput.value.trim();
+        }
+
+        // Trigger confetti burst at click position
+        const rect = submitRsvpBtn.getBoundingClientRect();
+        createParticleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+        // Sound cue
+        playCelebrationChime();
+
+        // Perform 3D Flip
+        rsvpFlip.style.transform = 'rotateY(180deg)';
+      });
+    }
+
+    if (editPassBtn && rsvpFlip) {
+      editPassBtn.addEventListener('click', () => {
+        rsvpFlip.style.transform = 'rotateY(0deg)';
+      });
+    }
+  })();
+</script></main>
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body></html>

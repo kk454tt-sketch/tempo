@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>YOU'RE INVITED | Birthday Bash</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Syne & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        syne: ['Syne', 'sans-serif'],
+                        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#08080C',
+                        accentNeon: '#00F0FF',
+                        accentPink: '#FF007A',
+                        accentPurple: '#7000FF',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'marquee': 'marquee 12s linear infinite',
+                        'shimmer': 'shimmer 2.5s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(3deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+                            '50%': { opacity: '0.8', transform: 'scale(1.08)' },
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        shimmer: {
+                            '100%': { transform: 'translateX(100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #08080C;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            color: #FFFFFF;
+        }
+
+        /* Scroll Snap Container */
+        .snap-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+            scroll-behavior: smooth;
+        }
+
+        .snap-section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card-interactive {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card-interactive:active, .glass-card-interactive:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 240, 255, 0.15);
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #00F0FF 0%, #FF007A 50%, #7000FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #FFF5C0 0%, #FFD700 50%, #FF8C00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08080C;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00F0FF;
+            border-radius: 4px;
+        }
+
+        /* Touch Slider Styles */
+        .slider-thumb {
+            touch-action: none;
+        }
+    </style>
+
+<style id="tempo-responsive-override">
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  /* Prevent animated ping or oversized elements from overflowing viewport */
+  .animate-ping {
+    max-width: 100% !important;
+  }
+</style>
+
+</head>
+<body class="select-none">
+
+    <!-- Ambient 3D Glowing Aura Orbs -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-accentPurple/30 rounded-full blur-[120px] animate-pulse-glow"></div>
+        <div class="absolute top-1/2 -right-32 w-96 h-96 bg-accentNeon/20 rounded-full blur-[140px] animate-pulse-glow" style="animation-delay: 1s;"></div>
+        <div class="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-accentPink/20 rounded-full blur-[160px] animate-pulse-glow" style="animation-delay: 2s;"></div>
+    </div>
+
+    <!-- Top Floating Progress Bar & Header Badge -->
+    <div class="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center backdrop-blur-md bg-darkBg/40 border-b border-white/5">
+        <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-accentNeon animate-ping"></span>
+            <span class="font-syne text-xs uppercase tracking-widest text-white/70 font-bold">VIP ENTRY</span>
+        </div>
+        <div class="text-xs font-mono text-accentNeon bg-accentNeon/10 border border-accentNeon/30 px-3 py-1 rounded-full">
+            28 • 10 • 2026
+        </div>
+    </div>
+
+    <!-- Scroll Indicator Line at Top -->
+    <div class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-accentNeon via-accentPink to-accentPurple z-50 transition-all duration-300" id="scroll-progress" style="width: 33%"></div>
+
+    <!-- MAIN SCROLL SNAP CONTAINER -->
+    <main class="snap-container relative z-10" id="snapContainer">
+
+        <!-- SECTION 1: HERO KINETIC TYPOGRAPHY -->
+        <section class="snap-section px-6 relative" id="sec-1">
+            
+            <!-- Huge Background Floating Number -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0 opacity-15">
+                <span class="font-syne text-[18rem] md:text-[28rem] font-extrabold text-gradient leading-none animate-float">
+                    25
+                </span>
+            </div>
+
+            <!-- Foreground Hero Content -->
+            <div class="relative z-10 text-center max-w-lg mx-auto flex flex-col items-center">
+                
+                <!-- Tagline Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card border border-white/10 mb-6 animate-bounce">
+                    <i class="fa-solid fa-sparkles text-accentNeon text-xs"></i>
+                    <span class="text-xs tracking-widest uppercase text-white/80 font-semibold">EXCLUSIVE INVITATION</span>
+                </div>
+
+                <!-- Main Kinetic Heading -->
+                <h1 class="font-syne text-5xl md:text-7xl font-extrabold tracking-tight mb-4 uppercase leading-none">
+                    YOU'RE <br/>
+                    <span class="text-gradient">INVITED</span>
+                </h1>
+
+                <p class="font-syne text-2xl md:text-3xl font-bold text-white/90 tracking-wide mb-8">
+                    ALEX'S BIRTHDAY BASH
+                </p>
+
+                <!-- Scroll Prompt Visual -->
+                <div class="mt-8 flex flex-col items-center gap-2 text-white/40 animate-pulse">
+                    <span class="text-[10px] tracking-widest uppercase font-mono">SWIPE UP TO REVEAL</span>
+                    <i class="fa-solid fa-chevron-down text-sm text-accentNeon"></i>
+                </div>
+            </div>
+
+            <!-- Bottom Kinetic Marquee -->
+            <div class="absolute bottom-6 w-full overflow-hidden whitespace-nowrap border-y border-white/5 py-2 glass-card">
+                <div class="inline-block animate-marquee uppercase text-xs tracking-widest font-mono text-white/50">
+                    PARTY NIGHT • VIP PASS ACCESS • GOOD VIBES ONLY • DRESS CODE: NEON BLACK • NO EXCUSES • PARTY NIGHT • VIP PASS ACCESS • GOOD VIBES ONLY • DRESS CODE: NEON BLACK • NO EXCUSES •
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: WHEN & WHERE (CARDS GRID) -->
+        <section class="snap-section px-6 relative" id="sec-2">
+            
+            <div class="w-full max-w-md mx-auto space-y-4 relative z-10">
+                
+                <div class="text-center mb-6">
+                    <span class="text-xs uppercase tracking-widest text-accentPink font-mono font-bold">THE DETAILS</span>
+                    <h2 class="font-syne text-3xl font-bold uppercase mt-1">WHEN & WHERE</h2>
+                </div>
+
+                <!-- Card 1: DATE -->
+                <div class="glass-card glass-card-interactive p-5 rounded-2xl flex items-center justify-between border-l-4 border-l-accentNeon">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-accentNeon/10 border border-accentNeon/30 flex items-center justify-center text-accentNeon text-xl">
+                            <i class="fa-regular fa-calendar-star"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-white/50 uppercase tracking-wider font-mono">DATE</span>
+                            <h3 class="font-syne text-xl font-bold text-white">SAT, OCT 28</h3>
+                        </div>
+                    </div>
+                    <span class="text-xs bg-white/10 px-3 py-1 rounded-full font-mono text-white/80">2026</span>
+                </div>
+
+                <!-- Card 2: COUNTDOWN TIMER -->
+                <div class="glass-card glass-card-interactive p-5 rounded-2xl border-l-4 border-l-accentPink">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-accentPink/10 border border-accentPink/30 flex items-center justify-center text-accentPink text-lg">
+                                <i class="fa-regular fa-clock"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs text-white/50 uppercase tracking-wider font-mono">TIME</span>
+                                <h3 class="font-syne text-lg font-bold text-white">08:00 PM TILL LATE</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Live Ticking Clock Box -->
+                    <div class="grid grid-cols-4 gap-2 text-center pt-2 border-t border-white/5" id="countdown-timer">
+                        <div class="glass-card py-2 rounded-lg">
+                            <span class="block font-syne text-lg font-bold text-accentNeon" id="timer-days">00</span>
+                            <span class="text-[9px] text-white/40 uppercase">DAYS</span>
+                        </div>
+                        <div class="glass-card py-2 rounded-lg">
+                            <span class="block font-syne text-lg font-bold text-accentNeon" id="timer-hours">00</span>
+                            <span class="text-[9px] text-white/40 uppercase">HOURS</span>
+                        </div>
+                        <div class="glass-card py-2 rounded-lg">
+                            <span class="block font-syne text-lg font-bold text-accentNeon" id="timer-mins">00</span>
+                            <span class="text-[9px] text-white/40 uppercase">MINS</span>
+                        </div>
+                        <div class="glass-card py-2 rounded-lg">
+                            <span class="block font-syne text-lg font-bold text-accentPink" id="timer-secs">00</span>
+                            <span class="text-[9px] text-white/40 uppercase">SECS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: LOCATION MAP -->
+                <div class="glass-card glass-card-interactive p-5 rounded-2xl flex items-center justify-between border-l-4 border-l-accentPurple" onclick="openLocation()">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-accentPurple/10 border border-accentPurple/30 flex items-center justify-center text-accentPurple text-xl">
+                            <i class="fa-solid fa-location-dot animate-bounce"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-white/50 uppercase tracking-wider font-mono">LOCATION</span>
+                            <h3 class="font-syne text-lg font-bold text-white">SKYLOFT VIP LOUNGE</h3>
+                            <span class="text-xs text-accentNeon">Downtown Heights, Floor 42</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/60">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SECTION 3: INTERACTIVE VIP PASS RSVP -->
+        <section class="snap-section px-6 relative" id="sec-3">
+            
+            <div class="w-full max-w-md mx-auto text-center relative z-10">
+                
+                <!-- Main Pass / Ticket Card -->
+                <div class="relative transition-all duration-700 preserve-3d" id="vipTicketCard">
+                    
+                    <!-- UNCLAIMED PASS FRONT -->
+                    <div class="glass-card p-6 rounded-3xl border border-white/15 relative overflow-hidden shadow-2xl">
+                        
+                        <!-- Glow Accent Background -->
+                        <div class="absolute -top-12 -right-12 w-32 h-32 bg-accentNeon/20 rounded-full blur-2xl"></div>
+
+                        <div class="flex justify-between items-center pb-4 border-b border-white/10 mb-6">
+                            <span class="font-syne text-lg font-bold tracking-wider text-gradient">ENTRY PASS</span>
+                            <span class="text-xs font-mono text-white/40">NO. #2026-VIP</span>
+                        </div>
+
+                        <!-- Ticket Body Info -->
+                        <div class="my-6 space-y-3">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-accentNeon to-accentPurple p-[1px] mx-auto">
+                                <div class="w-full h-full bg-darkBg rounded-2xl flex items-center justify-center text-2xl text-accentNeon">
+                                    <i class="fa-solid fa-ticket"></i>
+                                </div>
+                            </div>
+                            <h3 class="font-syne text-2xl font-bold uppercase">ALEX'S 25TH</h3>
+                            <p class="text-xs text-white/60 font-mono">SLIDE BELOW TO CLAIM ACCESS</p>
+                        </div>
+
+                        <!-- SWIPE / SLIDE TO CLAIM BUTTON -->
+                        <div class="relative w-full h-16 rounded-full glass-card border border-accentNeon/30 p-1 flex items-center overflow-hidden my-4" id="sliderContainer">
+                            <!-- Background Track Text -->
+                            <div class="absolute inset-0 flex items-center justify-center text-xs font-mono tracking-widest text-accentNeon/60 font-bold uppercase pointer-events-none animate-shimmer">
+                                SLIDE TO CONFIRM RSVP ➔
+                            </div>
+
+                            <!-- Fill Progress Bar -->
+                            <div class="h-full bg-gradient-to-r from-accentNeon/40 to-accentPink/40 rounded-full transition-all duration-75 pointer-events-none" id="sliderFill" style="width: 52px;"></div>
+
+                            <!-- Draggable Thumb Button -->
+                            <div class="absolute left-1 w-14 h-14 bg-gradient-to-tr from-accentNeon to-accentPink rounded-full shadow-lg flex items-center justify-center text-darkBg text-xl cursor-pointer slider-thumb transition-transform duration-75 active:scale-95 z-20" id="sliderThumb">
+                                <i class="fa-solid fa-angles-right text-black font-bold"></i>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- CLAIMED VIP BADGE STATE (Hidden by default) -->
+                    <div class="hidden glass-card p-6 rounded-3xl border border-accentNeon/50 relative overflow-hidden shadow-2xl bg-gradient-to-b from-darkBg via-darkBg to-accentPurple/20" id="claimedPass">
+                        
+                        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accentNeon via-accentPink to-accentPurple"></div>
+                        
+                        <div class="flex justify-between items-center pb-3 border-b border-white/10">
+                            <span class="font-syne text-xs font-bold tracking-widest text-accentNeon uppercase">VIP ACCESS GRANTED</span>
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">CONFIRMED</span>
+                        </div>
+
+                        <div class="my-6 text-center space-y-3">
+                            <div class="w-24 h-24 mx-auto glass-card p-2 rounded-2xl border border-accentNeon/30 flex items-center justify-center bg-white">
+                                <!-- Generated QR Code Placeholder -->
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VIP-ALEX-25-PARTY" alt="QR Pass" class="w-full h-full rounded-lg">
+                            </div>
+                            
+                            <h3 class="font-syne text-xl font-bold text-white uppercase mt-2">YOU'RE ON THE LIST! 🎉</h3>
+                            <p class="text-xs text-white/70">Screenshot this pass for entrance at Skyloft.</p>
+                        </div>
+
+                        <button onclick="resetPass()" class="text-xs text-white/40 hover:text-white underline font-mono">
+                            Reset Reservation
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer Minimal Info -->
+            <div class="absolute bottom-4 text-center w-full text-[10px] font-mono text-white/30">
+                CAN'T WAIT TO CELEBRATE WITH YOU
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        /* ----------------------------------------------------
+           1. SCROLL PROGRESS TRACKER
+        ---------------------------------------------------- */
+        const snapContainer = document.getElementById('snapContainer');
+        const scrollProgress = document.getElementById('scroll-progress');
+
+        snapContainer.addEventListener('scroll', () => {
+            const scrollTop = snapContainer.scrollTop;
+            const scrollHeight = snapContainer.scrollHeight - snapContainer.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            scrollProgress.style.width = `${Math.max(10, progress)}%`;
+        });
+
+        /* ----------------------------------------------------
+           2. LIVE COUNTDOWN TIMER
+        ---------------------------------------------------- */
+        // Set Target Date to Oct 28, 2026
+        const partyDate = new Date('October 28, 2026 20:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = partyDate - now;
+
+            if (distance > 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('timer-days').innerText = String(days).padStart(2, '0');
+                document.getElementById('timer-hours').innerText = String(hours).padStart(2, '0');
+                document.getElementById('timer-mins').innerText = String(minutes).padStart(2, '0');
+                document.getElementById('timer-secs').innerText = String(seconds).padStart(2, '0');
+            } else {
+                document.getElementById('countdown-timer').innerHTML = "<div class='col-span-4 text-accentNeon font-syne font-bold'>PARTY IS LIVE NOW!</div>";
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        /* ----------------------------------------------------
+           3. INTERACTIVE SLIDE TO RSVP THUMB LOGIC
+        ---------------------------------------------------- */
+        const sliderContainer = document.getElementById('sliderContainer');
+        const sliderThumb = document.getElementById('sliderThumb');
+        const sliderFill = document.getElementById('sliderFill');
+        const unclaimedPass = sliderContainer.closest('.glass-card');
+        const claimedPass = document.getElementById('claimedPass');
+
+        let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+
+        function getClientX(e) {
+            return e.touches ? e.touches[0].clientX : e.clientX;
+        }
+
+        function startDrag(e) {
+            isDragging = true;
+            startX = getClientX(e) - sliderThumb.offsetLeft;
+            sliderThumb.style.transition = 'none';
+            sliderFill.style.transition = 'none';
+        }
+
+        function doDrag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            const maxTrackWidth = sliderContainer.clientWidth - sliderThumb.clientWidth - 8;
+            let x = getClientX(e) - startX;
+
+            x = Math.max(4, Math.min(x, maxTrackWidth));
+            currentX = x;
+
+            sliderThumb.style.left = `${x}px`;
+            sliderFill.style.width = `${x + 28}px`;
+
+            // If dragged past 85% threshold, trigger confirmation
+            if (x >= maxTrackWidth * 0.88) {
+                confirmRSVP();
+                endDrag();
+            }
+        }
+
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const maxTrackWidth = sliderContainer.clientWidth - sliderThumb.clientWidth - 8;
+            if (currentX < maxTrackWidth * 0.88) {
+                // Snap back to start if not fully dragged
+                sliderThumb.style.transition = 'left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                sliderFill.style.transition = 'width 0.3s ease';
+                sliderThumb.style.left = '4px';
+                sliderFill.style.width = '52px';
+            }
+        }
+
+        // Mouse Events
+        sliderThumb.addEventListener('mousedown', startDrag);
+        window.addEventListener('mousemove', doDrag);
+        window.addEventListener('mouseup', endDrag);
+
+        // Touch Events for Mobile
+        sliderThumb.addEventListener('touchstart', startDrag, { passive: false });
+        window.addEventListener('touchmove', doDrag, { passive: false });
+        window.addEventListener('touchend', endDrag);
+
+        /* ----------------------------------------------------
+           4. CONFETTI BURST & TICKET UNLOCK
+        ---------------------------------------------------- */
+        function confirmRSVP() {
+            // Trigger Confetti Blast
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.7 },
+                    colors: ['#00F0FF', '#FF007A', '#7000FF', '#FFD700']
+                });
+            }
+
+            // Swap Pass View
+            unclaimedPass.classList.add('hidden');
+            claimedPass.classList.remove('hidden');
+            claimedPass.classList.add('animate-bounce');
+            setTimeout(() => {
+                claimedPass.classList.remove('animate-bounce');
+            }, 1000);
+        }
+
+        function resetPass() {
+            claimedPass.classList.add('hidden');
+            unclaimedPass.classList.remove('hidden');
+            sliderThumb.style.left = '4px';
+            sliderFill.style.width = '52px';
+        }
+
+        /* ----------------------------------------------------
+           5. MAP LINK ACTION
+        ---------------------------------------------------- */
+        function openLocation() {
+            window.open('https://maps.google.com', '_blank');
+        }
+    </script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

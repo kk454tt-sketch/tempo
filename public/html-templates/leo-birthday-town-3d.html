@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Leo's Magical 3D Birthday Island — Night & Day Wonder Town</title>
+
+  <!-- Google Fonts: Fredoka, Nunito, Inter & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Three.js (r128), GSAP 3, Canvas Confetti -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'party-sky': '#0f172a',
+            'party-gold': '#facc15',
+            'party-coral': '#fb7185',
+            'party-teal': '#2dd4bf',
+            'party-purple': '#c084fc',
+            'party-cream': '#fef9c3',
+            'party-navy': '#090d16'
+          },
+          fontFamily: {
+            fredoka: ['Fredoka', 'sans-serif'],
+            nunito: ['Nunito', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Nunito', sans-serif;
+      color: #1e1b4b;
+      background-color: #0c1021;
+    }
+
+    /* Ambient dynamic sky glow */
+    #sky-backdrop {
+      transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sky-night {
+      background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0f172a 45%, #070913 100%);
+    }
+    .sky-day {
+      background: radial-gradient(circle at 50% 25%, #bae6fd 0%, #7dd3fc 45%, #38bdf8 100%);
+    }
+
+    /* Twinkling star field */
+    .star-twinkle {
+      position: absolute;
+      border-radius: 9999px;
+      background-color: #ffffff;
+      opacity: 0.8;
+      pointer-events: none;
+      animation: twinklePulse var(--d, 3s) infinite ease-in-out;
+    }
+    @keyframes twinklePulse {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    /* Premium Glassmorphic UI Pill & Cards */
+    .glass-hud {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+    .glass-light {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 16px 36px rgba(59, 35, 71, 0.12);
+    }
+
+    /* Tactile modern buttons */
+    .btn-3d {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+    .btn-3d:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+    .btn-3d:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    /* Ambient animated ring aura */
+    @keyframes auraGlow {
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.15); opacity: 0.75; }
+    }
+    .aura-pulse {
+      animation: auraGlow 4s infinite ease-in-out;
+    }
+
+    /* Custom sleek scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(251, 113, 133, 0.6);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+
+<body class="relative w-screen h-screen overflow-hidden text-slate-100">
+
+  <!-- Dynamic Backdrop with Atmospheric Sky -->
+  <div id="sky-backdrop" class="absolute inset-0 sky-night pointer-events-none z-0">
+    <div id="stars-container" class="absolute inset-0 pointer-events-none overflow-hidden transition-opacity duration-1000 opacity-100">
+      <!-- Dynamically populated twinkle stars -->
+    </div>
+  </div>
+
+  <!-- 3D Three.js WebGL Interactive Scene -->
+  <div id="webgl-canvas-container" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing z-0"></div>
+
+  <!-- ======================================================== -->
+  <!-- TOP RESPONSIVE HUD BAR                                   -->
+  <!-- ======================================================== -->
+  <header class="absolute top-0 left-0 right-0 p-3 sm:p-5 flex items-center justify-between z-20 pointer-events-none">
+    
+    <!-- Celebrant Badge Pill -->
+    <div class="pointer-events-auto flex items-center space-x-2.5 sm:space-x-3.5 glass-hud px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl sm:rounded-full">
+      <div id="hud-avatar-badge" class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 flex items-center justify-center font-fredoka font-bold text-lg sm:text-xl text-white shadow-lg ring-2 ring-white/40">
+        <span id="hud-age-number">7</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <h1 id="hud-title-text" class="font-fredoka font-bold text-sm sm:text-base md:text-lg text-white leading-tight">
+            Leo's Magical Birthday Town
+          </h1>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-sans font-black tracking-wide uppercase bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-sm ring-1 ring-white/20">
+            PRO 3D
+          </span>
+        </div>
+        <p id="hud-sub-text" class="font-sans text-[11px] sm:text-xs text-slate-300 font-medium hidden sm:block">
+          Interactive night town diorama • Drag to rotate & tap glowing houses
+        </p>
+      </div>
+    </div>
+
+    <!-- Right Controls: Audio + Day/Night Mode + Reset Orbit + Live Customizer Button -->
+    <div class="pointer-events-auto flex items-center space-x-2 sm:space-x-2.5">
+      
+      <!-- Day / Night Mode Toggle Switch -->
+      <button id="theme-mode-btn" onclick="toggleDayNightMode()" class="h-9 px-3 sm:h-10 sm:px-3.5 rounded-xl glass-hud hover:bg-slate-800/80 text-white btn-3d flex items-center space-x-1.5 text-xs font-semibold cursor-pointer" title="Toggle Day / Night Lights">
+        <span id="theme-mode-icon">🌙</span>
+        <span id="theme-mode-label" class="hidden md:inline text-[11px] uppercase tracking-wider font-bold">Night City</span>
+      </button>
+
+      <!-- Celebratory Audio Music Toggle -->
+      <button id="audio-toggle-btn" onclick="togglePartyAudio()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl glass-hud hover:bg-slate-800/80 text-white btn-3d flex items-center justify-center text-base sm:text-lg cursor-pointer" title="Party Music & Chimes">
+        <span id="audio-icon">🔊</span>
+      </button>
+
+      <!-- Reset Orbit Camera -->
+      <button id="reset-cam-btn" onclick="resetCameraView()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl glass-hud hover:bg-slate-800/80 text-white btn-3d flex items-center justify-center text-base sm:text-lg cursor-pointer" title="Center View">
+        🧭
+      </button>
+
+      <!-- Floating Live Edit Party Pill (Paid Pro Direct Editor) -->
+      <button onclick="toggleLiveDrawer()" class="h-9 px-3 sm:h-10 sm:px-4 rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 to-indigo-600 hover:from-rose-600 hover:to-indigo-700 text-white font-fredoka font-bold text-xs sm:text-sm btn-3d flex items-center space-x-1.5 cursor-pointer ring-2 ring-white/30">
+        <span>🎨</span>
+        <span class="hidden sm:inline">Customize</span>
+        <span class="bg-black/30 text-[9px] px-1.5 py-0.5 rounded font-mono font-bold">PRO</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- BOTTOM QUICK JUMP HUD & MASCOT GUIDE                     -->
+  <!-- ======================================================== -->
+  <div class="absolute bottom-4 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 flex items-end justify-between z-20 pointer-events-none">
+    
+    <!-- Mascot Friendly Speech Pill (Responsive) -->
+    <div id="mascot-guide" class="pointer-events-auto flex items-end space-x-2.5 sm:space-x-3.5 max-w-[280px] sm:max-w-md">
+      <div id="mascot-avatar" onclick="onMascotTap()" class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-2xl sm:text-3xl shadow-xl ring-2 ring-white/60 btn-3d cursor-pointer flex-shrink-0">
+        🦊
+      </div>
+      <div class="glass-hud p-2.5 sm:p-3.5 rounded-2xl text-slate-100 max-w-xs shadow-2xl border border-white/20">
+        <div class="flex items-center justify-between text-[10px] uppercase font-bold text-rose-400 mb-0.5 font-sans">
+          <span>Leo's Party Host</span>
+          <span class="animate-pulse">● Live</span>
+        </div>
+        <p id="mascot-text" class="text-xs sm:text-[13px] font-semibold leading-snug">
+          "Welcome to my glowing 3D Birthday Island! Tap any warm lit house to view secret party treats!"
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Dock for Island Buildings -->
+    <div class="pointer-events-auto hidden md:flex items-center space-x-2 glass-hud p-1.5 rounded-2xl">
+      <button onclick="focusBuilding(0)" class="px-3 py-1.5 rounded-xl hover:bg-white/10 text-xs font-bold text-white transition-colors flex items-center gap-1">
+        <span>🎪</span> Plaza
+      </button>
+      <button onclick="focusBuilding(1)" class="px-3 py-1.5 rounded-xl hover:bg-white/10 text-xs font-bold text-white transition-colors flex items-center gap-1">
+        <span>📅</span> Date Tower
+      </button>
+      <button onclick="focusBuilding(2)" class="px-3 py-1.5 rounded-xl hover:bg-white/10 text-xs font-bold text-white transition-colors flex items-center gap-1">
+        <span>⏰</span> Clock House
+      </button>
+      <button onclick="focusBuilding(3)" class="px-3 py-1.5 rounded-xl hover:bg-white/10 text-xs font-bold text-white transition-colors flex items-center gap-1">
+        <span>🏕️</span> Party Venue
+      </button>
+      <button onclick="focusBuilding(4)" class="px-3 py-1.5 rounded-xl hover:bg-white/10 text-xs font-bold text-white transition-colors flex items-center gap-1">
+        <span>🎂</span> Bakery
+      </button>
+      <button onclick="openRsvpSheet()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-xs font-bold text-white shadow-md flex items-center gap-1">
+        <span>💌</span> RSVP
+      </button>
+    </div>
+  </div>
+
+  <!-- ROTATION DRAG HINT BADGE -->
+  <div id="rotate-hint" class="absolute bottom-20 left-1/2 -translate-x-1/2 pointer-events-none z-10 glass-hud px-4 py-2 rounded-full text-xs font-semibold text-white/90 flex items-center gap-2 transition-opacity duration-700 shadow-xl border border-white/20">
+    <span class="animate-bounce">✨</span>
+    <span>Drag around diorama to rotate • Tap glowing houses & gifts!</span>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: BUILDING / VENUE / SCHEDULE DETAIL CARD           -->
+  <!-- ======================================================== -->
+  <div id="building-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-40 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div id="building-modal-card" class="bg-slate-900/95 border border-white/15 rounded-3xl max-w-md w-full p-6 text-white shadow-2xl relative transform scale-95 transition-transform duration-300">
+      
+      <!-- Close button -->
+      <button onclick="closeBuildingModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 border border-white/20 flex items-center justify-center text-sm font-bold text-white cursor-pointer transition-colors">
+        ✕
+      </button>
+
+      <!-- Header with Icon & Category -->
+      <div class="flex items-center space-x-3 mb-4">
+        <div id="modal-icon-badge" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-400 to-rose-500 flex items-center justify-center text-3xl shadow-lg ring-2 ring-white/30">
+          🎪
+        </div>
+        <div>
+          <span id="modal-tag" class="text-[10px] font-mono uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+            Venue Hub
+          </span>
+          <h2 id="modal-title" class="font-fredoka font-bold text-2xl text-white leading-tight">
+            Town Square
+          </h2>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div id="modal-body" class="space-y-3 text-sm text-slate-300 mb-6 font-medium">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Action Buttons -->
+      <div id="modal-actions" class="flex items-center gap-2.5">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: GUEST RSVP SHEET                                  -->
+  <!-- ======================================================== -->
+  <div id="rsvp-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div id="rsvp-card" class="bg-slate-900 border border-white/15 rounded-3xl max-w-lg w-full p-6 sm:p-7 text-white shadow-2xl relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto">
+      
+      <button onclick="closeRsvpSheet()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 border border-white/20 flex items-center justify-center text-sm font-bold text-white cursor-pointer transition-colors">
+        ✕
+      </button>
+
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-2xl shadow-md ring-2 ring-white/30">
+          💌
+        </div>
+        <div>
+          <span class="text-[10px] font-mono uppercase tracking-wider font-bold text-pink-400">Join the Party</span>
+          <h2 class="font-fredoka font-bold text-2xl text-white">RSVP for Leo's Birthday</h2>
+        </div>
+      </div>
+
+      <form id="rsvp-form" onsubmit="handleRsvpFormSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Parent / Guest Full Name</label>
+          <input type="text" id="rsvp-guest-name" required placeholder="e.g. Maya & Jackson" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-medium text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Will you be celebrating with us?</label>
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <label class="flex items-center space-x-2 bg-slate-800/80 p-2.5 rounded-xl border border-white/10 cursor-pointer hover:bg-slate-800">
+              <input type="radio" name="attendance" value="yes" checked class="accent-rose-500">
+              <span class="font-bold text-emerald-400">🎉 Yes! Count us in!</span>
+            </label>
+            <label class="flex items-center space-x-2 bg-slate-800/80 p-2.5 rounded-xl border border-white/10 cursor-pointer hover:bg-slate-800">
+              <input type="radio" name="attendance" value="no" class="accent-rose-500">
+              <span class="font-bold text-slate-400">😢 Can't make it</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Kids Attending</label>
+            <input type="number" id="rsvp-kids-count" min="1" max="10" value="1" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-medium text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Contact Phone</label>
+            <input type="tel" id="rsvp-phone" placeholder="+1 (555) 000-0000" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-medium text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Dietary Needs or Birthday Wishes</label>
+          <input type="text" id="rsvp-dietary" placeholder="e.g. Nut allergies, vegetarian, or favorite song!" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-medium text-sm">
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white font-fredoka font-bold text-lg shadow-xl cursor-pointer btn-3d flex items-center justify-center gap-2 mt-2">
+          <span>Confirm Attendance</span> <span>🚀</span>
+        </button>
+      </form>
+
+      <!-- Success Screen inside modal -->
+      <div id="rsvp-success-view" class="hidden text-center py-6 space-y-4">
+        <div class="text-6xl animate-bounce">🎈</div>
+        <h3 class="font-fredoka font-bold text-2xl text-emerald-400">RSVP Confirmed! Thank You!</h3>
+        <p class="text-sm text-slate-300">
+          We have saved your reservation. We can't wait to celebrate together under the sparkling lights of Birthday Island!
+        </p>
+        <div class="flex gap-2 justify-center pt-2">
+          <button onclick="downloadCalendarInvite()" class="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold text-xs btn-3d">
+            📅 Save to Calendar (.ics)
+          </button>
+          <button onclick="closeRsvpSheet()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs btn-3d">
+            Back to Island
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE-OUT LIVE CUSTOMIZATION DRAWER (PRO PAID FEATURE)   -->
+  <!-- ======================================================== -->
+  <div id="live-custom-drawer" class="fixed inset-y-0 left-0 w-84 sm:w-96 bg-slate-950/95 backdrop-blur-2xl border-r border-white/15 z-50 p-5 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col justify-between overflow-y-auto">
+    <div>
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-white/10">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-400 to-rose-500 flex items-center justify-center text-lg shadow-md">
+            ✨
+          </div>
+          <div>
+            <h3 class="font-fredoka font-bold text-lg text-white">Customize 3D Island</h3>
+            <p class="text-[11px] text-slate-400 font-mono">Paid Pro Real-Time Editor</p>
+          </div>
+        </div>
+        <button onclick="toggleLiveDrawer()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold text-sm cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <!-- Controls -->
+      <div class="mt-4 space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Celebrant's Name</label>
+          <input type="text" id="live-name-input" value="Leo" oninput="applyLiveUpdates()" class="w-full px-3 py-2 text-sm rounded-xl bg-slate-900 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Age Turning</label>
+          <input type="number" min="1" max="120" id="live-age-input" value="7" oninput="applyLiveUpdates()" class="w-full px-3 py-2 text-sm rounded-xl bg-slate-900 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Event Date</label>
+          <input type="text" id="live-date-input" value="Saturday, Oct 25, 2025" oninput="applyLiveUpdates()" class="w-full px-3 py-2 text-sm rounded-xl bg-slate-900 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Event Hours</label>
+          <input type="text" id="live-time-input" value="3:00 PM – 7:00 PM" oninput="applyLiveUpdates()" class="w-full px-3 py-2 text-sm rounded-xl bg-slate-900 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Venue Name</label>
+          <input type="text" id="live-venue-input" value="Wonder Park Pavilion 3" oninput="applyLiveUpdates()" class="w-full px-3 py-2 text-sm rounded-xl bg-slate-900 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 font-sans mb-1 uppercase tracking-wider">Venue Address</label>
+          <input type="text" id="live-address-input" value="742 Evergreen Terrace, Springfield" oninput="applyLiveUpdates()" class="w-full px-3 py-2 text-sm rounded-xl bg-slate-900 border border-white/15 focus:ring-2 focus:ring-rose-500 focus:outline-none text-white font-bold">
+        </div>
+
+        <div class="pt-3 border-t border-white/10 space-y-2">
+          <button onclick="toggleDayNightMode()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs btn-3d flex items-center justify-center gap-2 cursor-pointer">
+            <span id="drawer-theme-icon">🌙</span> <span id="drawer-theme-label">Switch Night / Day Atmosphere</span>
+          </button>
+
+          <button onclick="blastConfettiCannons()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-xs btn-3d flex items-center justify-center gap-2 cursor-pointer shadow-md">
+            <span>🎉 Fire Confetti Cannons</span>
+          </button>
+
+          <button onclick="togglePartyAudio()" class="w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs btn-3d flex items-center justify-center gap-2 cursor-pointer shadow-md">
+            <span id="drawer-audio-icon">🔊</span> <span id="drawer-audio-label">Toggle Celebratory Audio</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="pt-4 border-t border-white/10 space-y-2">
+      <button onclick="toggleLiveDrawer()" class="w-full py-2.5 rounded-xl bg-white hover:bg-slate-200 text-slate-950 font-fredoka font-bold text-sm cursor-pointer shadow-lg">
+        Done Editing • View Island
+      </button>
+      <p class="text-[11px] text-center text-slate-400">All edits sync seamlessly in 3D & parent builder</p>
+    </div>
+  </div>
+
+  <!-- Audio Element for Happy Birthday party soundtrack -->
+  <audio id="party-bg-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT: THREE.JS REALISTIC NIGHT/DAY 3D DIORAMA      -->
+  <!-- ======================================================== -->
+  <script>
+    /* ----------------------------------------------------
+       DATA STATE & PARTY DETAILS
+       ---------------------------------------------------- */
+    const PARTY_INFO = {
+      name: "Leo",
+      age: 7,
+      date: "Saturday, Oct 25, 2025",
+      time: "3:00 PM – 7:00 PM",
+      venue: "Wonder Park Pavilion 3",
+      address: "742 Evergreen Terrace, Springfield",
+      dressCode: "Fun, Colorful & Sneakers ready for bouncy adventures!",
+      phone: "+1 (555) 329-8472"
+    };
+
+    let isNightMode = true; // Default to breathtaking illuminated night city!
+    let isAudioPlaying = false;
+    let webAudioInitialized = false;
+    let audioCtx = null;
+
+    /* ----------------------------------------------------
+       STAR TWINKLE FIELD
+       ---------------------------------------------------- */
+    function populateStarField() {
+      const starContainer = document.getElementById('stars-container');
+      if (!starContainer) return;
+      starContainer.innerHTML = '';
+      const count = 75;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star-twinkle';
+        const size = Math.random() * 2.5 + 1.2;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.top = Math.random() * 85 + '%';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.setProperty('--d', (Math.random() * 3 + 2) + 's');
+        starContainer.appendChild(star);
+      }
+    }
+
+    /* ----------------------------------------------------
+       WEB AUDIO SYNTHESIZER FOR SOUND EFFECTS
+       ---------------------------------------------------- */
+    function initWebAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        webAudioInitialized = true;
+      }
+    }
+
+    function playSynthesizedSound(type) {
+      initWebAudio();
+      if (!audioCtx) return;
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+
+        if (type === 'pop') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(750, now + 0.08);
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        } else if (type === 'ding') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.exponentialRampToValueAtTime(1320, now + 0.3);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.36);
+        } else if (type === 'fanfare') {
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+            gain.gain.setValueAtTime(0.25, now + idx * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.4);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now + idx * 0.1);
+            osc.stop(now + idx * 0.1 + 0.42);
+          });
+        }
+      } catch (err) {
+        console.warn("Audio chime info:", err);
+      }
+    }
+
+    /* ----------------------------------------------------
+       THREE.JS 3D DIORAMA SCENE (NIGHT & DAY WITH LIGHTS)
+       ---------------------------------------------------- */
+    let scene, camera, renderer, islandGroup;
+    let mainDirectionalLight, ambientLight;
+    let windowMaterials = [];       // Materials that glow warm yellow/orange at night
+    let fairyLightMeshes = [];      // Glowing party fairy bulbs
+    let candleFlames = [];          // Animated flickering candle lights
+    let streetLampLights = [];      // Point lights illuminating houses
+    let rotatingCarousel, trainPivot;
+    let buildingGroups = [];
+
+    // Camera Orbit State
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let previousMouse = { x: 0, y: 0 };
+    let didMouseMove = false;
+    let targetRotY = Math.PI * 0.25;
+    let targetRotX = 0.58;
+    let currentRotY = Math.PI * 0.25;
+    let currentRotX = 0.58;
+    let autoRotateIsland = true;
+    let raycaster, mouse;
+
+    function initThreeScene() {
+      const container = document.getElementById('webgl-canvas-container');
+      const width = container.clientWidth || window.innerWidth;
+      const height = container.clientHeight || window.innerHeight;
+
+      // 1. Scene
+      scene = new THREE.Scene();
+
+      // 2. Camera: Isometric orthographic view for clean diorama aesthetic
+      const aspect = width / height;
+      const d = 11;
+      camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
+      camera.position.set(22, 22, 22);
+      camera.lookAt(0, 0, 0);
+
+      // 3. Renderer with soft shadows
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      // 4. Lighting: Ambient & Directional Moonlight/Sunlight
+      ambientLight = new THREE.AmbientLight(0x283158, 1.4); // Deep ambient night
+      scene.add(ambientLight);
+
+      mainDirectionalLight = new THREE.DirectionalLight(0x8fa3ff, 1.2); // Cool moonbeam
+      mainDirectionalLight.position.set(16, 28, 14);
+      mainDirectionalLight.castShadow = true;
+      mainDirectionalLight.shadow.mapSize.width = 1024;
+      mainDirectionalLight.shadow.mapSize.height = 1024;
+      mainDirectionalLight.shadow.bias = -0.001;
+      const shadowD = 13;
+      mainDirectionalLight.shadow.camera.left = -shadowD;
+      mainDirectionalLight.shadow.camera.right = shadowD;
+      mainDirectionalLight.shadow.camera.top = shadowD;
+      mainDirectionalLight.shadow.camera.bottom = -shadowD;
+      scene.add(mainDirectionalLight);
+
+      // 5. Main Root Island Group
+      islandGroup = new THREE.Group();
+      scene.add(islandGroup);
+
+      // Procedural 3D Island Modeling
+      buildIslandFoundation();
+      buildTownSquarePlaza();     // Building 0
+      buildCalendarTower();       // Building 1
+      buildClockHouse();          // Building 2
+      buildPartyPavilion();       // Building 3
+      buildCakeBakery();          // Building 4
+      buildNightFairyLights();    // String lights & streetlamps
+      buildPeripherals();         // Carousel, Duck pond, Train, trees
+
+      // Interaction listeners
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2();
+      setupSceneInteractions(container);
+
+      window.addEventListener('resize', onWindowResize);
+    }
+
+    /* Helper: Material with emissive control for windows and lights */
+    function createStylizedMaterial(colorHex, emissiveHex = 0x000000, emissiveIntensity = 0) {
+      return new THREE.MeshStandardMaterial({
+        color: colorHex,
+        roughness: 0.35,
+        metalness: 0.05,
+        emissive: emissiveHex,
+        emissiveIntensity: emissiveIntensity
+      });
+    }
+
+    /* 1. Base Island Foundation */
+    function buildIslandFoundation() {
+      // Top Grass diorama layer
+      const grassGeo = new THREE.CylinderGeometry(8.4, 8.4, 1.2, 48);
+      const grassMat = createStylizedMaterial(0x1e3a47); // Night dark emerald/teal grass
+      grassMat.name = "grassMat";
+      const grass = new THREE.Mesh(grassGeo, grassMat);
+      grass.position.y = 0;
+      grass.receiveShadow = true;
+      islandGroup.add(grass);
+
+      // Rocky Dirt diorama base
+      const rockGeo = new THREE.CylinderGeometry(8.4, 5.2, 3.2, 40);
+      const rockMat = createStylizedMaterial(0x2d2438);
+      const rock = new THREE.Mesh(rockGeo, rockMat);
+      rock.position.y = -1.9;
+      rock.receiveShadow = true;
+      islandGroup.add(rock);
+
+      // Cobblestone walking path
+      const pathGeo = new THREE.RingGeometry(2.7, 4.3, 36);
+      const pathMat = createStylizedMaterial(0x47425f);
+      const path = new THREE.Mesh(pathGeo, pathMat);
+      path.rotation.x = -Math.PI / 2;
+      path.position.y = 0.61;
+      path.receiveShadow = true;
+      islandGroup.add(path);
+
+      // Outer festive toy train track ring
+      const trackGeo = new THREE.RingGeometry(7.2, 7.8, 44);
+      const trackMat = createStylizedMaterial(0x38354a);
+      const track = new THREE.Mesh(trackGeo, trackMat);
+      track.rotation.x = -Math.PI / 2;
+      track.position.y = 0.62;
+      islandGroup.add(track);
+    }
+
+    /* 2. Building 0: Town Square Central Plaza & Glowing Birthday Cake */
+    function buildTownSquarePlaza() {
+      const group = new THREE.Group();
+      group.name = "building_0";
+      group.userData = { id: 0, title: "Grand Birthday Plaza", tag: "Island Center" };
+
+      // Base Plaza Tier
+      const pTierGeo = new THREE.CylinderGeometry(2.2, 2.4, 0.4, 24);
+      const pTierMat = createStylizedMaterial(0x383254);
+      const plaza = new THREE.Mesh(pTierGeo, pTierMat);
+      plaza.position.y = 0.8;
+      plaza.castShadow = true;
+      plaza.receiveShadow = true;
+      group.add(plaza);
+
+      // Multi-tier Glowing Birthday Cake
+      const cakeTier1 = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.7, 24), createStylizedMaterial(0xf472b6));
+      cakeTier1.position.y = 1.35;
+      cakeTier1.castShadow = true;
+      group.add(cakeTier1);
+
+      const cakeTier2 = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 0.6, 20), createStylizedMaterial(0xfef08a));
+      cakeTier2.position.y = 1.95;
+      cakeTier2.castShadow = true;
+      group.add(cakeTier2);
+
+      // Golden Candle with Flickering Flame Light
+      const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.5, 12), createStylizedMaterial(0xffedd5));
+      candle.position.y = 2.45;
+      group.add(candle);
+
+      // Candle Flame
+      const flameMat = new THREE.MeshBasicMaterial({ color: 0xffa500 });
+      const flame = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), flameMat);
+      flame.position.y = 2.75;
+      group.add(flame);
+      candleFlames.push(flame);
+
+      // Point Light from Cake Candle illuminating plaza
+      const cakePointLight = new THREE.PointLight(0xffb703, 1.8, 6);
+      cakePointLight.position.set(0, 2.8, 0);
+      group.add(cakePointLight);
+
+      // Banner Arch "LEO'S 7TH"
+      const archPole1 = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 3.2, 8), createStylizedMaterial(0x818cf8));
+      archPole1.position.set(-1.6, 2.2, -0.6);
+      group.add(archPole1);
+
+      const archPole2 = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 3.2, 8), createStylizedMaterial(0x818cf8));
+      archPole2.position.set(1.6, 2.2, -0.6);
+      group.add(archPole2);
+
+      // Glowing Banner Plate
+      const bannerGeo = new THREE.BoxGeometry(2.8, 0.7, 0.1);
+      const bannerMat = createStylizedMaterial(0xfbbf24, 0xfbbf24, 0.4);
+      const banner = new THREE.Mesh(bannerGeo, bannerMat);
+      banner.position.set(0, 3.1, -0.6);
+      banner.castShadow = true;
+      group.add(banner);
+
+      // Mascot Avatar at plaza
+      const mascot = new THREE.Mesh(new THREE.SphereGeometry(0.42, 16, 16), createStylizedMaterial(0xf97316));
+      mascot.position.set(0, 1.25, 1.3);
+      mascot.castShadow = true;
+      const hat = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.45, 12), createStylizedMaterial(0xa855f7));
+      hat.position.set(0, 0.5, 0);
+      hat.rotation.z = -0.2;
+      mascot.add(hat);
+      group.add(mascot);
+
+      islandGroup.add(group);
+      buildingGroups[0] = group;
+    }
+
+    /* 3. Building 1: Illuminated Calendar Tower with glowing windows */
+    function buildCalendarTower() {
+      const group = new THREE.Group();
+      group.name = "building_1";
+      group.userData = { id: 1, title: "Party Calendar Tower", tag: "Event Date" };
+      group.position.set(-3.7, 0.6, -2.5);
+
+      // Tower Stone Body
+      const towerGeo = new THREE.BoxGeometry(2.0, 4.2, 2.0);
+      const towerMat = createStylizedMaterial(0x334155);
+      const tower = new THREE.Mesh(towerGeo, towerMat);
+      tower.position.y = 2.1;
+      tower.castShadow = true;
+      tower.receiveShadow = true;
+      group.add(tower);
+
+      // Steeple Roof
+      const roofGeo = new THREE.ConeGeometry(1.8, 1.8, 4);
+      const roofMat = createStylizedMaterial(0xf43f5e);
+      const roof = new THREE.Mesh(roofGeo, roofMat);
+      roof.position.y = 4.8;
+      roof.rotation.y = Math.PI / 4;
+      roof.castShadow = true;
+      group.add(roof);
+
+      // Glowing Lit Windows
+      const winGeo = new THREE.BoxGeometry(0.5, 0.7, 0.1);
+      const winMat = createStylizedMaterial(0xfef08a, 0xfacc15, 1.4);
+      windowMaterials.push(winMat);
+
+      const winFront = new THREE.Mesh(winGeo, winMat);
+      winFront.position.set(0, 3.0, 1.02);
+      group.add(winFront);
+
+      const winSide = new THREE.Mesh(winGeo, winMat);
+      winSide.position.set(1.02, 3.0, 0);
+      winSide.rotation.y = Math.PI / 2;
+      group.add(winSide);
+
+      // Date Calendar Board
+      const boardGeo = new THREE.BoxGeometry(1.3, 1.3, 0.15);
+      const boardMat = createStylizedMaterial(0xf8fafc, 0xf8fafc, 0.2);
+      const board = new THREE.Mesh(boardGeo, boardMat);
+      board.position.set(0, 1.8, 1.04);
+      group.add(board);
+
+      // Calendar Plate Highlight
+      const dateTag = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.5, 0.1), createStylizedMaterial(0xf43f5e));
+      dateTag.position.set(0, 1.8, 1.12);
+      group.add(dateTag);
+
+      // Cozy Warm Point light casting outward from windows
+      const lamp = new THREE.PointLight(0xfacc15, 1.4, 5);
+      lamp.position.set(0, 2.8, 1.6);
+      group.add(lamp);
+      streetLampLights.push(lamp);
+
+      islandGroup.add(group);
+      buildingGroups[1] = group;
+    }
+
+    /* 4. Building 2: Cozy Clock House with Warm Lit Hearth */
+    function buildClockHouse() {
+      const group = new THREE.Group();
+      group.name = "building_2";
+      group.userData = { id: 2, title: "Party Time Clock House", tag: "Event Hours" };
+      group.position.set(3.8, 0.6, -2.3);
+
+      // Cozy Cottage Body
+      const bodyGeo = new THREE.BoxGeometry(2.4, 2.4, 2.2);
+      const bodyMat = createStylizedMaterial(0x475569);
+      const body = new THREE.Mesh(bodyGeo, bodyMat);
+      body.position.y = 1.2;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      group.add(body);
+
+      // Cottage Roof
+      const roofGeo = new THREE.CylinderGeometry(0.1, 1.9, 2.6, 3);
+      const roofMat = createStylizedMaterial(0x8b5cf6);
+      const roof = new THREE.Mesh(roofGeo, roofMat);
+      roof.position.y = 3.0;
+      roof.rotation.z = Math.PI / 2;
+      roof.rotation.y = Math.PI / 2;
+      roof.castShadow = true;
+      group.add(roof);
+
+      // Round Luminous Clock Dial
+      const clockGeo = new THREE.CylinderGeometry(0.7, 0.7, 0.15, 24);
+      const clockMat = createStylizedMaterial(0xfef9c3, 0xfef08a, 0.8);
+      windowMaterials.push(clockMat);
+      const clockMesh = new THREE.Mesh(clockGeo, clockMat);
+      clockMesh.rotation.x = Math.PI / 2;
+      clockMesh.position.set(0, 1.7, 1.14);
+      group.add(clockMesh);
+
+      // Lit Windows on sides
+      const winGeo = new THREE.BoxGeometry(0.55, 0.65, 0.1);
+      const winMat = createStylizedMaterial(0xfef08a, 0xfacc15, 1.4);
+      windowMaterials.push(winMat);
+
+      const winLeft = new THREE.Mesh(winGeo, winMat);
+      winLeft.position.set(-1.22, 1.2, 0);
+      winLeft.rotation.y = Math.PI / 2;
+      group.add(winLeft);
+
+      // Warm glow point light
+      const pLight = new THREE.PointLight(0xfacc15, 1.5, 5);
+      pLight.position.set(0, 1.8, 1.7);
+      group.add(pLight);
+      streetLampLights.push(pLight);
+
+      islandGroup.add(group);
+      buildingGroups[2] = group;
+    }
+
+    /* 5. Building 3: Wonderland Party Pavilion & Festive Tent */
+    function buildPartyPavilion() {
+      const group = new THREE.Group();
+      group.name = "building_3";
+      group.userData = { id: 3, title: "Wonderland Pavilion", tag: "Party Venue" };
+      group.position.set(3.5, 0.6, 2.7);
+
+      // Octagonal Tent Structure
+      const tentGeo = new THREE.CylinderGeometry(1.8, 2.0, 1.8, 8);
+      const tentMat = createStylizedMaterial(0x14b8a6);
+      const tent = new THREE.Mesh(tentGeo, tentMat);
+      tent.position.y = 0.9;
+      tent.castShadow = true;
+      tent.receiveShadow = true;
+      group.add(tent);
+
+      // Festive Striped Dome Roof
+      const domeGeo = new THREE.ConeGeometry(2.3, 1.7, 8);
+      const domeMat = createStylizedMaterial(0xf43f5e);
+      const dome = new THREE.Mesh(domeGeo, domeMat);
+      dome.position.y = 2.5;
+      dome.castShadow = true;
+      group.add(dome);
+
+      // Golden Flag atop
+      const flagPole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.9, 8), createStylizedMaterial(0xfacc15));
+      flagPole.position.y = 3.6;
+      group.add(flagPole);
+
+      // Glowing Lantern inside tent entrance
+      const lanternGeo = new THREE.SphereGeometry(0.2, 10, 10);
+      const lanternMat = createStylizedMaterial(0xfef08a, 0xfacc15, 1.5);
+      windowMaterials.push(lanternMat);
+      const lantern = new THREE.Mesh(lanternGeo, lanternMat);
+      lantern.position.set(0, 1.2, 1.8);
+      group.add(lantern);
+
+      const tentLight = new THREE.PointLight(0x2dd4bf, 1.6, 6);
+      tentLight.position.set(0, 1.6, 1.8);
+      group.add(tentLight);
+      streetLampLights.push(tentLight);
+
+      islandGroup.add(group);
+      buildingGroups[3] = group;
+    }
+
+    /* 6. Building 4: Sweet Treats Bakery with warm bakery oven window */
+    function buildCakeBakery() {
+      const group = new THREE.Group();
+      group.name = "building_4";
+      group.userData = { id: 4, title: "Sweet Sugar Bakery", tag: "Food & Dress Code" };
+      group.position.set(-3.5, 0.6, 2.6);
+
+      // Bakery Body
+      const bodyGeo = new THREE.BoxGeometry(2.4, 2.2, 2.2);
+      const bodyMat = createStylizedMaterial(0xd97706);
+      const body = new THREE.Mesh(bodyGeo, bodyMat);
+      body.position.y = 1.1;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      group.add(body);
+
+      // Awning Canopy
+      const awnGeo = new THREE.BoxGeometry(2.5, 0.3, 0.8);
+      const awnMat = createStylizedMaterial(0xffedd5);
+      const awn = new THREE.Mesh(awnGeo, awnMat);
+      awn.position.set(0, 1.8, 1.2);
+      awn.rotation.x = 0.2;
+      group.add(awn);
+
+      // Glowing Bakery Display Window
+      const winGeo = new THREE.BoxGeometry(1.4, 0.9, 0.1);
+      const winMat = createStylizedMaterial(0xfef08a, 0xfacc15, 1.5);
+      windowMaterials.push(winMat);
+      const win = new THREE.Mesh(winGeo, winMat);
+      win.position.set(0, 1.0, 1.12);
+      group.add(win);
+
+      // Chimney with cozy spark
+      const chim = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.0, 8), createStylizedMaterial(0x991b1b));
+      chim.position.set(0.7, 2.5, -0.6);
+      group.add(chim);
+
+      const bakeryLight = new THREE.PointLight(0xf59e0b, 1.6, 5);
+      bakeryLight.position.set(0, 1.2, 1.8);
+      group.add(bakeryLight);
+      streetLampLights.push(bakeryLight);
+
+      islandGroup.add(group);
+      buildingGroups[4] = group;
+    }
+
+    /* 7. Night Fairy Lights, Lantern Posts & Island Illumination */
+    function buildNightFairyLights() {
+      const fairyCoords = [
+        [-1.8, 2.4, 0.8, 0xf43f5e],
+        [-1.0, 2.6, 1.2, 0xfacc15],
+        [0.0, 2.7, 1.4, 0x2dd4bf],
+        [1.0, 2.6, 1.2, 0xc084fc],
+        [1.8, 2.4, 0.8, 0x38bdf8],
+        [-2.8, 1.8, -1.0, 0xfacc15],
+        [2.8, 1.8, -1.0, 0xf472b6]
+      ];
+
+      fairyCoords.forEach(pos => {
+        const bulbMat = new THREE.MeshBasicMaterial({ color: pos[3] });
+        const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), bulbMat);
+        bulb.position.set(pos[0], pos[1], pos[2]);
+        islandGroup.add(bulb);
+        fairyLightMeshes.push(bulb);
+      });
+
+      // Street Lamp Posts along cobblestone road
+      const lampCoords = [
+        [-1.8, 0.6, 4.2],
+        [1.8, 0.6, 4.2],
+        [-4.5, 0.6, 0.5],
+        [4.5, 0.6, 0.5]
+      ];
+
+      lampCoords.forEach(pos => {
+        const post = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 1.8, 8), createStylizedMaterial(0x1e293b));
+        post.position.set(pos[0], pos[1] + 0.9, pos[2]);
+        islandGroup.add(post);
+
+        const lanternMat = createStylizedMaterial(0xfef08a, 0xfacc15, 1.6);
+        windowMaterials.push(lanternMat);
+        const lantern = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 10), lanternMat);
+        lantern.position.set(pos[0], pos[1] + 1.8, pos[2]);
+        islandGroup.add(lantern);
+
+        const pLight = new THREE.PointLight(0xfacc15, 1.2, 4.5);
+        pLight.position.set(pos[0], pos[1] + 1.8, pos[2]);
+        islandGroup.add(pLight);
+        streetLampLights.push(pLight);
+      });
+    }
+
+    /* 8. Peripherals: Pond, Animated Duck, Circling Train & Trees */
+    function buildPeripherals() {
+      // Duck Pond with nighttime reflective water
+      const pondGeo = new THREE.CircleGeometry(1.4, 24);
+      const pondMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.1, metalness: 0.8 });
+      const pond = new THREE.Mesh(pondGeo, pondMat);
+      pond.rotation.x = -Math.PI / 2;
+      pond.position.set(0.1, 0.62, 5.3);
+      islandGroup.add(pond);
+
+      // Cute Little Floating Yellow Duck
+      const duck = new THREE.Group();
+      duck.add(new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 10), createStylizedMaterial(0xfacc15)));
+      const duckHead = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), createStylizedMaterial(0xfacc15));
+      duckHead.position.set(0.14, 0.16, 0);
+      duck.add(duckHead);
+      duck.position.set(0.1, 0.8, 5.3);
+      islandGroup.add(duck);
+
+      // Low-poly Stylized Pine Trees
+      const treeCoords = [
+        [-5.6, 0.6, 0.5],
+        [-5.0, 0.6, -4.5],
+        [5.3, 0.6, 0.2],
+        [4.8, 0.6, -4.6],
+        [0.0, 0.6, -5.6]
+      ];
+
+      treeCoords.forEach(pos => {
+        const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.14, 0.8, 6), createStylizedMaterial(0x78350f));
+        trunk.position.set(pos[0], pos[1] + 0.4, pos[2]);
+        islandGroup.add(trunk);
+
+        const crown = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.4, 6), createStylizedMaterial(0x065f46));
+        crown.position.set(pos[0], pos[1] + 1.3, pos[2]);
+        crown.castShadow = true;
+        islandGroup.add(crown);
+      });
+
+      // Circling Toy Party Train
+      trainPivot = new THREE.Group();
+      islandGroup.add(trainPivot);
+
+      const trainEngine = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.9), createStylizedMaterial(0x6366f1));
+      trainEngine.position.set(7.5, 0.9, 0);
+      trainEngine.rotation.y = Math.PI / 2;
+      trainEngine.castShadow = true;
+      trainPivot.add(trainEngine);
+
+      const trainCab = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.5, 0.5), createStylizedMaterial(0xfacc15));
+      trainCab.position.set(7.5, 1.25, -0.15);
+      trainPivot.add(trainCab);
+
+      // Floating celebratory party balloons
+      const balloonColors = [0xf43f5e, 0xfacc15, 0x38bdf8, 0xa855f7];
+      for (let i = 0; i < 4; i++) {
+        const bMesh = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 12), createStylizedMaterial(balloonColors[i]));
+        bMesh.position.set(2.8 + (i % 2) * 0.4, 4.2 + i * 0.3, -2.8 + Math.floor(i / 2) * 0.4);
+        islandGroup.add(bMesh);
+      }
+    }
+
+    /* ----------------------------------------------------
+       INTERACTION: ORBIT CONTROLS & OBJECT TAP
+       ---------------------------------------------------- */
+    function setupSceneInteractions(domElement) {
+      domElement.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        didMouseMove = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        previousMouse = { x: e.clientX, y: e.clientY };
+        autoRotateIsland = false;
+
+        const hint = document.getElementById('rotate-hint');
+        if (hint) hint.style.opacity = '0';
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - previousMouse.x;
+        const deltaY = e.clientY - previousMouse.y;
+
+        if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) {
+          didMouseMove = true;
+        }
+
+        targetRotY += deltaX * 0.007;
+        targetRotX += deltaY * 0.004;
+        targetRotX = Math.max(0.2, Math.min(0.85, targetRotX)); // Clamp vertical angle
+
+        previousMouse = { x: e.clientX, y: e.clientY };
+      });
+
+      window.addEventListener('pointerup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        if (!didMouseMove) {
+          handleTapOnDiorama(e);
+        }
+      });
+    }
+
+    function handleTapOnDiorama(e) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+
+      const candidateMeshes = [];
+      buildingGroups.forEach(bGroup => {
+        if (bGroup) {
+          bGroup.traverse(child => {
+            if (child.isMesh) {
+              child.parentBuilding = bGroup;
+              candidateMeshes.push(child);
+            }
+          });
+        }
+      });
+
+      const intersects = raycaster.intersectObjects(candidateMeshes, false);
+      if (intersects.length > 0) {
+        const target = intersects[0].object.parentBuilding;
+        if (target && target.userData) {
+          onBuildingSelected(target.userData.id);
+        }
+      }
+    }
+
+    function onBuildingSelected(id) {
+      playSynthesizedSound('pop');
+      const bGroup = buildingGroups[id];
+      if (bGroup) {
+        gsap.timeline()
+          .to(bGroup.scale, { x: 1.15, y: 0.85, z: 1.15, duration: 0.12, ease: "power2.out" })
+          .to(bGroup.scale, { x: 0.95, y: 1.15, z: 0.95, duration: 0.18, ease: "power2.inOut" })
+          .to(bGroup.scale, { x: 1.0, y: 1.0, z: 1.0, duration: 0.25, ease: "elastic.out(1, 0.4)" });
+      }
+
+      const rotAngles = [Math.PI * 0.25, 0.8, -0.6, -2.1, 2.3];
+      targetRotY = rotAngles[id] || targetRotY;
+
+      showBuildingDetailModal(id);
+    }
+
+    function focusBuilding(id) {
+      onBuildingSelected(id);
+    }
+
+    function resetCameraView() {
+      playSynthesizedSound('ding');
+      targetRotY = Math.PI * 0.25;
+      targetRotX = 0.58;
+      autoRotateIsland = true;
+    }
+
+    /* ----------------------------------------------------
+       BUILDING MODAL DETAILS
+       ---------------------------------------------------- */
+    const BUILDING_SPECS = [
+      {
+        id: 0,
+        icon: "🎪",
+        title: "Grand Birthday Plaza",
+        tag: "Island Center",
+        bodyHtml: () => `
+          <div class="p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/30">
+            <h4 class="font-fredoka font-bold text-base text-amber-300">🎉 ${PARTY_INFO.name}'s ${PARTY_INFO.age}th Birthday!</h4>
+            <p class="text-xs text-slate-300 mt-1">An enchanted evening gathering with games, warm lights, treats, and friends.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-slate-800/60 border border-white/10">
+              <span class="text-slate-400 font-mono text-[10px] uppercase block">Honoree</span>
+              <span class="font-bold text-white text-sm">${PARTY_INFO.name}</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-800/60 border border-white/10">
+              <span class="text-slate-400 font-mono text-[10px] uppercase block">Age Turning</span>
+              <span class="font-bold text-rose-400 text-sm">${PARTY_INFO.age} Years Old</span>
+            </div>
+          </div>
+        `,
+        actionsHtml: () => `
+          <button onclick="openRsvpSheet()" class="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 font-fredoka font-bold text-sm text-white shadow-lg btn-3d">
+            Send RSVP for Celebration 💌
+          </button>
+        `
+      },
+      {
+        id: 1,
+        icon: "📅",
+        title: "Party Calendar Tower",
+        tag: "Party Date",
+        bodyHtml: () => `
+          <div class="p-3.5 rounded-2xl bg-sky-500/15 border border-sky-500/30">
+            <span class="text-[10px] font-mono uppercase text-sky-400 block font-bold">Confirmed Date</span>
+            <h3 class="font-fredoka font-bold text-xl text-white mt-0.5">${PARTY_INFO.date}</h3>
+            <p class="text-xs text-slate-300 mt-1">Mark your calendars for an unforgettable festive celebration!</p>
+          </div>
+        `,
+        actionsHtml: () => `
+          <button onclick="downloadCalendarInvite()" class="flex-1 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs btn-3d">
+            📅 Save to Calendar (.ics)
+          </button>
+          <button onclick="closeBuildingModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs btn-3d">
+            Explore More
+          </button>
+        `
+      },
+      {
+        id: 2,
+        icon: "⏰",
+        title: "Clock Cottage Hours",
+        tag: "Party Time",
+        bodyHtml: () => `
+          <div class="p-3.5 rounded-2xl bg-purple-500/15 border border-purple-500/30">
+            <span class="text-[10px] font-mono uppercase text-purple-300 block font-bold">Party Hours</span>
+            <h3 class="font-fredoka font-bold text-xl text-white mt-0.5">${PARTY_INFO.time}</h3>
+            <p class="text-xs text-slate-300 mt-1">Arrivals begin promptly with welcome surprises and treats!</p>
+          </div>
+        `,
+        actionsHtml: () => `
+          <button onclick="openRsvpSheet()" class="w-full py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs btn-3d">
+            Confirm Guest Attendance 💌
+          </button>
+        `
+      },
+      {
+        id: 3,
+        icon: "🏕️",
+        title: "Party Pavilion Venue",
+        tag: "Location & Directions",
+        bodyHtml: () => `
+          <div class="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30">
+            <h3 class="font-fredoka font-bold text-lg text-emerald-300">${PARTY_INFO.venue}</h3>
+            <p class="text-xs text-slate-200 mt-1">${PARTY_INFO.address}</p>
+          </div>
+          <div class="space-y-1 text-xs text-slate-300 font-medium">
+            <p>🚗 <strong>Parking:</strong> Dedicated pavilion lot with free all-day guest parking.</p>
+            <p>📞 <strong>Host Phone:</strong> ${PARTY_INFO.phone}</p>
+          </div>
+        `,
+        actionsHtml: () => `
+          <a href="https://maps.google.com/?q=${encodeURIComponent(PARTY_INFO.venue + ' ' + PARTY_INFO.address)}" target="_blank" class="flex-1 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs text-center btn-3d">
+            Open in Google Maps 📍
+          </a>
+          <button onclick="openRsvpSheet()" class="flex-1 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs btn-3d">
+            RSVP Now 💌
+          </button>
+        `
+      },
+      {
+        id: 4,
+        icon: "🎂",
+        title: "Bakery & Treats",
+        tag: "Dress Code & Food",
+        bodyHtml: () => `
+          <div class="p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/30">
+            <span class="text-[10px] font-mono uppercase text-amber-300 block font-bold">Attire & Shoes</span>
+            <p class="text-xs font-bold text-white mt-1">👟 ${PARTY_INFO.dressCode}</p>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <div class="p-2 rounded-xl bg-slate-800/80 border border-white/10 font-bold">🎂 Birthday Cake</div>
+            <div class="p-2 rounded-xl bg-slate-800/80 border border-white/10 font-bold">🍕 Pizza & Drinks</div>
+            <div class="p-2 rounded-xl bg-slate-800/80 border border-white/10 font-bold">🎈 Goodie Bags</div>
+          </div>
+        `,
+        actionsHtml: () => `
+          <button onclick="blastConfettiCannons()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-rose-500 hover:from-amber-500 hover:to-rose-600 text-slate-950 font-bold text-xs btn-3d">
+            🎉 Celebrate & Blast Confetti!
+          </button>
+        `
+      }
+    ];
+
+    function showBuildingDetailModal(id) {
+      const spec = BUILDING_SPECS[id];
+      if (!spec) return;
+
+      document.getElementById('modal-icon-badge').innerText = spec.icon;
+      document.getElementById('modal-title').innerText = spec.title;
+      document.getElementById('modal-tag').innerText = spec.tag;
+      document.getElementById('modal-body').innerHTML = spec.bodyHtml();
+      document.getElementById('modal-actions').innerHTML = spec.actionsHtml();
+
+      const modal = document.getElementById('building-modal');
+      const card = document.getElementById('building-modal-card');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+      }, 10);
+
+      // Mascot commentary
+      const mascotMsg = [
+        "Welcome to the Grand Plaza! Let's celebrate together!",
+        "Look at the Calendar Tower! Mark the date on your phone!",
+        "The Clock House is lit up! Party starts right on time!",
+        "The Pavilion has outdoor games and picnic tables ready!",
+        "The Bakery has freshly baked cupcakes and chocolate cake!"
+      ];
+      document.getElementById('mascot-text').innerText = `"${mascotMsg[id]}"`;
+    }
+
+    function closeBuildingModal() {
+      playSynthesizedSound('pop');
+      const modal = document.getElementById('building-modal');
+      const card = document.getElementById('building-modal-card');
+      modal.classList.add('opacity-0');
+      card.classList.add('scale-95');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    /* ----------------------------------------------------
+       DAY / NIGHT LIGHTING DYNAMICS
+       ---------------------------------------------------- */
+    function toggleDayNightMode() {
+      isNightMode = !isNightMode;
+      const backdrop = document.getElementById('sky-backdrop');
+      const stars = document.getElementById('stars-container');
+      const themeIcon = document.getElementById('theme-mode-icon');
+      const themeLabel = document.getElementById('theme-mode-label');
+      const drawerIcon = document.getElementById('drawer-theme-icon');
+
+      if (isNightMode) {
+        // Night City Mode
+        backdrop.className = "absolute inset-0 sky-night pointer-events-none z-0";
+        if (stars) stars.style.opacity = '1';
+        themeIcon.innerText = "🌙";
+        themeLabel.innerText = "Night City";
+        if (drawerIcon) drawerIcon.innerText = "🌙";
+
+        ambientLight.color.setHex(0x283158);
+        ambientLight.intensity = 1.4;
+        mainDirectionalLight.color.setHex(0x8fa3ff);
+        mainDirectionalLight.intensity = 1.2;
+
+        windowMaterials.forEach(mat => {
+          mat.emissive.setHex(0xfacc15);
+          mat.emissiveIntensity = 1.4;
+        });
+        streetLampLights.forEach(light => {
+          light.intensity = 1.5;
+        });
+      } else {
+        // Day Sunny Mode
+        backdrop.className = "absolute inset-0 sky-day pointer-events-none z-0";
+        if (stars) stars.style.opacity = '0';
+        themeIcon.innerText = "☀️";
+        themeLabel.innerText = "Sunny Day";
+        if (drawerIcon) drawerIcon.innerText = "☀️";
+
+        ambientLight.color.setHex(0xfff6e5);
+        ambientLight.intensity = 1.6;
+        mainDirectionalLight.color.setHex(0xffedd5);
+        mainDirectionalLight.intensity = 1.8;
+
+        windowMaterials.forEach(mat => {
+          mat.emissive.setHex(0x000000);
+          mat.emissiveIntensity = 0;
+        });
+        streetLampLights.forEach(light => {
+          light.intensity = 0.2;
+        });
+      }
+
+      playSynthesizedSound('ding');
+    }
+
+    /* ----------------------------------------------------
+       AUDIO SOUNDTRACK & SOUND EFFECTS
+       ---------------------------------------------------- */
+    function togglePartyAudio() {
+      const audioEl = document.getElementById('party-bg-audio');
+      const iconEl = document.getElementById('audio-icon');
+      const drawerIcon = document.getElementById('drawer-audio-icon');
+      const drawerLabel = document.getElementById('drawer-audio-label');
+
+      if (!audioEl) return;
+
+      if (audioEl.paused) {
+        audioEl.volume = 0.5;
+        audioEl.play().then(() => {
+          isAudioPlaying = true;
+          if (iconEl) iconEl.innerText = "🔊";
+          if (drawerIcon) drawerIcon.innerText = "🔊";
+          if (drawerLabel) drawerLabel.innerText = "Music: PLAYING";
+        }).catch(() => {
+          playSynthesizedSound('fanfare');
+          isAudioPlaying = true;
+          if (iconEl) iconEl.innerText = "🔊";
+        });
+      } else {
+        audioEl.pause();
+        isAudioPlaying = false;
+        if (iconEl) iconEl.innerText = "🔇";
+        if (drawerIcon) drawerIcon.innerText = "🔇";
+        if (drawerLabel) drawerLabel.innerText = "Music: PAUSED";
+      }
+    }
+
+    /* ----------------------------------------------------
+       CONFETTI CANNON BLAST
+       ---------------------------------------------------- */
+    function blastConfettiCannons() {
+      playSynthesizedSound('fanfare');
+      confetti({
+        particleCount: 130,
+        spread: 85,
+        origin: { y: 0.6 }
+      });
+
+      if (islandGroup) {
+        gsap.to(islandGroup.position, {
+          y: 0.7,
+          duration: 0.25,
+          yoyo: true,
+          repeat: 1,
+          ease: "power2.out"
+        });
+      }
+    }
+
+    /* ----------------------------------------------------
+       RSVP MODAL & ICS DOWNLOAD
+       ---------------------------------------------------- */
+    function openRsvpSheet() {
+      closeBuildingModal();
+      playSynthesizedSound('pop');
+      const modal = document.getElementById('rsvp-modal');
+      const card = document.getElementById('rsvp-card');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function closeRsvpSheet() {
+      playSynthesizedSound('pop');
+      const modal = document.getElementById('rsvp-modal');
+      const card = document.getElementById('rsvp-card');
+      modal.classList.add('opacity-0');
+      card.classList.add('scale-95');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function handleRsvpFormSubmit(e) {
+      e.preventDefault();
+      const guestName = document.getElementById('rsvp-guest-name').value;
+      const kids = document.getElementById('rsvp-kids-count').value;
+
+      playSynthesizedSound('fanfare');
+      blastConfettiCannons();
+
+      document.getElementById('rsvp-form').classList.add('hidden');
+      document.getElementById('rsvp-success-view').classList.remove('hidden');
+
+      document.getElementById('mascot-text').innerText = `"HOORAY! ${guestName} just RSVP'd! See you at the celebration!"`;
+
+      // Notify parent Tempo frame if embedded
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'TEMPO_RSVP_SUBMIT',
+            data: {
+              name: guestName,
+              kidsCount: kids,
+              date: new Date().toISOString()
+            }
+          }, '*');
+        }
+      } catch (err) {}
+    }
+
+    function downloadCalendarInvite() {
+      const ics = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "BEGIN:VEVENT",
+        "SUMMARY:" + PARTY_INFO.name + "'s " + PARTY_INFO.age + "th Birthday Party",
+        "DESCRIPTION:Join us for " + PARTY_INFO.name + "'s Birthday celebration at " + PARTY_INFO.venue,
+        "LOCATION:" + PARTY_INFO.venue + ", " + PARTY_INFO.address,
+        "DTSTART:20251025T150000",
+        "DTEND:20251025T190000",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ].join("\n");
+
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = PARTY_INFO.name.toLowerCase() + "-birthday-celebration.ics";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      playSynthesizedSound('ding');
+    }
+
+    /* ----------------------------------------------------
+       SLIDE-OUT LIVE EDITOR DRAWER (PRO PAID FEATURE)
+       ---------------------------------------------------- */
+    function toggleLiveDrawer() {
+      const drawer = document.getElementById('live-custom-drawer');
+      if (!drawer) return;
+      const isClosed = drawer.classList.contains('-translate-x-full');
+      if (isClosed) {
+        drawer.classList.remove('-translate-x-full');
+        playSynthesizedSound('pop');
+      } else {
+        drawer.classList.add('-translate-x-full');
+        playSynthesizedSound('pop');
+      }
+    }
+
+    function applyLiveUpdates() {
+      const nameIn = document.getElementById('live-name-input');
+      const ageIn = document.getElementById('live-age-input');
+      const dateIn = document.getElementById('live-date-input');
+      const timeIn = document.getElementById('live-time-input');
+      const venueIn = document.getElementById('live-venue-input');
+      const addrIn = document.getElementById('live-address-input');
+
+      if (nameIn && nameIn.value.trim()) PARTY_INFO.name = nameIn.value.trim();
+      if (ageIn && ageIn.value) PARTY_INFO.age = parseInt(ageIn.value) || 7;
+      if (dateIn && dateIn.value.trim()) PARTY_INFO.date = dateIn.value.trim();
+      if (timeIn && timeIn.value.trim()) PARTY_INFO.time = timeIn.value.trim();
+      if (venueIn && venueIn.value.trim()) PARTY_INFO.venue = venueIn.value.trim();
+      if (addrIn && addrIn.value.trim()) PARTY_INFO.address = addrIn.value.trim();
+
+      // Update HUD elements
+      const hudTitle = document.getElementById('hud-title-text');
+      if (hudTitle) hudTitle.innerText = PARTY_INFO.name + "'s Magical Birthday Town";
+
+      const hudAge = document.getElementById('hud-age-number');
+      if (hudAge) hudAge.innerText = PARTY_INFO.age;
+
+      const mascotTxt = document.getElementById('mascot-text');
+      if (mascotTxt && !mascotTxt.innerText.includes('RSVP')) {
+        mascotTxt.innerText = `"Welcome to ${PARTY_INFO.name}'s glowing 3D Birthday Island! Tap houses to explore!"`;
+      }
+
+      // Notify parent Tempo frame
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({
+            type: 'TEMPO_TEMPLATE_DATA_UPDATE',
+            data: {
+              title: PARTY_INFO.name + "'s Birthday Town",
+              date: PARTY_INFO.date,
+              time: PARTY_INFO.time,
+              venue: PARTY_INFO.venue,
+              address: PARTY_INFO.address
+            }
+          }, '*');
+        }
+      } catch (err) {}
+    }
+
+    function onMascotTap() {
+      playSynthesizedSound('pop');
+      blastConfettiCannons();
+    }
+
+    /* ----------------------------------------------------
+       TWO-WAY POSTMESSAGE SYNC WITH TEMPO BUILDER
+       ---------------------------------------------------- */
+    window.addEventListener('message', (event) => {
+      if (!event.data) return;
+      const { type, data } = event.data;
+      if (type === 'TEMPO_SET_DATA' || type === 'UPDATE_TEMPLATE_DATA') {
+        if (data.title) {
+          const match = data.title.match(/^([^'\s]+)/);
+          if (match) {
+            PARTY_INFO.name = match[1];
+            const nameEl = document.getElementById('live-name-input');
+            if (nameEl) nameEl.value = match[1];
+          }
+        }
+        if (data.date) {
+          PARTY_INFO.date = data.date;
+          const dateEl = document.getElementById('live-date-input');
+          if (dateEl) dateEl.value = data.date;
+        }
+        if (data.time) {
+          PARTY_INFO.time = data.time;
+          const timeEl = document.getElementById('live-time-input');
+          if (timeEl) timeEl.value = data.time;
+        }
+        if (data.venue) {
+          PARTY_INFO.venue = data.venue;
+          const venueEl = document.getElementById('live-venue-input');
+          if (venueEl) venueEl.value = data.venue;
+        }
+        if (data.address) {
+          PARTY_INFO.address = data.address;
+          const addrEl = document.getElementById('live-address-input');
+          if (addrEl) addrEl.value = data.address;
+        }
+        applyLiveUpdates();
+      }
+    });
+
+    /* ----------------------------------------------------
+       ANIMATION LOOP & RESIZING
+       ---------------------------------------------------- */
+    function onWindowResize() {
+      const container = document.getElementById('webgl-canvas-container');
+      const width = container.clientWidth || window.innerWidth;
+      const height = container.clientHeight || window.innerHeight;
+      const aspect = width / height;
+      const d = 11;
+
+      camera.left = -d * aspect;
+      camera.right = d * aspect;
+      camera.top = d;
+      camera.bottom = -d;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(width, height);
+    }
+
+    const clock = new THREE.Clock();
+
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
+      const elapsedTime = clock.getElapsedTime();
+
+      // Smooth camera orbit interpolation
+      currentRotY += (targetRotY - currentRotY) * 0.08;
+      currentRotX += (targetRotX - currentRotX) * 0.08;
+
+      if (autoRotateIsland) {
+        targetRotY += 0.0018; // Gentle idle diorama rotation
+      }
+
+      if (islandGroup) {
+        islandGroup.rotation.y = currentRotY;
+        islandGroup.rotation.x = currentRotX - 0.58;
+      }
+
+      // Circling toy train on track
+      if (trainPivot) {
+        trainPivot.rotation.y = -elapsedTime * 0.45;
+      }
+
+      // Candle flame flickering in the night breeze
+      candleFlames.forEach(flame => {
+        const flicker = 1.0 + Math.sin(elapsedTime * 12) * 0.15;
+        flame.scale.set(flicker, flicker * 1.2, flicker);
+      });
+
+      // Fairy light twinkle pulsing
+      fairyLightMeshes.forEach((bulb, i) => {
+        bulb.scale.setScalar(0.9 + Math.sin(elapsedTime * 4 + i) * 0.25);
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    // Auto-start on load
+    window.addEventListener('DOMContentLoaded', () => {
+      populateStarField();
+      initThreeScene();
+      renderLoop();
+
+      // Smooth initial island drop bounce
+      if (islandGroup) {
+        islandGroup.position.y = 8;
+        gsap.to(islandGroup.position, {
+          y: 0,
+          duration: 1.4,
+          ease: "bounce.out"
+        });
+      }
+    });
+  </script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -80,7 +80,7 @@ export const PlansPage = () => {
 
   const orderUpiId = order ? new URL(order.upiUri).searchParams.get('pa') || '' : '';
 
-  return <main className="min-h-screen bg-surface pt-28 pb-20 px-4 sm:px-8">
+  return <main className="min-h-screen bg-surface pt-20 pb-20 px-4 sm:px-8">
     <div className="max-w-6xl mx-auto">
       <Link to="/" className="text-sm text-primary hover:underline">← Back to Tempo</Link>
       <div className="text-center max-w-2xl mx-auto mt-10 mb-12">
@@ -101,7 +101,7 @@ export const PlansPage = () => {
             <select value={websiteId} onChange={(event) => setWebsiteId(event.target.value)} className="mt-2 w-full rounded-xl border border-outline-variant/50 bg-surface px-3 py-3 text-on-surface">
               {websites.filter((site) => !site.proInteractiveEnabled).map((site) => <option key={site.id} value={site.id}>{site.title} · /e/{site.slug}</option>)}
             </select>
-          </label> : <p className="mt-6 text-sm text-on-surface-variant">Create a Pro Interactive website in the editor before purchasing this upgrade. <Link className="text-primary font-semibold underline" to="/create/enrolldesk-01">Create one now</Link></p>}
+          </label> : <p className="mt-6 text-sm text-on-surface-variant">Create a Pro Interactive website in the editor before purchasing this upgrade. <Link className="text-primary font-semibold underline" to="/create/keepsake-birthday-scrapbook">Create one now</Link></p>}
           <Button className="mt-8 w-full" onClick={() => buy(product.id)} disabled={busy || !websiteId || !websites.some((site) => site.id === websiteId && !site.proInteractiveEnabled)}>{busy ? <LoaderCircle className="animate-spin" size={18}/> : <>Continue to UPI <ArrowRight size={17}/></>}</Button>
         </article>)}
       </div>}
@@ -134,3 +134,4 @@ export const PlansPage = () => {
     </div>}
   </main>;
 };
+

@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sarah's 25th Birthday - Midnight Party Invitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Yellowtail&family=Syne:wght@800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #0A0A0C;
+    --bubblegum: #FF8FC7;
+    --lilac: #C9B6FF;
+    --babyblue: #9FD8FF;
+    --lime: #E6FF9A;
+    --peach: #FFC9A3;
+    --offwhite: #F4F0E8;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: #050507;
+    color: var(--offwhite);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    padding: 20px 10px;
+  }
+
+  /* Desktop Presentation Container showing Mobile Frame */
+  .device-mockup {
+    width: 390px;
+    height: 844px;
+    background-color: var(--bg-dark);
+    border-radius: 48px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 25px 60px -15px rgba(0,0,0,0.9), 0 0 0 10px #18181c, 0 0 0 12px #26262e;
+    user-select: none;
+  }
+
+  /* Subtle film grain & lighting pools */
+  .lighting-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .glow-pink {
+    position: absolute;
+    top: -60px;
+    left: -40px;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(255,143,199,0.22) 0%, rgba(255,143,199,0.06) 45%, transparent 70%);
+    filter: blur(28px);
+  }
+
+  .glow-blue {
+    position: absolute;
+    bottom: 20px;
+    right: -50px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(159,216,255,0.18) 0%, rgba(201,182,255,0.08) 50%, transparent 75%);
+    filter: blur(35px);
+  }
+
+  .glow-amber {
+    position: absolute;
+    top: 35%;
+    left: 20%;
+    width: 240px;
+    height: 240px;
+    background: radial-gradient(circle, rgba(255,201,163,0.14) 0%, transparent 65%);
+    filter: blur(30px);
+  }
+
+  .noise-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 0.09;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    z-index: 2;
+  }
+
+  /* Floating Disco Ball */
+  .disco-ball-rig {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 15;
+    pointer-events: none;
+  }
+
+  .disco-chain {
+    width: 1px;
+    height: 38px;
+    background: linear-gradient(to bottom, #777, #bbb);
+  }
+
+  .disco-ball {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff 0%, #ccd 25%, #667 60%, #111 95%);
+    box-shadow: 0 4px 18px rgba(255, 255, 255, 0.4), inset 0 0 8px rgba(255, 143, 199, 0.5);
+    position: relative;
+    overflow: hidden;
+    animation: rotateDisco 12s linear infinite;
+  }
+
+  .disco-facets {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 1px, transparent 1px, transparent 5px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.5) 0px, rgba(0,0,0,0.5) 1px, transparent 1px, transparent 5px);
+    mix-blend-mode: overlay;
+  }
+
+  @keyframes rotateDisco {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Fairy String Lights */
+  .fairy-lights-svg {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    z-index: 14;
+    pointer-events: none;
+  }
+
+  .bulb {
+    animation: twinkle 2.5s ease-in-out infinite alternate;
+  }
+  .bulb:nth-child(2n) { animation-delay: 0.6s; animation-duration: 3.1s; }
+  .bulb:nth-child(3n) { animation-delay: 1.2s; animation-duration: 1.9s; }
+  .bulb:nth-child(4n) { animation-delay: 1.8s; animation-duration: 2.7s; }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.4; filter: drop-shadow(0 0 2px currentColor); }
+    50% { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }
+  }
+
+  /* Interactive States Wrapper */
+  .state-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+  }
+
+  /* STATE 1: SEALED INVITE */
+  #state-sealed {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 20;
+  }
+
+  .guest-tag {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--babyblue);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    text-shadow: 0 0 10px rgba(159,216,255,0.6);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .guest-tag::before, .guest-tag::after {
+    content: "•";
+    color: var(--bubblegum);
+  }
+
+  .envelope-wrapper {
+    position: relative;
+    cursor: pointer;
+    transform: rotate(-3deg);
+    transition: transform 0.3s ease, filter 0.3s ease;
+    animation: envelopeFloat 4s ease-in-out infinite alternate;
+  }
+
+  .envelope-wrapper:hover {
+    transform: rotate(-1deg) scale(1.02);
+  }
+
+  @keyframes envelopeFloat {
+    0% { transform: translateY(0px) rotate(-3deg); }
+    100% { transform: translateY(-8px) rotate(-2deg); }
+  }
+
+  .envelope-halo {
+    position: absolute;
+    inset: -15px;
+    background: radial-gradient(circle, rgba(201,182,255,0.3) 0%, rgba(255,143,199,0.18) 40%, transparent 70%);
+    border-radius: 20px;
+    filter: blur(20px);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .envelope {
+    width: 300px;
+    height: 205px;
+    background: #111114;
+    border-radius: 8px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.85);
+    /* Holographic foil edge border catching pink/blue */
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .envelope::before {
+    content: '';
+    position: absolute;
+    inset: -1.5px;
+    border-radius: 9.5px;
+    background: linear-gradient(135deg, var(--bubblegum) 0%, rgba(255,255,255,0.7) 25%, var(--babyblue) 50%, var(--lilac) 75%, var(--lime) 100%);
+    z-index: -1;
+    opacity: 0.9;
+  }
+
+  .envelope-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .envelope-texture {
+    position: absolute;
+    inset: 0;
+    border-radius: 7px;
+    background: 
+      linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.4) 100%),
+      repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.01) 10px, rgba(255,255,255,0.01) 20px);
+  }
+
+  /* Iridescent Foil Seal */
+  .foil-seal {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: conic-gradient(from 180deg at 50% 50%, #FF8FC7, #9FD8FF, #E6FF9A, #C9B6FF, #FFC9A3, #FF8FC7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(255,143,199,0.7), 0 4px 10px rgba(0,0,0,0.6);
+    position: relative;
+    z-index: 5;
+    animation: sealRotate 8s linear infinite;
+  }
+
+  @keyframes sealRotate {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+
+  .seal-inner {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #0f0f13;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Anton', sans-serif;
+    font-size: 28px;
+    color: var(--offwhite);
+    border: 1px dashed rgba(255,255,255,0.4);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+    text-shadow: 0 0 8px rgba(255,255,255,0.8);
+  }
+
+  /* Surrounding Party Clutter on State 1 */
+  .chalk-arrow {
+    position: absolute;
+    bottom: -64px;
+    right: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--bubblegum);
+    font-family: 'Yellowtail', cursive;
+    font-size: 21px;
+    transform: rotate(-10deg);
+    text-shadow: 0 0 8px rgba(255,143,199,0.8);
+    pointer-events: none;
+  }
+
+  .chalk-arrow svg {
+    margin-top: -4px;
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 0 4px #FF8FC7);
+  }
+
+  .film-strip {
+    position: absolute;
+    width: 44px;
+    height: 64px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 3px 2px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+    pointer-events: none;
+  }
+
+  .film-holes {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .film-holes span {
+    width: 4px;
+    height: 5px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 1px;
+  }
+
+  .film-frame {
+    height: 24px;
+    background: rgba(255,143,199,0.15);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 2px;
+  }
+
+  .film-strip-1 {
+    top: -24px;
+    left: -20px;
+    transform: rotate(-18deg);
+  }
+
+  .film-strip-2 {
+    bottom: -32px;
+    left: 20px;
+    transform: rotate(15deg);
+  }
+
+  .metallic-star {
+    position: absolute;
+    top: -15px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    color: var(--lime);
+    filter: drop-shadow(0 0 6px #E6FF9A);
+    transform: rotate(20deg);
+    pointer-events: none;
+  }
+
+  /* Confetti scattered */
+  .confetti-dot {
+    position: absolute;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  /* STATE 2: BURST / OPENING */
+  #state-opening {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 30;
+    pointer-events: none;
+  }
+
+  .light-burst {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,143,199,0.7) 20%, rgba(159,216,255,0.5) 45%, transparent 70%);
+    filter: blur(15px);
+    animation: burstScale 0.9s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+  }
+
+  .bokeh {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.8), transparent);
+    filter: blur(3px);
+  }
+
+  @keyframes burstScale {
+    0% { transform: scale(0.2); opacity: 0; }
+    50% { opacity: 1; transform: scale(1.3); }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  /* STATE 3: FULL INVITATION POSTER */
+  #state-invite {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 56px 20px 96px 20px;
+    display: none;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 25;
+    scrollbar-width: none;
+  }
+  #state-invite::-webkit-scrollbar { display: none; }
+
+  /* Giant Outlined Age & Poster Layering */
+  .poster-hero-block {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 24px;
+  }
+
+  .giant-age-backdrop {
+    font-family: 'Syne', sans-serif;
+    font-size: 154px;
+    font-weight: 900;
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(244, 240, 232, 0.85);
+    position: relative;
+    letter-spacing: -6px;
+    user-select: none;
+    text-shadow: 0 0 25px rgba(255, 143, 199, 0.4);
+  }
+
+  .age-light-leak {
+    position: absolute;
+    top: 15%;
+    left: 10%;
+    width: 140px;
+    height: 70px;
+    background: linear-gradient(90deg, rgba(255,143,199,0.6), rgba(159,216,255,0.7));
+    filter: blur(18px);
+    mix-blend-mode: color-dodge;
+    pointer-events: none;
+  }
+
+  .poster-headline-group {
+    position: relative;
+    margin-top: -46px;
+    z-index: 4;
+  }
+
+  .name-headline {
+    font-family: 'Anton', sans-serif;
+    font-size: 82px;
+    line-height: 0.88;
+    text-transform: uppercase;
+    color: var(--offwhite);
+    letter-spacing: -1px;
+    /* Chromatic fringe effect */
+    text-shadow: 
+      -2px 0px 0px rgba(255, 143, 199, 0.8),
+      2px 0px 0px rgba(159, 216, 255, 0.8),
+      0 0 20px rgba(244, 240, 232, 0.4);
+    position: relative;
+    z-index: 2;
+  }
+
+  .brush-accent {
+    position: absolute;
+    top: -12px;
+    left: 45px;
+    font-family: 'Yellowtail', cursive;
+    font-size: 48px;
+    color: var(--bubblegum);
+    transform: rotate(-7deg);
+    text-shadow: 0 0 12px rgba(255, 143, 199, 0.95);
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  /* Polaroid Picture */
+  .polaroid-container {
+    position: absolute;
+    top: -24px;
+    right: -6px;
+    width: 136px;
+    background: #fbfbfa;
+    padding: 7px 7px 18px 7px;
+    border-radius: 2px;
+    transform: rotate(6.5deg);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.85), 0 0 15px rgba(255,143,199,0.3);
+    z-index: 6;
+    transition: transform 0.3s ease;
+  }
+
+  .polaroid-container:hover {
+    transform: rotate(4deg) scale(1.04);
+  }
+
+  .polaroid-tape {
+    position: absolute;
+    top: -9px;
+    left: 36px;
+    width: 55px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(2px);
+    transform: rotate(-3deg);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  }
+
+  .polaroid-photo {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    display: block;
+    background: #111;
+  }
+
+  .polaroid-caption {
+    font-family: 'Yellowtail', cursive;
+    color: #1a1a24;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 6px;
+    line-height: 1;
+  }
+
+  /* Ticket Strip with Perforated Edge & Barcode */
+  .ticket-card {
+    position: relative;
+    background: #121217;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 0 15px rgba(201,182,255,0.06);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .ticket-notch-left, .ticket-notch-right {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background-color: var(--bg-dark);
+    border-radius: 50%;
+    top: 58%;
+    transform: translateY(-50%);
+    z-index: 3;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .ticket-notch-left {
+    left: -10px;
+  }
+  .ticket-notch-right {
+    right: -10px;
+  }
+
+  .ticket-top {
+    padding: 16px 18px 12px 18px;
+  }
+
+  .ticket-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+
+  .ticket-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--peach);
+    text-transform: uppercase;
+  }
+
+  .ticket-val-hero {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--offwhite);
+    letter-spacing: 0.05em;
+  }
+
+  .ticket-venue {
+    font-size: 12px;
+    color: var(--babyblue);
+    margin-top: 4px;
+    line-height: 1.35;
+  }
+
+  .ticket-perforation {
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    margin: 8px 14px;
+    position: relative;
+  }
+
+  .ticket-bottom {
+    padding: 8px 18px 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .barcode-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 28px;
+  }
+
+  .bar {
+    background: var(--offwhite);
+    height: 100%;
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  .dress-code-badge {
+    text-align: right;
+  }
+  .dress-code-badge span {
+    display: block;
+    font-size: 8px;
+    color: rgba(244, 240, 232, 0.6);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .dress-code-val {
+    font-size: 11px;
+    color: var(--lime);
+    font-weight: 700;
+  }
+
+  /* Thin Glowing Line Party Icons (Custom SVG) */
+  .icons-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    margin-bottom: 22px;
+  }
+
+  .glowing-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--offwhite);
+  }
+
+  .glowing-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 1.5;
+    fill: none;
+    stroke: currentColor;
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+
+  .icon-balloon { color: var(--bubblegum); }
+  .icon-cake { color: var(--peach); }
+  .icon-disco { color: var(--lilac); }
+  .icon-camera { color: var(--babyblue); }
+
+  .glowing-icon span {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  /* Marquee Banner */
+  .marquee-bar {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    background: rgba(230, 255, 154, 0.08);
+    border-top: 1px solid rgba(230, 255, 154, 0.25);
+    border-bottom: 1px solid rgba(230, 255, 154, 0.25);
+    padding: 6px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .marquee-track {
+    display: inline-block;
+    animation: marqueeScroll 11s linear infinite;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    color: var(--lime);
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(230,255,154,0.6);
+  }
+
+  @keyframes marqueeScroll {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Pinned Bottom RSVP Button */
+  .rsvp-bar {
+    position: absolute;
+    bottom: 22px;
+    left: 20px;
+    right: 20px;
+    z-index: 35;
+  }
+
+  .btn-rsvp-pill {
+    width: 100%;
+    height: 54px;
+    border-radius: 27px;
+    background: var(--lime);
+    color: #0A0A0C;
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(230, 255, 154, 0.65), 0 8px 20px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: pulseButton 2.8s infinite ease-in-out;
+    transition: transform 0.2s, background-color 0.2s;
+  }
+
+  .btn-rsvp-pill:active {
+    transform: scale(0.97);
+  }
+
+  @keyframes pulseButton {
+    0%, 100% {
+      box-shadow: 0 0 16px rgba(230, 255, 154, 0.45);
+    }
+    50% {
+      box-shadow: 0 0 32px rgba(230, 255, 154, 0.85);
+    }
+  }
+
+  /* RSVP BOTTOM SHEET */
+  .rsvp-sheet-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 8, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .rsvp-sheet-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .rsvp-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #0f1015;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    padding: 24px 22px 30px 22px;
+    transform: translateY(105%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -15px 40px rgba(0,0,0,0.9), 0 0 25px rgba(201,182,255,0.15);
+  }
+
+  .rsvp-sheet-overlay.active .rsvp-sheet {
+    transform: translateY(0);
+  }
+
+  .sheet-handle {
+    width: 38px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 2px;
+    margin: 0 auto 18px auto;
+    cursor: pointer;
+  }
+
+  .sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .sheet-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 26px;
+    letter-spacing: 0.05em;
+    color: var(--offwhite);
+    text-transform: uppercase;
+  }
+
+  .sheet-close-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--babyblue);
+    margin-bottom: 6px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--offwhite);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-input:focus {
+    border-color: var(--bubblegum);
+    box-shadow: 0 0 10px rgba(255, 143, 199, 0.35);
+  }
+
+  /* Attendance Toggle */
+  .toggle-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .toggle-btn.active {
+    background: rgba(230, 255, 154, 0.12);
+    border-color: var(--lime);
+    color: var(--lime);
+    font-weight: 700;
+    box-shadow: 0 0 12px rgba(230, 255, 154, 0.3);
+  }
+
+  /* Stepper */
+  .stepper {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    overflow: hidden;
+    width: 120px;
+  }
+
+  .stepper-btn {
+    background: none;
+    border: none;
+    color: var(--offwhite);
+    font-size: 16px;
+    width: 36px;
+    height: 34px;
+    cursor: pointer;
+  }
+
+  .stepper-val {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .btn-submit-rsvp {
+    width: 100%;
+    padding: 13px;
+    border-radius: 8px;
+    background: var(--lime);
+    color: #0A0A0C;
+    border: none;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(230, 255, 154, 0.5);
+    margin-top: 6px;
+  }
+
+  /* State switcher floating controls for testing/previewing directly */
+  .dev-switcher {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 4px;
+    display: flex;
+    gap: 4px;
+    z-index: 100;
+  }
+
+  .dev-switcher button {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 4px 9px;
+    border-radius: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+
+  .dev-switcher button.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--offwhite);
+    font-weight: 700;
+  }
+
+  /* Reset prompt button in invite */
+  .replay-pill {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    font-size: 9px;
+    color: rgba(244, 240, 232, 0.7);
+    padding: 3px 8px;
+    cursor: pointer;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="device-mockup">
+  <!-- State Switcher Header for seamless review -->
+  <div class="dev-switcher">
+    <button id="nav-btn-sealed" class="active" onclick="goToState('sealed')">1: Sealed</button>
+    <button id="nav-btn-opening" onclick="goToState('opening')">2: Opening</button>
+    <button id="nav-btn-invite" onclick="goToState('invite')">3: Full Invite</button>
+  </div>
+
+  <!-- Ambient lighting pools and film grain -->
+  <div class="lighting-layer">
+    <div class="glow-pink"></div>
+    <div class="glow-blue"></div>
+    <div class="glow-amber"></div>
+    <div class="noise-overlay"></div>
+  </div>
+
+  <!-- Hanging Disco Ball (always present, casting light) -->
+  <div class="disco-ball-rig">
+    <div class="disco-chain"></div>
+    <div class="disco-ball">
+      <div class="disco-facets"></div>
+    </div>
+  </div>
+
+  <!-- Fairy Lights Garland -->
+  <svg class="fairy-lights-svg" viewBox="0 0 390 55" fill="none">
+    <!-- Hanging cord -->
+    <path d="M-10 18 Q 90 48, 195 24 T 400 32" stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+    <!-- Bulbs -->
+    <circle class="bulb" cx="45" cy="33" r="3.5" fill="#FFC9A3" color="#FFC9A3" />
+    <circle class="bulb" cx="95" cy="40" r="3.5" fill="#FF8FC7" color="#FF8FC7" />
+    <circle class="bulb" cx="145" cy="33" r="3.5" fill="#E6FF9A" color="#E6FF9A" />
+    <circle class="bulb" cx="195" cy="24" r="3.5" fill="#9FD8FF" color="#9FD8FF" />
+    <circle class="bulb" cx="245" cy="27" r="3.5" fill="#C9B6FF" color="#C9B6FF" />
+    <circle class="bulb" cx="295" cy="33" r="3.5" fill="#FFC9A3" color="#FFC9A3" />
+    <circle class="bulb" cx="345" cy="31" r="3.5" fill="#FF8FC7" color="#FF8FC7" />
+  </svg>
+
+  <div class="state-container">
+    
+    <!-- ==============================================
+         STATE 1: THE SEALED INVITE
+         ============================================== -->
+    <div id="state-sealed">
+      <div class="guest-tag">You're on the list, Alex M.</div>
+
+      <div class="envelope-wrapper" onclick="triggerOpenInvite()">
+        <div class="envelope-halo"></div>
+        
+        <!-- Peripheral film strips & star sticker -->
+        <div class="film-strip film-strip-1">
+          <div class="film-holes"><span></span><span></span></div>
+          <div class="film-frame"></div>
+          <div class="film-holes"><span></span><span></span></div>
+        </div>
+
+        <div class="film-strip film-strip-2">
+          <div class="film-holes"><span></span><span></span></div>
+          <div class="film-frame"></div>
+          <div class="film-holes"><span></span><span></span></div>
+        </div>
+
+        <svg class="metallic-star" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0L14.9 8.5L24 9.4L17.2 15.3L19.2 24L12 19.3L4.8 24L6.8 15.3L0 9.4L9.1 8.5L12 0Z"/>
+        </svg>
+
+        <!-- The Matte Black Holographic Envelope -->
+        <div class="envelope">
+          <div class="envelope-texture"></div>
+
+          <!-- Iridescent Foil Seal with Initial 'S' -->
+          <div class="foil-seal">
+            <div class="seal-inner">S</div>
+          </div>
+        </div>
+
+        <!-- Chalk Tap Arrow -->
+        <div class="chalk-arrow">
+          <span>tap to open</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M19 12l-7-7-7 7"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         STATE 2: OPENING (CONFIDETTI & BURST)
+         ============================================== -->
+    <div id="state-opening">
+      <div class="light-burst"></div>
+      <div id="burst-particles"></div>
+    </div>
+
+    <!-- ==============================================
+         STATE 3: THE INVITATION POSTER
+         ============================================== -->
+    <div id="state-invite">
+      <div class="replay-pill" onclick="goToState('sealed')">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Re-seal
+      </div>
+
+      <!-- Poster Layout: Asymmetric, layered headline & Polaroid -->
+      <div class="poster-hero-block">
+        <!-- Giant outlined "25" filling screen -->
+        <div class="giant-age-backdrop">25</div>
+        <div class="age-light-leak"></div>
+
+        <!-- Polaroid tilted 6° taped to corner -->
+        <div class="polaroid-container">
+          <div class="polaroid-tape"></div>
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB89fpV7rK5gTXqqvHC0qJ36pXxF6GWspXUxJjndMTkq5pXuExGWSvno03_8CN2w670Rs4ube2e50FRRlpVaTH7WFHk9jNa3SReA58pSUQrSfSoLy7aCD8-RlwPNms4TpOuE2ZM_dfNOmzoj7xnngA247OXLMeIXNmmngJIwglCzTNy1Wt9l3s3RxjQ4YHKDvr3y0u4Fz9X-ouqURs3BfAQuTsiyF8zQ2yTNAHZxp09Z_Rx9aG2ghV8-Q" alt="Sarah holding sparkler" class="polaroid-photo">
+          <div class="polaroid-caption">Sarah's 25th! ✨</div>
+        </div>
+
+        <!-- Sarah's Name Headline + Brush Script Overlap -->
+        <div class="poster-headline-group">
+          <div class="brush-accent">birthday</div>
+          <h1 class="name-headline">SARAH</h1>
+        </div>
+      </div>
+
+      <!-- Ticket-style strip with DATE / TIME / VENUE -->
+      <div class="ticket-card">
+        <div class="ticket-notch-left"></div>
+        <div class="ticket-notch-right"></div>
+        
+        <div class="ticket-top">
+          <div class="ticket-meta-row">
+            <div>
+              <div class="ticket-label">DATE // TIME</div>
+              <div class="ticket-val-hero">SAT 24 OCT • 10:00 PM</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="ticket-label">ADMIT</div>
+              <div class="ticket-val-hero" style="color: var(--lime);">VIP ONE</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="ticket-label">LOCATION</div>
+            <div class="ticket-venue">THE VELVET BASEMENT<br><span style="color: rgba(244,240,232,0.6); font-size: 10px;">742 BROADWAY, NEW YORK, NY</span></div>
+          </div>
+        </div>
+
+        <div class="ticket-perforation"></div>
+
+        <div class="ticket-bottom">
+          <div class="barcode-wrapper" title="Barcode">
+            <div class="bar" style="width: 2px;"></div>
+            <div class="bar" style="width: 4px;"></div>
+            <div class="bar" style="width: 1px;"></div>
+            <div class="bar" style="width: 3px;"></div>
+            <div class="bar" style="width: 5px;"></div>
+            <div class="bar" style="width: 1px;"></div>
+            <div class="bar" style="width: 3px;"></div>
+            <div class="bar" style="width: 2px;"></div>
+            <div class="bar" style="width: 4px;"></div>
+            <div class="bar" style="width: 2px;"></div>
+            <div class="bar" style="width: 5px;"></div>
+            <div class="bar" style="width: 1px;"></div>
+            <div class="bar" style="width: 3px;"></div>
+            <div class="bar" style="width: 4px;"></div>
+            <div class="bar" style="width: 2px;"></div>
+            <div class="bar" style="width: 1px;"></div>
+            <div class="bar" style="width: 4px;"></div>
+          </div>
+
+          <div class="dress-code-badge">
+            <span>DRESS CODE</span>
+            <div class="dress-code-val">MIDNIGHT GLAM & SPARKLE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row of glowing thin line custom party icons -->
+      <div class="icons-row">
+        <div class="glowing-icon icon-balloon">
+          <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><path d="M12 22l-1 2h2z"/></svg>
+          <span>PARTY</span>
+        </div>
+        <div class="glowing-icon icon-cake">
+          <svg viewBox="0 0 24 24"><rect x="3" y="12" width="18" height="9" rx="2"/><path d="M7 12V8a2 2 0 0 1 4 0v4M13 12V8a2 2 0 0 1 4 0v4"/><circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/></svg>
+          <span>CAKE</span>
+        </div>
+        <div class="glowing-icon icon-disco">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+          <span>DANCE</span>
+        </div>
+        <div class="glowing-icon icon-camera">
+          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span>FLASH</span>
+        </div>
+      </div>
+
+      <!-- Scrolling Marquee Banner -->
+      <div class="marquee-bar">
+        <div class="marquee-track">
+          BRING YOUR ENERGY • SARAH'S 25TH • SEE YOU THERE • DRINKS FLOWING TILL 4AM • BRING YOUR ENERGY • SARAH'S 25TH • SEE YOU THERE •
+        </div>
+      </div>
+
+      <!-- Spacer for bottom floating CTA -->
+      <div style="height: 60px;"></div>
+    </div>
+
+    <!-- Pinned Bottom RSVP Action -->
+    <div id="rsvp-pill-wrap" class="rsvp-bar" style="display: none;">
+      <button class="btn-rsvp-pill" onclick="openRsvpSheet()">
+        <span>RSVP FOR SARAH</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <!-- RSVP Bottom Sheet Drawer -->
+    <div id="rsvp-overlay" class="rsvp-sheet-overlay" onclick="closeRsvpSheet(event)">
+      <div class="rsvp-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle" onclick="closeRsvpSheet()"></div>
+        <div class="sheet-header">
+          <div class="sheet-title">JOIN THE NIGHT</div>
+          <button class="sheet-close-btn" onclick="closeRsvpSheet()">✕</button>
+        </div>
+
+        <form id="rsvpForm" onsubmit="handleRsvpSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">YOUR FULL NAME</label>
+            <input type="text" class="form-input" placeholder="e.g. Alex Morgan" required value="Alex Morgan">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ATTENDANCE</label>
+            <div class="toggle-row">
+              <button type="button" class="toggle-btn active" id="att-yes" onclick="setAttendance(true)">★ I'M COMING</button>
+              <button type="button" class="toggle-btn" id="att-no" onclick="setAttendance(false)">CAN'T MAKE IT</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="form-label" style="margin-bottom: 0;">ADDITIONAL GUESTS</label>
+            <div class="stepper">
+              <button type="button" class="stepper-btn" onclick="adjustGuest(-1)">−</button>
+              <div class="stepper-val" id="guestCount">0</div>
+              <button type="button" class="stepper-btn" onclick="adjustGuest(1)">+</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">LEAVE A NOTE / SONG REQUEST</label>
+            <input type="text" class="form-input" placeholder="Can't wait! Play 90s house...">
+          </div>
+
+          <button type="submit" class="btn-submit-rsvp" id="btn-submit">
+            CONFIRM RSVP
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let currentGuestNum = 0;
+  let isAttending = true;
+
+  function goToState(state) {
+    const sealedEl = document.getElementById('state-sealed');
+    const openingEl = document.getElementById('state-opening');
+    const inviteEl = document.getElementById('state-invite');
+    const rsvpWrap = document.getElementById('rsvp-pill-wrap');
+
+    // Update nav buttons
+    document.querySelectorAll('.dev-switcher button').forEach(b => b.classList.remove('active'));
+    document.getElementById('nav-btn-' + state).classList.add('active');
+
+    if (state === 'sealed') {
+      sealedEl.style.display = 'flex';
+      sealedEl.style.opacity = '1';
+      sealedEl.style.transform = 'translateY(0)';
+      
+      openingEl.style.display = 'none';
+      
+      inviteEl.style.display = 'none';
+      inviteEl.style.opacity = '0';
+      inviteEl.style.transform = 'translateY(30px)';
+      rsvpWrap.style.display = 'none';
+    } 
+    else if (state === 'opening') {
+      sealedEl.style.display = 'none';
+      openingEl.style.display = 'flex';
+      inviteEl.style.display = 'none';
+      rsvpWrap.style.display = 'none';
+      spawnBurstParticles();
+    } 
+    else if (state === 'invite') {
+      sealedEl.style.display = 'none';
+      openingEl.style.display = 'none';
+      inviteEl.style.display = 'block';
+      setTimeout(() => {
+        inviteEl.style.opacity = '1';
+        inviteEl.style.transform = 'translateY(0)';
+        rsvpWrap.style.display = 'block';
+      }, 50);
+    }
+  }
+
+  function triggerOpenInvite() {
+    // 1. Break seal animation
+    const seal = document.querySelector('.foil-seal');
+    seal.style.transform = 'scale(1.4)';
+    seal.style.transition = 'transform 0.25s ease';
+
+    setTimeout(() => {
+      goToState('opening');
+      
+      // After burst completes, show state 3 (full invitation)
+      setTimeout(() => {
+        goToState('invite');
+      }, 1000);
+    }, 280);
+  }
+
+  function spawnBurstParticles() {
+    const container = document.getElementById('burst-particles');
+    container.innerHTML = '';
+    const colors = ['#FF8FC7', '#9FD8FF', '#E6FF9A', '#C9B6FF', '#FFC9A3', '#FFFFFF'];
+
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-dot';
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 60 + Math.random() * 150;
+      const x = Math.cos(angle) * dist;
+      const y = Math.sin(angle) * dist;
+      const size = 3 + Math.random() * 7;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+
+      p.style.width = size + 'px';
+      p.style.height = (size * (Math.random() > 0.5 ? 1.8 : 1)) + 'px';
+      p.style.backgroundColor = color;
+      p.style.boxShadow = `0 0 8px ${color}`;
+      p.style.left = '50%';
+      p.style.top = '50%';
+      p.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg)`;
+      p.style.transition = 'all 0.9s cubic-bezier(0.1, 0.9, 0.2, 1)';
+      
+      container.appendChild(p);
+
+      setTimeout(() => {
+        p.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${Math.random() * 720}deg)`;
+        p.style.opacity = '0';
+      }, 20);
+    }
+  }
+
+  function openRsvpSheet() {
+    document.getElementById('rsvp-overlay').classList.add('active');
+  }
+
+  function closeRsvpSheet(e) {
+    if (e && e.target !== e.currentTarget && !e.target.classList.contains('sheet-close-btn') && !e.target.classList.contains('sheet-handle')) return;
+    document.getElementById('rsvp-overlay').classList.remove('active');
+  }
+
+  function setAttendance(attending) {
+    isAttending = attending;
+    const btnYes = document.getElementById('att-yes');
+    const btnNo = document.getElementById('att-no');
+    if (attending) {
+      btnYes.classList.add('active');
+      btnNo.classList.remove('active');
+    } else {
+      btnNo.classList.add('active');
+      btnYes.classList.remove('active');
+    }
+  }
+
+  function adjustGuest(delta) {
+    currentGuestNum = Math.max(0, Math.min(5, currentGuestNum + delta));
+    document.getElementById('guestCount').innerText = currentGuestNum;
+  }
+
+  function handleRsvpSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-submit');
+    btn.innerHTML = '✨ RSVP CONFIRMED!';
+    btn.style.backgroundColor = '#FF8FC7';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      document.getElementById('rsvp-overlay').classList.remove('active');
+      btn.innerHTML = 'CONFIRM RSVP';
+      btn.style.backgroundColor = 'var(--lime)';
+      btn.style.color = '#0A0A0C';
+    }, 1200);
+  }
+</script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

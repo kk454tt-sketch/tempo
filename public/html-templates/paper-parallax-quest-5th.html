@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en" style="scroll-behavior: smooth;"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Leo's 5th Birthday Quest of Wonders! 🎂🎈 — Paper Parallax Theatre</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@600;800;900&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+    :root {
+      --paper-cream: #fbf7ee;
+      --paper-cardboard: #e9dec9;
+      --paper-shadow: 0 10px 25px -4px rgba(78, 52, 28, 0.18), 0 4px 8px -2px rgba(78, 52, 28, 0.12);
+      --cutout-drop: drop-shadow(0 7px 12px rgba(45, 30, 15, 0.14));
+      --cutout-deep: drop-shadow(0 14px 20px rgba(45, 30, 15, 0.22));
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #eedcc0;
+      overflow-x: hidden;
+      color: #3f2e1e;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    h1, h2, h3, .font-fun {
+      font-family: 'Fredoka', cursive, sans-serif;
+    }
+
+    /* Papercraft Layer drop shadows & deckled paper edges */
+    .paper-cut {
+      filter: var(--cutout-drop);
+      will-change: transform;
+    }
+
+    .paper-card {
+      background-color: var(--paper-cream);
+      box-shadow: 0 10px 0 #d9c8af, 0 18px 24px rgba(50, 35, 20, 0.16);
+      border: 3px solid #f1e4cf;
+    }
+
+    .paper-badge {
+      box-shadow: 0 6px 0 #cbb291, 0 10px 15px rgba(50, 35, 20, 0.15);
+    }
+
+    /* Deckled zig-zag perforation / edge */
+    .deckled-bottom {
+      mask-image: radial-gradient(circle at 10px bottom, transparent 8px, black 8.5px);
+      mask-size: 20px 100%;
+      mask-repeat: repeat-x;
+    }
+
+    /* Paper curtain folds styling */
+    .curtain-panel {
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.3), 10px 0 25px rgba(0,0,0,0.35);
+      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* Pendulum string swing */
+    @keyframes paperPendulum {
+      0% { transform: rotate(4deg); }
+      50% { transform: rotate(-4deg); }
+      100% { transform: rotate(4deg); }
+    }
+    .paper-swing {
+      transform-origin: top center;
+      animation: paperPendulum 4s ease-in-out infinite;
+    }
+
+    /* 12fps stop-motion stepping effect for paper village */
+    @keyframes stopMotionHop {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .stop-motion-step {
+      animation: stopMotionHop 1s steps(6) infinite;
+    }
+
+    /* Perforated ticket tear line */
+    .perforated-line {
+      background-image: linear-gradient(to bottom, #d97706 60%, transparent 40%);
+      background-size: 2px 14px;
+      background-repeat: repeat-y;
+    }
+
+    /* Tactile Paper Candy Buttons */
+    .paper-btn {
+      background: #ff476f;
+      box-shadow: 0 7px 0 #ba1d41, 0 14px 20px rgba(186, 29, 65, 0.28);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .paper-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #ba1d41, 0 6px 10px rgba(186, 29, 65, 0.2);
+    }
+
+    .paper-btn-gold {
+      background: #fbbf24;
+      box-shadow: 0 7px 0 #b45309, 0 14px 20px rgba(180, 83, 9, 0.3);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .paper-btn-gold:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #b45309, 0 6px 10px rgba(180, 83, 9, 0.2);
+    }
+
+    /* Candle flame flicker */
+    @keyframes paperFlicker {
+      0%, 100% { transform: scale(1) rotate(-2deg); opacity: 0.95; }
+      50% { transform: scale(1.15, 1.25) rotate(3deg); opacity: 1; }
+    }
+    .flame-anim {
+      transform-origin: bottom center;
+      animation: paperFlicker 0.4s ease-in-out infinite alternate;
+    }
+
+    /* Ticket tear separation animation */
+    .tear-left-anim {
+      transform: translate(-140px, -20px) rotate(-16deg) !important;
+      opacity: 0;
+      transition: all 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .tear-right-anim {
+      transform: translate(140px, 35px) rotate(18deg) !important;
+      opacity: 0;
+      transition: all 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* Mobile / Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.001s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001s !important;
+      }
+    }
+  </style>
+</head>
+<body class="relative min-h-screen">
+<!-- ================= CARDBOARD PROSCENIUM THEATRE ARCH (FIXED FRAME) ================= -->
+<!-- Top Arch & Header Bar -->
+<div class="fixed top-0 left-0 right-0 z-50 pointer-events-none flex flex-col items-center">
+<!-- Ornate Cardboard Marquee -->
+<div class="w-full bg-[#5c3a21] border-b-8 border-[#3d2412] px-4 py-2.5 flex items-center justify-between pointer-events-auto shadow-2xl relative">
+<!-- Deckled tooth trim at bottom of theatre top bar -->
+<div class="absolute -bottom-3 left-0 right-0 h-3 bg-repeat-x pointer-events-none" style="background-image: radial-gradient(circle at 7px bottom, transparent 6px, #3d2412 6.5px); background-size: 14px 10px;"></div>
+<!-- Left Marquee Leo Emblem Badge -->
+<div class="flex items-center space-x-3 bg-[#fdfaf3] px-3.5 py-1.5 rounded-2xl border-2 border-[#b89569] paper-badge shadow-md">
+<div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border-2 border-amber-400 bg-amber-50">
+          https://lh3.googleusercontent.com/aida/AEtjO1V_Pt_iBWywn5PIcDKQaQDDE-qHYhf8y7ctn6neCiISSS6NOl6r5ISyCxE9iTCEYEIOIgsIchjDSzAocejzN4nAsPo9CIsMRTug7yPPmfRJRfMN7ppLWgeWOwEfZiAvA2axFfUlX3RbQB_I-aSec2AFu39tPgUTRRybjFgV7bi8mO6z5WWrWF0iYyP8hy4c5aC1jWjMG2mOXY2FXrDGeOpD1gAQJZcHKGhMVggfRvGGQB5qG4q_ukg3
+        </div>
+<div>
+<div class="font-fun text-sm md:text-base font-bold text-amber-900 leading-tight">Leo's 5th Birthday Theatre 🎪</div>
+<div class="text-[11px] md:text-xs text-amber-700 font-bold">Quest of Wonders • Pine Valley Meadow</div>
+</div>
+</div>
+<!-- Quick Controls: Theatre Sound + Curtain Reset Button -->
+<div class="flex items-center space-x-2">
+<button aria-label="Toggle retro paper sounds" class="p-2 md:px-3 md:py-1.5 rounded-2xl bg-[#fff7e6] hover:bg-amber-100 border-2 border-[#b89569] paper-badge text-xs md:text-sm font-bold flex items-center space-x-1.5 active:scale-95 transition-transform text-[#6b4724]" id="soundToggleBtn">
+<span class="text-base" id="soundIcon">🔇</span>
+<span class="hidden md:inline font-fun" id="soundLabel">SOUND: OFF</span>
+</button>
+<button class="p-2 md:px-3 md:py-1.5 rounded-2xl bg-[#fff7e6] hover:bg-amber-100 border-2 border-[#b89569] paper-badge text-xs md:text-sm font-bold flex items-center space-x-1.5 active:scale-95 transition-transform text-[#6b4724]" id="curtainResetBtn" title="Re-draw curtains">
+<span>🎭</span>
+<span class="hidden md:inline font-fun">CURTAINS</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Cardboard Side Pillars (Proscenium Left & Right Frame) -->
+<aside class="fixed top-0 bottom-0 left-0 w-3 md:w-8 bg-[#4a2e1a] border-r-4 border-[#2b170a] z-40 pointer-events-none shadow-2xl flex flex-col justify-between py-16">
+<div class="w-full h-8 bg-[#3d2412] opacity-40"></div>
+<div class="w-full h-8 bg-[#3d2412] opacity-40"></div>
+<div class="w-full h-8 bg-[#3d2412] opacity-40"></div>
+</aside>
+<aside class="fixed top-0 bottom-0 right-0 w-3 md:w-8 bg-[#4a2e1a] border-l-4 border-[#2b170a] z-40 pointer-events-none shadow-2xl flex flex-col justify-between py-16">
+<div class="w-full h-8 bg-[#3d2412] opacity-40"></div>
+<div class="w-full h-8 bg-[#3d2412] opacity-40"></div>
+<div class="w-full h-8 bg-[#3d2412] opacity-40"></div>
+</aside>
+<!-- Footlights at stage apron -->
+<div class="fixed bottom-0 left-0 right-0 h-4 md:h-6 bg-[#3a2212] z-40 border-t-2 border-amber-600 flex justify-around items-center px-8 transition-opacity duration-700 opacity-60" id="stageFootlights">
+<div class="w-3 h-3 rounded-full bg-amber-300 shadow-[0_0_12px_#f59e0b]"></div>
+<div class="w-3 h-3 rounded-full bg-amber-200 shadow-[0_0_12px_#f59e0b]"></div>
+<div class="w-3 h-3 rounded-full bg-amber-300 shadow-[0_0_12px_#f59e0b]"></div>
+<div class="w-3 h-3 rounded-full bg-amber-200 shadow-[0_0_12px_#f59e0b]"></div>
+<div class="w-3 h-3 rounded-full bg-amber-300 shadow-[0_0_12px_#f59e0b]"></div>
+<div class="w-3 h-3 rounded-full bg-amber-200 shadow-[0_0_12px_#f59e0b]"></div>
+<div class="w-3 h-3 rounded-full bg-amber-300 shadow-[0_0_12px_#f59e0b]"></div>
+</div>
+<!-- ================= THEATRE STAGE CURTAINS (SCENE 1 INTRO) ================= -->
+<div class="fixed inset-0 z-40 flex pointer-events-auto transition-opacity duration-500" id="curtainOverlay">
+<!-- Left Velvet-Paper Curtain -->
+<div class="curtain-panel w-1/2 h-full bg-gradient-to-r from-[#831828] via-[#ad1d37] to-[#741021] relative flex flex-col justify-between p-6 transform-gpu border-r-2 border-amber-300/40" id="curtainLeft">
+<!-- Pleat Shadows -->
+<div class="absolute inset-0 bg-repeat-x opacity-20 pointer-events-none" style="background-image: repeating-linear-gradient(90deg, #000 0, #000 24px, transparent 24px, transparent 48px);"></div>
+<!-- Gold Cord Tassel -->
+<div class="w-12 h-28 border-l-4 border-dashed border-amber-400 self-end mr-4"></div>
+</div>
+<!-- Right Velvet-Paper Curtain -->
+<div class="curtain-panel w-1/2 h-full bg-gradient-to-l from-[#831828] via-[#ad1d37] to-[#741021] relative flex flex-col justify-between p-6 transform-gpu border-l-2 border-amber-300/40" id="curtainRight">
+<!-- Pleat Shadows -->
+<div class="absolute inset-0 bg-repeat-x opacity-20 pointer-events-none" style="background-image: repeating-linear-gradient(90deg, #000 0, #000 24px, transparent 24px, transparent 48px);"></div>
+<div class="w-12 h-28 border-r-4 border-dashed border-amber-400 self-start ml-4"></div>
+</div>
+<!-- Central Hanging Paper Tag with Twine: "TAP TO OPEN THEATRE" -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group" id="curtainTagContainer">
+<!-- Twine String -->
+<div class="w-1 h-32 bg-[#e2cca4] border-x border-[#9e8357] shadow-sm"></div>
+<!-- Tag Card -->
+<div class="bg-[#fff9eb] border-4 border-[#b45309] rounded-3xl p-6 md:p-8 paper-cut text-center shadow-2xl hover:scale-105 active:scale-95 transition-transform duration-200 relative max-w-xs mx-auto" id="curtainTag">
+<!-- Punch Hole ring -->
+<div class="w-6 h-6 rounded-full bg-[#52331c] border-4 border-[#d4b07e] mx-auto -mt-10 mb-3 shadow-inner"></div>
+<div class="w-16 h-16 mx-auto mb-2 drop-shadow-md">
+          https://lh3.googleusercontent.com/aida/AEtjO1V_Pt_iBWywn5PIcDKQaQDDE-qHYhf8y7ctn6neCiISSS6NOl6r5ISyCxE9iTCEYEIOIgsIchjDSzAocejzN4nAsPo9CIsMRTug7yPPmfRJRfMN7ppLWgeWOwEfZiAvA2axFfUlX3RbQB_I-aSec2AFu39tPgUTRRybjFgV7bi8mO6z5WWrWF0iYyP8hy4c5aC1jWjMG2mOXY2FXrDGeOpD1gAQJZcHKGhMVggfRvGGQB5qG4q_ukg3
+        </div>
+<span class="inline-block px-3 py-1 bg-amber-100 border border-amber-300 rounded-full text-amber-900 font-bold text-xs uppercase tracking-widest mb-2">
+          Grand Birthday Premiere
+        </span>
+<h2 class="font-fun text-2xl md:text-3xl font-black text-[#5c2415] leading-tight mb-2">
+          Leo is Turning 5!
+        </h2>
+<p class="text-xs md:text-sm font-bold text-[#805030] mb-4">
+          Pull the paper cords to unveil the stage story!
+        </p>
+<!-- Tactile Button -->
+<div class="paper-btn text-white font-fun font-bold text-lg md:text-xl py-3 px-6 rounded-2xl flex items-center justify-center space-x-2 shadow-lg">
+<span>✨</span>
+<span>TAP TO OPEN THEATRE!</span>
+<span>🎭</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= MULTI-LAYER PARALLAX THEATRE BACKGROUND ================= -->
+<!-- Layer Controller Wrapper (Sways with 3D Gyro / Cursor) -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden z-10" id="theatreGyroRig">
+<!-- LAYER 0 (0.2x): Vintage Sky Backdrop & Golden Paper Sun -->
+<div class="absolute inset-0 transition-transform duration-100 ease-out" id="layerSky">
+<!-- Sunlit Paper Sky Gradient -->
+<div class="w-full h-full bg-gradient-to-b from-[#8fdfff] via-[#d6f6ff] to-[#fcf4d9] opacity-95"></div>
+<!-- Golden Accordion Paper Sun -->
+<div class="absolute top-16 right-10 md:right-28 w-28 h-28 md:w-40 md:h-40 paper-cut">
+<svg class="w-full h-full animate-[spin_30s_linear_infinite]" viewbox="0 0 100 100">
+<!-- Sun Rays Paper Crown -->
+<polygon fill="#f59e0b" points="50,2 57,22 78,10 74,32 96,30 83,48 98,62 79,68 86,90 66,82 58,100 48,84 34,96 32,74 10,78 20,58 4,46 24,38 12,18 34,24" stroke="#b45309" stroke-width="1.5"></polygon>
+<!-- Inner Paper Sun Face -->
+<circle cx="50" cy="50" fill="#fde047" r="28" stroke="#d97706" stroke-width="2.5"></circle>
+<!-- Cheerful Smile -->
+<circle cx="42" cy="46" fill="#78350f" r="3"></circle>
+<circle cx="58" cy="46" fill="#78350f" r="3"></circle>
+<path d="M43 55 Q50 62 57 55" fill="none" stroke="#78350f" stroke-linecap="round" stroke-width="2.5"></path>
+<circle cx="36" cy="51" fill="#fb7185" opacity="0.6" r="3"></circle>
+<circle cx="64" cy="51" fill="#fb7185" opacity="0.6" r="3"></circle>
+</svg>
+</div>
+<!-- Cutout Puffy White Paper Clouds -->
+<div class="absolute top-20 left-12 md:left-32 paper-cut opacity-90">
+<svg fill="#fbfaf6" height="70" stroke="#c9bca9" stroke-width="2" viewbox="0 0 120 60" width="150">
+<path d="M20,45 Q5,45 8,30 Q10,15 25,20 Q35,5 55,10 Q70,5 82,18 Q98,12 102,28 Q115,35 106,46 Z"></path>
+</svg>
+</div>
+<div class="absolute top-44 right-1/4 paper-cut opacity-85 hidden md:block">
+<svg fill="#fbfaf6" height="85" stroke="#c9bca9" stroke-width="2" viewbox="0 0 120 60" width="180">
+<path d="M20,45 Q5,45 8,30 Q10,15 25,20 Q35,5 55,10 Q70,5 82,18 Q98,12 102,28 Q115,35 106,46 Z"></path>
+</svg>
+</div>
+</div>
+<!-- LAYER 1 (0.4x): Far Woodland Paper Hills -->
+<div class="absolute bottom-0 left-0 right-0 h-[65vh] paper-cut transition-transform duration-150 ease-out" id="layerFarHills">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 1200 500">
+<path d="M0,260 C250,180 420,300 700,200 C950,110 1100,210 1200,180 L1200,500 L0,500 Z" fill="#9de2b9" stroke="#5cb887" stroke-width="3"></path>
+<!-- Paper Pine Tree Silhouettes -->
+<polygon fill="#4ea175" points="120,250 135,210 150,250"></polygon>
+<polygon fill="#4ea175" points="135,220 145,190 155,220"></polygon>
+<polygon fill="#4ea175" points="340,260 360,200 380,260"></polygon>
+<polygon fill="#4ea175" points="820,200 840,150 860,200"></polygon>
+<polygon fill="#4ea175" points="870,220 885,170 900,220"></polygon>
+</svg>
+</div>
+<!-- LAYER 2 (0.7x): Mid-Ground Storybook Paper Village (Houses, Windmill, 12fps Stop-motion) -->
+<div class="absolute bottom-0 left-0 right-0 h-[48vh] paper-cut transition-transform duration-200 ease-out" id="layerVillage">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 1200 400">
+<path d="M0,190 C180,100 480,230 760,150 C980,80 1120,170 1200,150 L1200,400 L0,400 Z" fill="#52be80" stroke="#2e8553" stroke-width="3"></path>
+</svg>
+<!-- Little Paper Cottages & Trees perched on mid-ridge -->
+<div class="absolute bottom-28 left-6 md:left-24 flex items-end space-x-3 pointer-events-auto">
+<!-- Cottage 1 -->
+<div class="w-20 md:w-28 paper-card rounded-lg p-1.5 border-2 border-[#b58b5e] relative stop-motion-step">
+<div class="w-0 h-0 border-l-[38px] border-l-transparent border-r-[38px] border-r-transparent border-b-[24px] border-b-[#c0392b] -mt-7 mx-auto"></div>
+<div class="bg-amber-100 h-10 rounded flex items-center justify-around px-1">
+<div class="w-3 h-4 bg-amber-300 border border-amber-600"></div>
+<div class="w-4 h-6 bg-[#78350f] rounded-t"></div>
+</div>
+</div>
+<!-- Cardboard Windmill with turning paper blades -->
+<div class="w-16 md:w-20 flex flex-col items-center">
+<div class="w-12 h-12 relative animate-[spin_10s_linear_infinite]">
+<div class="absolute top-1/2 left-0 right-0 h-1.5 bg-[#fde047] border border-[#b45309]"></div>
+<div class="absolute top-0 bottom-0 left-1/2 w-1.5 -translate-x-1/2 bg-[#fde047] border border-[#b45309]"></div>
+</div>
+<div class="w-8 h-14 bg-[#f5efe6] border-2 border-[#b89569] rounded-t-sm"></div>
+</div>
+</div>
+<div class="absolute bottom-24 right-8 md:right-32 flex items-end space-x-4">
+<!-- Paper Chapel / Schoolhouse -->
+<div class="w-24 md:w-32 paper-card rounded-lg p-2 border-2 border-[#b58b5e] relative stop-motion-step" style="animation-delay: 0.3s">
+<div class="w-0 h-0 border-l-[45px] border-l-transparent border-r-[45px] border-r-transparent border-b-[28px] border-b-[#2980b9] -mt-8 mx-auto"></div>
+<div class="bg-yellow-50 h-12 rounded flex items-center justify-around px-2">
+<div class="w-4 h-5 bg-sky-200 border border-sky-600"></div>
+<div class="w-4 h-7 bg-[#78350f] rounded-t"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- LAYER 4 (1.2x): Foreground Paper Proscenium Grass & Swaying Flowers -->
+<div class="absolute bottom-0 left-0 right-0 h-28 pointer-events-none z-30 flex justify-between items-end px-4 md:px-12 pb-2" id="layerForeground">
+<!-- Deckled Grass Edge overlay -->
+<div class="absolute bottom-0 left-0 right-0 h-12 bg-[#27ae60] border-t-4 border-[#1e8449]" style="mask-image: radial-gradient(circle at 14px top, transparent 10px, black 10.5px); mask-size: 28px 100%;"></div>
+<!-- Swaying paper daisies & mushrooms -->
+<div class="paper-swing text-3xl md:text-5xl filter drop-shadow-md z-10" style="animation-delay: 0.1s">🌼</div>
+<div class="paper-swing text-4xl md:text-6xl filter drop-shadow-md z-10" style="animation-delay: 0.6s">🍄</div>
+<div class="paper-swing text-3xl md:text-5xl filter drop-shadow-md z-10" style="animation-delay: 0.3s">🌻</div>
+<div class="paper-swing text-4xl md:text-6xl filter drop-shadow-md z-10" style="animation-delay: 0.8s">🌷</div>
+<div class="paper-swing text-3xl md:text-5xl filter drop-shadow-md z-10" style="animation-delay: 0.4s">🌸</div>
+</div>
+</div>
+<!-- ================= JOINTED PAPER MASCOT (BARNABY) WITH ROTATING LIMBS ================= -->
+<!-- Anchored in theatre, moves & reacts as user scrolls -->
+<div class="fixed bottom-12 right-6 md:right-16 z-30 pointer-events-auto cursor-pointer filter drop-shadow-2xl transition-transform duration-300" id="paperMascot">
+<!-- Mascot Speech Bubble -->
+<div class="bg-[#fffdf7] border-3 border-[#c2410c] text-[#7c2d12] font-fun font-bold px-3.5 py-1.5 rounded-2xl shadow-xl text-xs md:text-sm whitespace-nowrap mb-2 relative transform -rotate-3 transition-all duration-300 scale-100" id="mascotBubble">
+      Welcome to the Show! 🎈
+      <!-- Speech tail -->
+<div class="absolute -bottom-2 right-8 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#c2410c]"></div>
+</div>
+<!-- Paper Craft Mascot Figure with Brass Fasteners / Eyelet Joints -->
+<div class="relative w-28 h-36 md:w-36 md:h-44 group">
+<!-- Body Cardboard Cutout -->
+<div class="absolute bottom-6 left-5 right-5 h-20 bg-[#d97706] rounded-3xl border-3 border-[#92400e] shadow-inner flex items-center justify-center overflow-hidden">
+<div class="w-14 h-14 bg-[#fde68a] rounded-full mt-4"></div>
+</div>
+<!-- Mascot Head using the Official Lion/Cub Emblem Badge https://lh3.googleusercontent.com/aida/AEtjO1V_Pt_iBWywn5PIcDKQaQDDE-qHYhf8y7ctn6neCiISSS6NOl6r5ISyCxE9iTCEYEIOIgsIchjDSzAocejzN4nAsPo9CIsMRTug7yPPmfRJRfMN7ppLWgeWOwEfZiAvA2axFfUlX3RbQB_I-aSec2AFu39tPgUTRRybjFgV7bi8mO6z5WWrWF0iYyP8hy4c5aC1jWjMG2mOXY2FXrDGeOpD1gAQJZcHKGhMVggfRvGGQB5qG4q_ukg3 -->
+<div class="absolute top-0 left-3 right-3 h-24 md:h-28 paper-cut transition-transform duration-200" id="mascotHead">
+        https://lh3.googleusercontent.com/aida/AEtjO1V_Pt_iBWywn5PIcDKQaQDDE-qHYhf8y7ctn6neCiISSS6NOl6r5ISyCxE9iTCEYEIOIgsIchjDSzAocejzN4nAsPo9CIsMRTug7yPPmfRJRfMN7ppLWgeWOwEfZiAvA2axFfUlX3RbQB_I-aSec2AFu39tPgUTRRybjFgV7bi8mO6z5WWrWF0iYyP8hy4c5aC1jWjMG2mOXY2FXrDGeOpD1gAQJZcHKGhMVggfRvGGQB5qG4q_ukg3
+      </div>
+<!-- Left Jointed Paper Arm (Brass Riveted) -->
+<div class="absolute top-16 left-0 w-8 h-16 origin-top-right transition-transform duration-300" id="mascotArmL" style="transform: rotate(25deg);">
+<div class="w-6 h-14 bg-[#f59e0b] rounded-full border-2 border-[#b45309] shadow-sm relative">
+<!-- Brass Eyelet -->
+<div class="w-2 h-2 rounded-full bg-[#fef08a] border border-[#78350f] absolute top-1 right-2"></div>
+</div>
+</div>
+<!-- Right Jointed Paper Arm (Waves enthusiastically) -->
+<div class="absolute top-16 right-0 w-8 h-16 origin-top-left transition-transform duration-300" id="mascotArmR" style="transform: rotate(-65deg);">
+<div class="w-6 h-14 bg-[#f59e0b] rounded-full border-2 border-[#b45309] shadow-sm relative">
+<!-- Brass Eyelet -->
+<div class="w-2 h-2 rounded-full bg-[#fef08a] border border-[#78350f] absolute top-1 left-2"></div>
+</div>
+</div>
+<!-- Paper Feet -->
+<div class="absolute bottom-1 left-7 w-7 h-6 bg-[#b45309] rounded-full border-2 border-[#78350f]" id="mascotFeetL"></div>
+<div class="absolute bottom-1 right-7 w-7 h-6 bg-[#b45309] rounded-full border-2 border-[#78350f]" id="mascotFeetR"></div>
+</div>
+</div>
+<!-- ================= MAIN STAGE SCROLLING CONTENT ================= -->
+<!-- Layer 3 (1.0x): Scrollable story canvases & interactive sets -->
+<main class="relative z-20 w-full max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-36">
+<!-- ================= ACT 1: GRAND OVERTURE & WELCOME ================= -->
+<section class="min-h-screen flex flex-col items-center justify-center text-center py-12" id="act1">
+<!-- Hanging Paper Garland -->
+<div class="w-full max-w-md flex justify-between items-center px-4 mb-4 paper-swing">
+<span class="text-3xl md:text-4xl filter drop-shadow">🚩</span>
+<span class="text-3xl md:text-4xl filter drop-shadow">🎈</span>
+<span class="text-3xl md:text-4xl filter drop-shadow">⭐</span>
+<span class="text-3xl md:text-4xl filter drop-shadow">🧁</span>
+<span class="text-3xl md:text-4xl filter drop-shadow">🚩</span>
+</div>
+<!-- Main Stage Paper Title Cardboard Billboard -->
+<div class="paper-card rounded-3xl p-6 md:p-10 border-4 border-[#e5d5be] relative max-w-2xl mx-auto transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+<!-- Brass corner tabs -->
+<div class="absolute -top-3 -left-3 w-8 h-8 bg-amber-400 border-2 border-amber-700 rounded-lg transform -rotate-12 shadow"></div>
+<div class="absolute -top-3 -right-3 w-8 h-8 bg-amber-400 border-2 border-amber-700 rounded-lg transform rotate-12 shadow"></div>
+<div class="inline-block bg-amber-100 border-2 border-amber-400 text-amber-900 font-bold px-4 py-1 rounded-full text-xs md:text-sm uppercase tracking-wider mb-4 shadow-sm">
+          🌲 An Enchanting Outdoor Storybook Celebration 🌲
+        </div>
+<h1 class="text-4xl md:text-6xl font-fun font-black text-[#58210f] tracking-tight leading-none mb-4">
+          Leo’s 5th Birthday <br/>
+<span class="text-[#e11d48] underline decoration-wavy decoration-amber-400 decoration-4">Quest of Wonders!</span>
+</h1>
+<p class="text-base md:text-lg font-bold text-[#744e2b] max-w-lg mx-auto mb-6">
+          Step into our enchanted papercraft forest where woodland critters, sparkling three-tier cakes, and hidden party surprises come to life!
+        </p>
+<!-- Golden RSVP Ticket Quick Launcher -->
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+<button class="paper-btn-gold text-[#451a03] font-fun font-bold text-xl md:text-2xl px-8 py-4 rounded-3xl flex items-center space-x-3 w-full sm:w-auto justify-center" id="heroRsvpTrigger">
+<span>🎟️</span>
+<span>GET GOLDEN RSVP TICKET</span>
+<span>✨</span>
+</button>
+</div>
+</div>
+<!-- Scroll Story Arrow Hanging on Paper String -->
+<div class="mt-12 flex flex-col items-center text-[#784620] font-fun font-bold animate-bounce cursor-pointer" onclick="window.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' });">
+<span>Scroll to Act II: The Sweet Feast</span>
+<svg class="w-7 h-7 mt-1 text-[#e11d48]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+</svg>
+</div>
+</section>
+<!-- ================= ACT 2: THE BIRTHDAY FEAST & WOBBLING CAKE ================= -->
+<section class="min-h-screen flex flex-col md:flex-row items-center justify-between gap-10 py-16 scroll-mt-24" id="act2">
+<!-- Story Card Left -->
+<div class="w-full md:w-1/2 order-2 md:order-1">
+<div class="paper-card rounded-3xl p-6 md:p-8 border-4 border-[#fed7aa] transform rotate-1">
+<div class="inline-flex items-center space-x-2 bg-pink-100 text-pink-800 font-fun font-bold px-3 py-1 rounded-full text-xs md:text-sm mb-3 border border-pink-300">
+<span>🎂 SCENE 2</span>
+<span>•</span>
+<span>THE CAKE CEREMONY</span>
+</div>
+<h2 class="text-3xl md:text-4xl font-fun font-black text-[#58210f] mb-3">The Great 3-Tier Wobble Cake!</h2>
+<p class="text-[#744e2b] font-bold text-sm md:text-base leading-relaxed mb-4">
+            Crafted from layered strawberry cloud cream, organic vanilla biscuits, and dancing sparklers. Tap the cake to see it wobble and light all 5 candles!
+          </p>
+<div class="space-y-3 bg-[#fff8eb] p-4 rounded-2xl border-2 border-[#edd3ab] text-xs md:text-sm font-bold text-[#6d3e18]">
+<div class="flex items-center space-x-2">
+<span class="text-xl">🍓</span>
+<span>100% Nut-free artisan bakery with Gluten-sensitive cupcakes!</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-xl">🧁</span>
+<span>DIY sprinkles &amp; topper craft station for every mini adventurer.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive 3-Tier Paper Cake with 5 Light-up Candles -->
+<div class="w-full md:w-1/2 flex justify-center order-1 md:order-2">
+<div class="cursor-pointer paper-cut relative p-4 group select-none" id="paperCakeContainer">
+<svg class="w-64 h-72 md:w-80 md:h-88 drop-shadow-2xl transition-transform duration-200" id="paperCakeSvg" viewbox="0 0 240 260">
+<!-- Decorative Plate -->
+<ellipse cx="120" cy="235" fill="#e2d4be" rx="90" ry="16" stroke="#a88c67" stroke-width="3"></ellipse>
+<ellipse cx="120" cy="230" fill="#fffdfa" rx="84" ry="13" stroke="#d5c1a5" stroke-width="2"></ellipse>
+<!-- Bottom Tier 1 (Pink Strawberry Paper Layer) -->
+<g id="cakeTier1">
+<rect fill="#f472b6" height="52" rx="10" stroke="#db2777" stroke-width="3.5" width="150" x="45" y="170"></rect>
+<!-- Scalloped Frosting Paper Trim -->
+<path d="M45,182 Q55,196 65,182 Q75,196 85,182 Q95,196 105,182 Q115,196 125,182 Q135,196 145,182 Q155,196 165,182 Q175,196 185,182 Q195,196 195,182" fill="none" stroke="#fff9fa" stroke-linecap="round" stroke-width="7"></path>
+<!-- Sprinkles -->
+<circle cx="70" cy="205" fill="#fde047" r="3"></circle>
+<circle cx="110" cy="208" fill="#38bdf8" r="3"></circle>
+<circle cx="150" cy="204" fill="#34d399" r="3"></circle>
+<circle cx="175" cy="208" fill="#fde047" r="3"></circle>
+</g>
+<!-- Middle Tier 2 (Golden Vanilla Layer) -->
+<g id="cakeTier2">
+<rect fill="#fcd34d" height="50" rx="8" stroke="#d97706" stroke-width="3.5" width="110" x="65" y="120"></rect>
+<path d="M65,130 Q80,144 95,130 Q110,144 125,130 Q140,144 155,130 Q170,144 175,130" fill="none" stroke="#fffdf5" stroke-linecap="round" stroke-width="6"></path>
+<circle cx="90" cy="152" fill="#ec4899" r="3"></circle>
+<circle cx="130" cy="154" fill="#3b82f6" r="3"></circle>
+<circle cx="155" cy="150" fill="#10b981" r="3"></circle>
+</g>
+<!-- Top Tier 3 (Teal Paper Layer) -->
+<g id="cakeTier3">
+<rect fill="#38bdf8" height="44" rx="8" stroke="#0284c7" stroke-width="3" width="70" x="85" y="76"></rect>
+<path d="M85,86 Q100,98 120,86 Q140,98 155,86" fill="none" stroke="#f0f9ff" stroke-linecap="round" stroke-width="5"></path>
+</g>
+<!-- 5 Birthday Candles with Paper Cut Flames -->
+<!-- Candle 1 -->
+<g class="candle-unit" data-candle="1">
+<rect fill="#fb7185" height="24" rx="2" stroke="#be123c" stroke-width="1.5" width="6" x="92" y="52"></rect>
+<path class="flame-anim" d="M95,36 Q99,44 95,50 Q91,44 95,36 Z" fill="#f59e0b" id="flame1" stroke="#b45309" stroke-width="1"></path>
+</g>
+<!-- Candle 2 -->
+<g class="candle-unit" data-candle="2">
+<rect fill="#facc15" height="28" rx="2" stroke="#ca8a04" stroke-width="1.5" width="6" x="105" y="48"></rect>
+<path class="flame-anim" d="M108,32 Q112,40 108,46 Q104,40 108,32 Z" fill="#f59e0b" id="flame2" stroke="#b45309" stroke-width="1"></path>
+</g>
+<!-- Candle 3 (Center Golden) -->
+<g class="candle-unit" data-candle="3">
+<rect fill="#4ade80" height="34" rx="2" stroke="#15803d" stroke-width="1.5" width="6" x="117" y="42"></rect>
+<path class="flame-anim" d="M120,26 Q124,34 120,40 Q116,34 120,26 Z" fill="#ef4444" id="flame3" stroke="#991b1b" stroke-width="1"></path>
+</g>
+<!-- Candle 4 -->
+<g class="candle-unit" data-candle="4">
+<rect fill="#a78bfa" height="28" rx="2" stroke="#6d28d9" stroke-width="1.5" width="6" x="129" y="48"></rect>
+<path class="flame-anim" d="M132,32 Q136,40 132,46 Q128,40 132,32 Z" fill="#f59e0b" id="flame4" stroke="#b45309" stroke-width="1"></path>
+</g>
+<!-- Candle 5 -->
+<g class="candle-unit" data-candle="5">
+<rect fill="#f472b6" height="24" rx="2" stroke="#be123c" stroke-width="1.5" width="6" x="142" y="52"></rect>
+<path class="flame-anim" d="M145,36 Q149,44 145,50 Q141,44 145,36 Z" fill="#f59e0b" id="flame5" stroke="#b45309" stroke-width="1"></path>
+</g>
+</svg>
+<!-- Wobble Hint Ribbon -->
+<div class="bg-amber-400 text-amber-950 font-fun font-bold text-xs px-4 py-1.5 rounded-full shadow-md border-2 border-white absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap animate-bounce">
+            🍰 Tap cake to wobble &amp; sparkle!
+          </div>
+</div>
+</div>
+</section>
+<!-- ================= ACT 3: ADVENTURE SCHEDULE (SWINGING STRING CARDS) ================= -->
+<section class="min-h-screen flex flex-col justify-center py-16 scroll-mt-24" id="act3">
+<div class="text-center max-w-xl mx-auto mb-10">
+<div class="inline-flex items-center space-x-2 bg-amber-100 text-amber-800 font-fun font-bold px-3 py-1 rounded-full text-xs md:text-sm mb-2 border border-amber-300">
+<span>📜 SCENE 3</span>
+<span>•</span>
+<span>THE ITINERARY</span>
+</div>
+<h2 class="text-3xl md:text-5xl font-fun font-black text-[#58210f]">Quest Schedule &amp; Timing</h2>
+<p class="text-[#744e2b] font-bold text-sm md:text-base mt-2">
+          Cards suspended from woodland twine! Notice them gently sway as you explore each stop.
+        </p>
+</div>
+<!-- 3 Hanging Pendulum Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+<!-- Card 1: Date & Time -->
+<div class="flex flex-col items-center">
+<div class="w-1 h-14 bg-[#caa579] border-x border-[#9e8357]"></div>
+<div class="paper-card rounded-2xl p-5 w-full text-center border-3 border-[#e2cca4] paper-swing shadow-lg relative" style="animation-delay: 0.1s">
+<div class="w-5 h-5 rounded-full bg-[#4a2e1a] mx-auto -mt-8 mb-2 border-2 border-[#fffdfa]"></div>
+<span class="text-3xl mb-1 block">📅</span>
+<h3 class="font-fun text-xl font-black text-[#6d2d14] mb-1">Saturday, July 19</h3>
+<p class="text-xs font-black text-amber-700 uppercase tracking-wider mb-2">11:00 AM – 2:30 PM</p>
+<p class="text-xs text-[#744e2b] font-bold">Arrive on time for safari hats, team ribbons, and welcome hug circle.</p>
+</div>
+</div>
+<!-- Card 2: Location Shelter -->
+<div class="flex flex-col items-center">
+<div class="w-1 h-14 bg-[#caa579] border-x border-[#9e8357]"></div>
+<div class="paper-card rounded-2xl p-5 w-full text-center border-3 border-[#e2cca4] paper-swing shadow-lg relative" style="animation-delay: 0.4s">
+<div class="w-5 h-5 rounded-full bg-[#4a2e1a] mx-auto -mt-8 mb-2 border-2 border-[#fffdfa]"></div>
+<span class="text-3xl mb-1 block">📍</span>
+<h3 class="font-fun text-xl font-black text-[#6d2d14] mb-1">Pine Valley Meadow</h3>
+<p class="text-xs font-black text-amber-700 uppercase tracking-wider mb-2">Shelter #4 (By the Oak)</p>
+<p class="text-xs text-[#744e2b] font-bold">Covered pavilion with picnic tables, clean restrooms, and stroller ramps.</p>
+</div>
+</div>
+<!-- Card 3: Woodland Games -->
+<div class="flex flex-col items-center">
+<div class="w-1 h-14 bg-[#caa579] border-x border-[#9e8357]"></div>
+<div class="paper-card rounded-2xl p-5 w-full text-center border-3 border-[#e2cca4] paper-swing shadow-lg relative" style="animation-delay: 0.7s">
+<div class="w-5 h-5 rounded-full bg-[#4a2e1a] mx-auto -mt-8 mb-2 border-2 border-[#fffdfa]"></div>
+<span class="text-3xl mb-1 block">🎯</span>
+<h3 class="font-fun text-xl font-black text-[#6d2d14] mb-1">Quests &amp; Games</h3>
+<p class="text-xs font-black text-amber-700 uppercase tracking-wider mb-2">Giant Bubbles &amp; Owl Visit</p>
+<p class="text-xs text-[#744e2b] font-bold">Golden acorn scavenger hunt + special wildlife guest Ranger Dan!</p>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= ACT 4: VILLAGE & LOCATION MAP TRAIL ================= -->
+<section class="min-h-screen flex flex-col items-center justify-center py-16 scroll-mt-24" id="act4">
+<div class="paper-card rounded-3xl p-6 md:p-10 border-4 border-[#e2cca4] max-w-2xl w-full relative">
+<div class="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-800 font-fun font-bold px-3 py-1 rounded-full text-xs md:text-sm mb-3 border border-emerald-300">
+<span>🗺️ SCENE 4</span>
+<span>•</span>
+<span>THE MEADOW TRAIL</span>
+</div>
+<h2 class="text-3xl md:text-4xl font-fun font-black text-[#58210f] mb-3">Pine Valley Map &amp; Arrival</h2>
+<p class="text-[#744e2b] font-bold text-sm md:text-base mb-6">
+          Follow the colorful pinwheels from parking lot B straight into Shelter #4.
+        </p>
+<!-- Illustrated Paper Map Graphic with Dropping Map Pin -->
+<div class="relative bg-[#fcf2d9] border-3 border-[#d0b48f] rounded-2xl p-4 overflow-hidden shadow-inner h-60 flex items-center justify-center">
+<!-- Winding Path Dashed line -->
+<svg class="absolute inset-0 w-full h-full" fill="none" viewbox="0 0 400 200">
+<path d="M20,170 C90,170 120,100 200,100 C280,100 310,40 380,40" stroke="#f59e0b" stroke-dasharray="8 8" stroke-linecap="round" stroke-width="6"></path>
+</svg>
+<!-- Parking Landmark -->
+<div class="absolute bottom-4 left-6 bg-[#fffaf0] border-2 border-[#b89569] rounded-xl px-2.5 py-1 text-xs font-black text-amber-900 shadow">
+            🚗 Parking Lot B
+          </div>
+<!-- Forest Landmark -->
+<div class="absolute top-4 left-10 text-2xl filter drop-shadow">🌲 🌲</div>
+<!-- Destination Pin (Drops into place via GSAP) -->
+<div class="absolute top-3 right-12 flex flex-col items-center filter drop-shadow-xl cursor-pointer" id="paperMapPin">
+<div class="w-12 h-12 bg-rose-500 rounded-full border-3 border-white flex items-center justify-center text-white text-lg font-black shadow-lg animate-bounce">
+              🎂
+            </div>
+<div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[12px] border-t-rose-500 -mt-1"></div>
+<span class="bg-[#5c2415] text-amber-200 text-[10px] font-bold px-2 py-0.5 rounded-full mt-1">Shelter #4</span>
+</div>
+<div class="absolute bottom-3 right-6 text-2xl filter drop-shadow">🦊 🦌</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-4 text-xs font-bold text-[#6d3e18]">
+<div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200">🅿️ Free Parking adjacent to shelter</div>
+<div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">☔ Covered picnic pavilion (rain safe!)</div>
+</div>
+</div>
+</section>
+<!-- ================= ACT 5: THE GOLDEN PAPER TICKET & RSVP CLIMAX ================= -->
+<section class="min-h-screen flex flex-col items-center justify-center py-16 scroll-mt-24 text-center" id="act5">
+<div class="inline-flex items-center space-x-2 bg-amber-200 text-amber-900 font-fun font-bold px-4 py-1.5 rounded-full text-xs md:text-sm mb-4 border-2 border-amber-400 shadow-sm">
+<span>✨ ACT 5 FINALE</span>
+<span>•</span>
+<span>RESERVE YOUR ADVENTURE</span>
+</div>
+<h2 class="text-4xl md:text-6xl font-fun font-black text-[#58210f] mb-3">
+        The Golden Paper Ticket
+      </h2>
+<p class="text-base md:text-lg font-bold text-[#744e2b] max-w-md mx-auto mb-8">
+        Tap the official admit-one golden ticket below to open the safe family RSVP pass!
+      </p>
+<!-- INTERACTIVE GOLDEN TICKET PROB (WIGGLES & BECKONS) -->
+<div class="cursor-pointer max-w-xl w-full paper-cut hover:scale-105 active:scale-95 transition-transform duration-300" id="interactiveTicket">
+<div class="bg-gradient-to-r from-[#ffd451] via-[#fef08a] to-[#f59e0b] rounded-3xl border-4 border-[#b45309] shadow-2xl p-6 md:p-8 relative flex flex-col md:flex-row items-center justify-between text-left overflow-hidden">
+<!-- Decorative Stamp & Mascot Icon -->
+<div class="flex items-center space-x-4 mb-4 md:mb-0">
+<div class="w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl p-1 border-3 border-[#b45309] shadow-md flex-shrink-0">
+              https://lh3.googleusercontent.com/aida/AEtjO1V_Pt_iBWywn5PIcDKQaQDDE-qHYhf8y7ctn6neCiISSS6NOl6r5ISyCxE9iTCEYEIOIgsIchjDSzAocejzN4nAsPo9CIsMRTug7yPPmfRJRfMN7ppLWgeWOwEfZiAvA2axFfUlX3RbQB_I-aSec2AFu39tPgUTRRybjFgV7bi8mO6z5WWrWF0iYyP8hy4c5aC1jWjMG2mOXY2FXrDGeOpD1gAQJZcHKGhMVggfRvGGQB5qG4q_ukg3
+            </div>
+<div>
+<div class="bg-[#b45309] text-amber-100 font-fun font-bold text-xs uppercase px-2.5 py-0.5 rounded-full inline-block mb-1">
+                Official Admit One Pass
+              </div>
+<h3 class="font-fun text-2xl md:text-3xl font-black text-[#58210f] leading-none">
+                Leo's 5th Quest
+              </h3>
+<p class="text-xs md:text-sm font-bold text-[#78350f] mt-1">
+                Saturday, July 19th • Pine Valley Meadow
+              </p>
+</div>
+</div>
+<!-- Perforated Tear Line Dotted Graphic -->
+<div class="hidden md:block w-px h-28 perforated-line mx-4"></div>
+<!-- Ticket Stub Section -->
+<div class="flex flex-col items-center md:items-end w-full md:w-auto">
+<div class="text-[10px] font-black text-[#854d0e] uppercase tracking-widest mb-2">
+              NO. 0719-LEO-5
+            </div>
+<button class="paper-btn text-white font-fun font-bold text-lg md:text-xl px-6 py-3 rounded-2xl shadow-lg w-full md:w-auto flex items-center justify-center space-x-2">
+<span>🎟️</span>
+<span>OPEN RSVP PASS</span>
+</button>
+</div>
+<!-- Notches on side -->
+<div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#eedcc0] border-r-2 border-[#b45309]"></div>
+<div class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#eedcc0] border-l-2 border-[#b45309]"></div>
+</div>
+</div>
+</section>
+<!-- ================= PARENT FAQ PAPER BILLBOARD ================= -->
+<footer class="mt-8 paper-card rounded-3xl p-6 md:p-8 border-4 border-[#e2cca4] text-center">
+<h3 class="font-fun text-2xl font-black text-[#58210f] mb-4">Frequently Asked Parent Questions 🏕️</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left text-xs md:text-sm text-[#744e2b] font-bold">
+<div class="bg-[#fff9ed] p-4 rounded-2xl border border-amber-200">
+<div class="text-amber-900 font-black mb-1">🚗 Where do we park?</div>
+          Free parking right beside Meadow Shelter #4 at Pine Valley Park. Follow the colourful pinwheels!
+        </div>
+<div class="bg-[#fff9ed] p-4 rounded-2xl border border-amber-200">
+<div class="text-amber-900 font-black mb-1">☔ Rain plan?</div>
+          Shelter #4 is fully covered with sturdy roofs and picnic tables. If stormy, we'll notify parents via SMS 2 hours in advance.
+        </div>
+<div class="bg-[#fff9ed] p-4 rounded-2xl border border-amber-200">
+<div class="text-amber-900 font-black mb-1">👶 Siblings welcome?</div>
+          Absolutely! Brothers, sisters, toddlers, and strollers are all warmly invited to join the fun.
+        </div>
+</div>
+<div class="mt-6 text-xs text-[#a17e5c] font-bold">
+        Leo's 5th Birthday Quest of Wonders • Handcrafted Paper Parallax Theatre Experience
+      </div>
+</footer>
+</main>
+<!-- ================= VINTAGE PAPERCRAFT RSVP MODAL & TEAR-OFF CONFIRMATION ================= -->
+<div class="fixed inset-0 z-50 bg-[#3a2617]/75 backdrop-blur-sm hidden flex items-center justify-center p-4" id="rsvpModal">
+<div class="bg-[#fbf7ee] rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border-4 border-[#b45309] relative max-h-[92vh] overflow-y-auto paper-cut" id="modalCard">
+<!-- Close button -->
+<button class="absolute top-4 right-4 text-[#78350f] hover:text-black bg-[#ecdac3] rounded-full w-9 h-9 flex items-center justify-center font-black text-lg transition-transform active:scale-90" id="closeModalBtn">
+        ✕
+      </button>
+<!-- Modal Header -->
+<div class="text-center mb-6">
+<div class="w-14 h-14 mx-auto mb-2">
+          https://lh3.googleusercontent.com/aida/AEtjO1V_Pt_iBWywn5PIcDKQaQDDE-qHYhf8y7ctn6neCiISSS6NOl6r5ISyCxE9iTCEYEIOIgsIchjDSzAocejzN4nAsPo9CIsMRTug7yPPmfRJRfMN7ppLWgeWOwEfZiAvA2axFfUlX3RbQB_I-aSec2AFu39tPgUTRRybjFgV7bi8mO6z5WWrWF0iYyP8hy4c5aC1jWjMG2mOXY2FXrDGeOpD1gAQJZcHKGhMVggfRvGGQB5qG4q_ukg3
+        </div>
+<h3 class="font-fun text-2xl md:text-3xl font-black text-[#58210f]">Golden Ticket RSVP Pass</h3>
+<p class="text-xs text-[#825632] font-bold mt-1">
+          Child-Safe Promise: Only parent names and snack counts are collected. No tracking, ever!
+        </p>
+</div>
+<!-- Ticket Body with Perforation (Splits on Tear Animation) -->
+<div class="relative" id="ticketStubContainer">
+<form class="space-y-4" id="rsvpForm">
+<!-- Parent Name -->
+<div>
+<label class="block text-xs font-black text-[#6d3e18] uppercase tracking-wider mb-1" for="parentNameInput">
+              Parent / Guardian Name *
+            </label>
+<input class="w-full px-4 py-3 rounded-2xl border-2 border-[#d9c5ab] bg-[#fffdfa] focus:border-amber-600 focus:ring-0 outline-none text-[#58210f] font-bold" id="parentNameInput" placeholder="e.g. Maya Chen" required="" type="text"/>
+</div>
+<!-- Email or Phone -->
+<div>
+<label class="block text-xs font-black text-[#6d3e18] uppercase tracking-wider mb-1" for="parentContactInput">
+              Mobile or Email (for day-of picnic updates) *
+            </label>
+<input class="w-full px-4 py-3 rounded-2xl border-2 border-[#d9c5ab] bg-[#fffdfa] focus:border-amber-600 focus:ring-0 outline-none text-[#58210f] font-bold" id="parentContactInput" placeholder="e.g. 555-0192 or maya@example.com" required="" type="text"/>
+</div>
+<!-- Guest Count Stepper -->
+<div>
+<label class="block text-xs font-black text-[#6d3e18] uppercase tracking-wider mb-1">
+              Total Family Members Attending
+            </label>
+<div class="flex items-center space-x-4 bg-[#f3e6d3] p-2 rounded-2xl border-2 border-[#d9c5ab] justify-between">
+<button class="w-10 h-10 rounded-xl bg-white border border-[#b89569] font-black text-xl text-[#78350f] active:scale-95 flex items-center justify-center shadow-sm" id="guestMinusBtn" type="button">
+                −
+              </button>
+<div class="font-fun text-xl font-black text-[#58210f]">
+<span id="guestCountDisplay">2</span> <span class="text-xs text-[#8c5a31] font-bold">Guests</span>
+</div>
+<button class="w-10 h-10 rounded-xl bg-white border border-[#b89569] font-black text-xl text-[#78350f] active:scale-95 flex items-center justify-center shadow-sm" id="guestPlusBtn" type="button">
+                +
+              </button>
+</div>
+</div>
+<!-- Attending Status Toggle Stamp -->
+<div>
+<label class="block text-xs font-black text-[#6d3e18] uppercase tracking-wider mb-1">
+              Will you be joining the adventure?
+            </label>
+<div class="grid grid-cols-2 gap-3">
+<button class="py-2.5 px-3 rounded-2xl border-2 border-emerald-600 bg-emerald-100 text-emerald-900 font-fun font-bold text-sm shadow-sm flex items-center justify-center space-x-1" id="attendYesBtn" type="button">
+<span>🎉</span>
+<span>YES! COUNT US IN</span>
+</button>
+<button class="py-2.5 px-3 rounded-2xl border-2 border-slate-300 bg-slate-100 text-slate-700 font-fun font-bold text-sm shadow-sm flex items-center justify-center space-x-1" id="attendNoBtn" type="button">
+<span>💌</span>
+<span>REGRETFULLY NO</span>
+</button>
+</div>
+</div>
+<!-- Dietary note -->
+<div>
+<label class="block text-xs font-black text-[#6d3e18] uppercase tracking-wider mb-1" for="dietaryInput">
+              Allergies or Dietary Preferences (Optional)
+            </label>
+<input class="w-full px-4 py-2.5 rounded-2xl border-2 border-[#d9c5ab] bg-[#fffdfa] focus:border-amber-600 focus:ring-0 outline-none text-[#58210f] font-bold text-sm" id="dietaryInput" placeholder="e.g. Gluten-free, vegetarian, strawberry fan!" type="text"/>
+</div>
+<!-- Perforated Tear Line indicator before submit button -->
+<div class="relative py-2 flex items-center justify-center">
+<div class="w-full border-t-2 border-dashed border-[#b45309]"></div>
+<span class="absolute bg-[#fbf7ee] px-3 text-[10px] font-black text-[#b45309] uppercase tracking-wider">
+              ✂️ TEAR-OFF LINE ✂️
+            </span>
+</div>
+<!-- Submit Button -->
+<button class="paper-btn text-white font-fun font-bold text-xl py-4 rounded-2xl w-full shadow-xl flex items-center justify-center space-x-2" id="submitRsvpBtn" type="submit">
+<span>🎟️</span>
+<span>TEAR TICKET &amp; CONFIRM RSVP!</span>
+</button>
+</form>
+<!-- Confirmed Success State (Shows after simulated ticket rip) -->
+<div class="hidden text-center py-6" id="rsvpSuccessCard">
+<div class="text-6xl mb-3 animate-bounce">🎊</div>
+<h4 class="font-fun text-3xl font-black text-[#58210f] mb-2">Ticket Verified &amp; Confirmed!</h4>
+<p class="text-[#744e2b] font-bold text-sm mb-6 max-w-sm mx-auto">
+            Woohoo! Leo and Barnaby are doing backflips in the meadow! Your golden admission ticket has been logged for Saturday, July 19th.
+          </p>
+<div class="inline-block bg-amber-100 border-2 border-amber-400 p-4 rounded-2xl text-amber-900 font-bold text-xs mb-6">
+            📍 See you at Pine Valley Meadow Shelter #4 at 11:00 AM!
+          </div>
+<div>
+<button class="paper-btn-gold text-[#451a03] font-fun font-bold px-8 py-3 rounded-2xl shadow-lg" id="successDoneBtn">
+              Return to Paper Theatre 🎭
+            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= 100% SELF-CONTAINED WEB AUDIO API SYNTHESIZER ================= -->
+<!-- Synthesizes: Paper Rustle, Cardboard Slides, Boings, Pops, Ukulele/Musicbox Melodies, Tearing Paper, and Confetti Fanfares -->
+<script>
+    class PaperTheatreSoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = true;
+        this.musicTimer = null;
+        this.isPlayingMusic = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      toggleMute() {
+        this.init();
+        this.muted = !this.muted;
+        if (!this.muted) {
+          this.playRustle();
+          this.startUkuleleLoop();
+        } else {
+          this.stopUkuleleLoop();
+        }
+        return this.muted;
+      }
+
+      // 1. Tactile Paper Rustle / Cardboard Slide Sound
+      playRustle() {
+        if (this.muted) return;
+        this.init();
+        const bufferSize = this.ctx.sampleRate * 0.18;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 1100;
+        filter.Q.value = 1.8;
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.28, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        noise.start();
+      }
+
+      // 2. Paper Tearing / Perforation Rip Effect
+      playTear() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const bufferSize = this.ctx.sampleRate * 0.32;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.sin(i / 15);
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(800, now);
+        filter.frequency.linearRampToValueAtTime(2600, now + 0.3);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        noise.start(now);
+      }
+
+      // 3. Pleasant Cartoon Spring / Boing
+      playBoing() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(540, now + 0.16);
+        osc.frequency.linearRampToValueAtTime(360, now + 0.32);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.4);
+      }
+
+      // 4. Cheerful Sparkle Fanfare
+      playSparkle() {
+        if (this.muted) return;
+        this.init();
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C5, E5, G5, C6, E6
+        notes.forEach((freq, idx) => {
+          const now = this.ctx.currentTime + idx * 0.05;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.25);
+        });
+      }
+
+      // 5. Gentle Cheerful Ukulele / Music-Box Loop (approx 25% volume)
+      startUkuleleLoop() {
+        if (this.isPlayingMusic || this.muted) return;
+        this.isPlayingMusic = true;
+        const melody = [
+          { f: 392.00, d: 0.3 }, // G4
+          { f: 523.25, d: 0.3 }, // C5
+          { f: 659.25, d: 0.3 }, // E5
+          { f: 587.33, d: 0.4 }, // D5
+          { f: 523.25, d: 0.3 }, // C5
+          { f: 440.00, d: 0.4 }, // A4
+          { f: 523.25, d: 0.5 }  // C5
+        ];
+        let step = 0;
+
+        const loop = () => {
+          if (!this.isPlayingMusic || this.muted) return;
+          const note = melody[step % melody.length];
+          const now = this.ctx.currentTime;
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(note.f, now);
+
+          // 25% perceived master volume level
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + note.d * 0.95);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + note.d);
+
+          step++;
+          this.musicTimer = setTimeout(loop, note.d * 1000 + 100);
+        };
+
+        loop();
+      }
+
+      stopUkuleleLoop() {
+        this.isPlayingMusic = false;
+        if (this.musicTimer) clearTimeout(this.musicTimer);
+      }
+    }
+
+    const sound = new PaperTheatreSoundEngine();
+  </script>
+<!-- ================= GSAP SCROLL STORY & PARALLAX CONTROLLER ================= -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Sound Toggle Button
+      const soundToggleBtn = document.getElementById('soundToggleBtn');
+      const soundIcon = document.getElementById('soundIcon');
+      const soundLabel = document.getElementById('soundLabel');
+
+      soundToggleBtn.addEventListener('click', () => {
+        const isMuted = sound.toggleMute();
+        if (isMuted) {
+          soundIcon.textContent = '🔇';
+          soundLabel.textContent = 'SOUND: OFF';
+        } else {
+          soundIcon.textContent = '🔊';
+          soundLabel.textContent = 'SOUND: ON';
+        }
+      });
+
+      // 1. THEATRE CURTAIN REVEAL SEQUENCE (SCENE 1)
+      const curtainOverlay = document.getElementById('curtainOverlay');
+      const curtainLeft = document.getElementById('curtainLeft');
+      const curtainRight = document.getElementById('curtainRight');
+      const curtainTagContainer = document.getElementById('curtainTagContainer');
+      const curtainResetBtn = document.getElementById('curtainResetBtn');
+      const stageFootlights = document.getElementById('stageFootlights');
+
+      let curtainsOpen = false;
+
+      function openCurtains() {
+        if (curtainsOpen) return;
+        curtainsOpen = true;
+        sound.playRustle();
+        sound.playSparkle();
+
+        // Slide curtains outward with paper pleat wobble
+        curtainLeft.style.transform = 'translateX(-100%)';
+        curtainRight.style.transform = 'translateX(100%)';
+        curtainTagContainer.style.opacity = '0';
+        curtainTagContainer.style.pointerEvents = 'none';
+
+        // Dimmer footlights brighten to 100%
+        stageFootlights.classList.replace('opacity-60', 'opacity-100');
+
+        setTimeout(() => {
+          curtainOverlay.style.pointerEvents = 'none';
+        }, 800);
+
+        // Confetti greeting burst
+        confetti({
+          particleCount: 50,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#f59e0b', '#ec4899', '#3b82f6', '#10b981']
+        });
+      }
+
+      function closeCurtains() {
+        curtainsOpen = false;
+        sound.playRustle();
+        curtainOverlay.style.pointerEvents = 'auto';
+        curtainLeft.style.transform = 'translateX(0)';
+        curtainRight.style.transform = 'translateX(0)';
+        curtainTagContainer.style.opacity = '1';
+        curtainTagContainer.style.pointerEvents = 'auto';
+        stageFootlights.classList.replace('opacity-100', 'opacity-60');
+      }
+
+      curtainTagContainer.addEventListener('click', openCurtains);
+      curtainResetBtn.addEventListener('click', () => {
+        if (curtainsOpen) closeCurtains();
+        else openCurtains();
+      });
+
+      // 2. 3D GYRO / CURSOR PARALLAX SWAY (Max ±8px to ±12px)
+      const gyroRig = document.getElementById('theatreGyroRig');
+      let targetX = 0, targetY = 0;
+      let currentX = 0, currentY = 0;
+
+      window.addEventListener('mousemove', (e) => {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        targetX = ((e.clientX - cx) / cx) * 12; // max ±12px
+        targetY = ((e.clientY - cy) / cy) * 10;
+      });
+
+      if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
+        window.addEventListener('deviceorientation', (e) => {
+          if (e.gamma !== null && e.beta !== null) {
+            targetX = Math.min(12, Math.max(-12, (e.gamma / 30) * 12));
+            targetY = Math.min(10, Math.max(-10, ((e.beta - 45) / 30) * 10));
+          }
+        }, { passive: true });
+      }
+
+      function updateGyro() {
+        currentX += (targetX - currentX) * 0.08;
+        currentY += (targetY - currentY) * 0.08;
+
+        document.getElementById('layerSky').style.transform = `translate3d(${currentX * 0.2}px, ${currentY * 0.2}px, 0)`;
+        document.getElementById('layerFarHills').style.transform = `translate3d(${currentX * 0.4}px, ${currentY * 0.4}px, 0)`;
+        document.getElementById('layerVillage').style.transform = `translate3d(${currentX * 0.7}px, ${currentY * 0.7}px, 0)`;
+        document.getElementById('layerForeground').style.transform = `translate3d(${currentX * 1.2}px, 0, 0)`;
+
+        requestAnimationFrame(updateGyro);
+      }
+      updateGyro();
+
+      // 3. MULTI-LAYER SCROLL SCRUB PARALLAX (GSAP ScrollTrigger)
+      gsap.to('#layerSky', {
+        y: -140,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: 'body',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.2
+        }
+      });
+
+      gsap.to('#layerFarHills', {
+        y: 80,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: 'body',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.8
+        }
+      });
+
+      gsap.to('#layerVillage', {
+        y: 130,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: 'body',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.6
+        }
+      });
+
+      // 4. JOINTED MASCOT ARM WAVING & EXPRESSION UPDATES
+      const paperMascot = document.getElementById('paperMascot');
+      const mascotArmR = document.getElementById('mascotArmR');
+      const mascotArmL = document.getElementById('mascotArmL');
+      const mascotBubble = document.getElementById('mascotBubble');
+      const mascotHead = document.getElementById('mascotHead');
+
+      // Mascot waves periodically
+      let mascotWaving = false;
+      function mascotWaveAction() {
+        if (mascotWaving) return;
+        mascotWaving = true;
+        gsap.to(mascotArmR, {
+          rotation: -110,
+          repeat: 5,
+          yoyo: true,
+          duration: 0.2,
+          ease: 'power1.inOut',
+          onComplete: () => {
+            gsap.to(mascotArmR, { rotation: -65, duration: 0.3 });
+            mascotWaving = false;
+          }
+        });
+      }
+
+      paperMascot.addEventListener('click', () => {
+        sound.playBoing();
+        mascotWaveAction();
+        gsap.fromTo(paperMascot, { scale: 1.15, rotate: 6 }, { scale: 1, rotate: 0, duration: 0.4, ease: 'back.out(2)' });
+      });
+
+      // Scroll checkpoints update mascot speech
+      const mascotMsgs = [
+        { trigger: '#act1', msg: "Welcome to the Show! 🎈" },
+        { trigger: '#act2', msg: "Mmm, strawberry cake! 🍓" },
+        { trigger: '#act3', msg: "Check our quest times! 📜" },
+        { trigger: '#act4', msg: "Pine Valley Meadow! 🗺️" },
+        { trigger: '#act5', msg: "Tear your ticket! 🎟️" }
+      ];
+
+      mascotMsgs.forEach((item) => {
+        ScrollTrigger.create({
+          trigger: item.trigger,
+          start: 'top center',
+          onEnter: () => {
+            mascotBubble.textContent = item.msg;
+            mascotWaveAction();
+          },
+          onEnterBack: () => {
+            mascotBubble.textContent = item.msg;
+            mascotWaveAction();
+          }
+        });
+      });
+
+      // 5. CAKE TAPPING & CANDLE LIGHTING
+      const paperCakeContainer = document.getElementById('paperCakeContainer');
+      const paperCakeSvg = document.getElementById('paperCakeSvg');
+      let cakeWobbling = false;
+
+      paperCakeContainer.addEventListener('click', () => {
+        if (cakeWobbling) return;
+        cakeWobbling = true;
+        sound.playBoing();
+        sound.playSparkle();
+
+        // Squash and elastic bounce
+        gsap.timeline({
+          onComplete: () => { cakeWobbling = false; }
+        })
+        .to(paperCakeSvg, { scaleX: 1.18, scaleY: 0.85, duration: 0.12, ease: 'power2.out' })
+        .to(paperCakeSvg, { scaleX: 0.9, scaleY: 1.15, rotate: -4, duration: 0.18, ease: 'power1.inOut' })
+        .to(paperCakeSvg, { scaleX: 1.05, scaleY: 0.95, rotate: 3, duration: 0.16, ease: 'power1.inOut' })
+        .to(paperCakeSvg, { scaleX: 1, scaleY: 1, rotate: 0, duration: 0.3, ease: 'elastic.out(1.2, 0.4)' });
+
+        // Flickering candle ignition effect
+        const flames = [1, 2, 3, 4, 5];
+        flames.forEach((num, idx) => {
+          const flameEl = document.getElementById(`flame${num}`);
+          if (flameEl) {
+            gsap.fromTo(flameEl, 
+              { scale: 0.2, opacity: 0 }, 
+              { scale: 1.3, opacity: 1, delay: idx * 0.08, duration: 0.3, ease: 'back.out(2)' }
+            );
+          }
+        });
+
+        // Confetti puff from cake top
+        const rect = paperCakeContainer.getBoundingClientRect();
+        confetti({
+          particleCount: 30,
+          spread: 55,
+          origin: {
+            x: (rect.left + rect.width / 2) / window.innerWidth,
+            y: (rect.top + 60) / window.innerHeight
+          },
+          colors: ['#f472b6', '#fde047', '#38bdf8', '#34d399']
+        });
+      });
+
+      // 6. MAP PIN DROP TRIGGER
+      ScrollTrigger.create({
+        trigger: '#act4',
+        start: 'top 70%',
+        onEnter: () => {
+          const pin = document.getElementById('paperMapPin');
+          sound.playBoing();
+          gsap.fromTo(pin, 
+            { y: -120, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.8, ease: 'bounce.out' }
+          );
+        }
+      });
+
+      // 7. GOLDEN TICKET RSVP MODAL & PERFORATED TEAR ANIMATION
+      const interactiveTicket = document.getElementById('interactiveTicket');
+      const heroRsvpTrigger = document.getElementById('heroRsvpTrigger');
+      const rsvpModal = document.getElementById('rsvpModal');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      const rsvpForm = document.getElementById('rsvpForm');
+      const rsvpSuccessCard = document.getElementById('rsvpSuccessCard');
+      const successDoneBtn = document.getElementById('successDoneBtn');
+      const guestMinusBtn = document.getElementById('guestMinusBtn');
+      const guestPlusBtn = document.getElementById('guestPlusBtn');
+      const guestCountDisplay = document.getElementById('guestCountDisplay');
+      const attendYesBtn = document.getElementById('attendYesBtn');
+      const attendNoBtn = document.getElementById('attendNoBtn');
+
+      let guestCount = 2;
+      let isAttending = true;
+
+      guestMinusBtn.addEventListener('click', () => {
+        if (guestCount > 1) {
+          guestCount--;
+          guestCountDisplay.textContent = guestCount;
+          sound.playRustle();
+        }
+      });
+
+      guestPlusBtn.addEventListener('click', () => {
+        if (guestCount < 8) {
+          guestCount++;
+          guestCountDisplay.textContent = guestCount;
+          sound.playRustle();
+        }
+      });
+
+      attendYesBtn.addEventListener('click', () => {
+        isAttending = true;
+        attendYesBtn.className = 'py-2.5 px-3 rounded-2xl border-2 border-emerald-600 bg-emerald-100 text-emerald-900 font-fun font-bold text-sm shadow-sm flex items-center justify-center space-x-1';
+        attendNoBtn.className = 'py-2.5 px-3 rounded-2xl border-2 border-slate-300 bg-slate-100 text-slate-700 font-fun font-bold text-sm shadow-sm flex items-center justify-center space-x-1';
+        sound.playRustle();
+      });
+
+      attendNoBtn.addEventListener('click', () => {
+        isAttending = false;
+        attendNoBtn.className = 'py-2.5 px-3 rounded-2xl border-2 border-amber-600 bg-amber-100 text-amber-900 font-fun font-bold text-sm shadow-sm flex items-center justify-center space-x-1';
+        attendYesBtn.className = 'py-2.5 px-3 rounded-2xl border-2 border-slate-300 bg-slate-100 text-slate-700 font-fun font-bold text-sm shadow-sm flex items-center justify-center space-x-1';
+        sound.playRustle();
+      });
+
+      function openModal() {
+        sound.playRustle();
+        rsvpModal.classList.remove('hidden');
+      }
+
+      function closeModal() {
+        rsvpModal.classList.add('hidden');
+      }
+
+      interactiveTicket.addEventListener('click', openModal);
+      heroRsvpTrigger.addEventListener('click', openModal);
+      closeModalBtn.addEventListener('click', closeModal);
+
+      // RSVP SUBMISSION WITH TEAR-OFF LINE ANIMATION
+      rsvpForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        sound.playTear(); // Crisp paper rip sound
+        sound.playSparkle();
+
+        // Mascot happy jump
+        gsap.to(paperMascot, {
+          y: -40,
+          repeat: 4,
+          yoyo: true,
+          duration: 0.2,
+          ease: 'power1.inOut',
+          onComplete: () => {
+            paperMascot.style.transform = 'translateY(0)';
+          }
+        });
+
+        // Split & animate perforated ticket separation
+        const submitBtn = document.getElementById('submitRsvpBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>✂️ TEARING TICKET...</span>';
+
+        setTimeout(() => {
+          rsvpForm.classList.add('hidden');
+          rsvpSuccessCard.classList.remove('hidden');
+
+          // Full blast paper confetti eruption
+          confetti({
+            particleCount: 100,
+            spread: 90,
+            origin: { y: 0.5 },
+            colors: ['#ffd451', '#f472b6', '#38bdf8', '#10b981', '#f97316']
+          });
+        }, 500);
+      });
+
+      successDoneBtn.addEventListener('click', () => {
+        closeModal();
+      });
+
+    });
+  </script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body></html>

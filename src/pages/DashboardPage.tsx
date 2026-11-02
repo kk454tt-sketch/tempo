@@ -10,7 +10,7 @@ import { EventWebsite } from '@/types';
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isPremiumActive, subscription } = useAuth();
   const [websites, setWebsites] = useState<EventWebsite[]>([]);
   const [loadingWebsites, setLoadingWebsites] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,10 +19,10 @@ export const DashboardPage: React.FC = () => {
   const [toastVisible, setToastVisible] = useState(false);
 
   const loadWebsites = async () => {
-    const effectiveUserId = user?.id || 'usr_tempo_demo_01';
+    if (!user?.id) { setWebsites([]); setLoadingWebsites(false); return; }
     setLoadingWebsites(true);
     try {
-      const list = await eventService.getUserWebsites(effectiveUserId);
+      const list = await eventService.getUserWebsites(user.id);
       setWebsites(list);
     } catch (e) {
       console.error('Failed to load user websites:', e);
@@ -56,8 +56,8 @@ export const DashboardPage: React.FC = () => {
   };
 
   const handleDuplicate = async (site: EventWebsite) => {
-    const effectiveUserId = user?.id || 'usr_tempo_demo_01';
-    const duplicate = await eventService.duplicateWebsite(site.id, effectiveUserId);
+    if (!user?.id) return;
+    const duplicate = await eventService.duplicateWebsite(site.id, user.id);
     if (duplicate) {
       await loadWebsites();
       triggerToast(`Duplicate created: ${duplicate.title}`);
@@ -65,8 +65,8 @@ export const DashboardPage: React.FC = () => {
   };
 
   const handleDelete = async (site: EventWebsite) => {
-    const effectiveUserId = user?.id || 'usr_tempo_demo_01';
-    const success = await eventService.deleteWebsite(site.id, effectiveUserId);
+    if (!user?.id) return;
+    const success = await eventService.deleteWebsite(site.id, user.id);
     if (success) {
       await loadWebsites();
       triggerToast(`Site deleted`);
@@ -81,36 +81,26 @@ export const DashboardPage: React.FC = () => {
 
     if (!matchesSearch) return false;
     if (filterType === 'all') return true;
-    if (filterType === 'student')
-      return (
-        w.eventType.toLowerCase().includes('student') ||
-        w.eventType.toLowerCase().includes('campus') ||
-        w.templateId.includes('enrolldesk')
-      );
-    if (filterType === 'wedding') return w.eventType.toLowerCase() === 'wedding';
     if (filterType === 'birthday') return w.eventType.toLowerCase() === 'birthday';
+    if (filterType === 'wedding') return w.eventType.toLowerCase() === 'wedding';
     if (filterType === 'gatherings')
       return (
         w.eventType.toLowerCase().includes('party') ||
         w.eventType.toLowerCase().includes('dinner') ||
-        w.eventType.toLowerCase().includes('opening')
+        w.eventType.toLowerCase().includes('opening') ||
+        w.eventType.toLowerCase().includes('portfolio')
       );
     return true;
   });
 
-  const studentCount = websites.filter(
-    (w) =>
-      w.eventType.toLowerCase().includes('student') ||
-      w.eventType.toLowerCase().includes('campus') ||
-      w.templateId.includes('enrolldesk')
-  ).length;
   const weddingCount = websites.filter((w) => w.eventType.toLowerCase() === 'wedding').length;
   const birthdayCount = websites.filter((w) => w.eventType.toLowerCase() === 'birthday').length;
   const gatheringCount = websites.filter(
     (w) =>
       w.eventType.toLowerCase().includes('party') ||
       w.eventType.toLowerCase().includes('dinner') ||
-      w.eventType.toLowerCase().includes('opening')
+      w.eventType.toLowerCase().includes('opening') ||
+      w.eventType.toLowerCase().includes('portfolio')
   ).length;
 
   return (
@@ -130,6 +120,19 @@ export const DashboardPage: React.FC = () => {
                   <span>Creator Studio</span>
                   <span>/</span>
                   <span className="text-primary font-semibold">{user?.name || 'Creator'}</span>
+                  {isPremiumActive ? (
+                    <span className="ml-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[11px] font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      1-Month Premium Active · Expires {subscription?.expiresAt ? new Date(subscription.expiresAt).toLocaleDateString() : 'Active'}
+                    </span>
+                  ) : (
+                    <Link
+                      to="/plans"
+                      className="ml-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-950/50 border border-amber-500/40 text-amber-300 hover:bg-amber-900/60 text-[11px] font-medium transition-colors"
+                    >
+                      <span>Free Plan · Upgrade to Pro →</span>
+                    </Link>
+                  )}
                 </div>
                 <div className="flex items-baseline gap-space-md flex-wrap mt-space-xs">
                   <h1 className="font-display-lg text-display-lg text-on-surface tracking-tight">
@@ -182,16 +185,7 @@ export const DashboardPage: React.FC = () => {
                 >
                   All ({websites.length})
                 </button>
-                <button
-                  onClick={() => setFilterType('student')}
-                  className={`px-space-md py-1.5 rounded-full font-label-sm text-label-sm tracking-wider uppercase transition-colors cursor-pointer ${
-                    filterType === 'student'
-                      ? 'bg-primary-container text-on-primary shadow-sm font-semibold'
-                      : 'bg-surface-container-lowest hover:bg-surface-container text-on-surface-variant'
-                  }`}
-                >
-                  Student Hubs ({studentCount})
-                </button>
+
                 <button
                   onClick={() => setFilterType('wedding')}
                   className={`px-space-md py-1.5 rounded-full font-label-sm text-label-sm tracking-wider uppercase transition-colors cursor-pointer ${
@@ -296,34 +290,34 @@ export const DashboardPage: React.FC = () => {
                     <span className="font-label-sm text-label-sm text-on-surface uppercase tracking-wider font-semibold">
                       Quick starting canvases
                     </span>
-                    <div className="grid grid-cols-2 gap-space-sm">
+                                        <div className="grid grid-cols-2 gap-space-sm">
                       <button
-                        onClick={() => navigate('/create/enrolldesk-01')}
-                        className="flex items-center gap-space-xs p-space-sm bg-surface-container-lowest hover:bg-surface-container rounded-xl shadow-sm text-on-surface font-body-sm text-body-sm transition-colors cursor-pointer text-left border border-[#C9982F]/40"
+                        onClick={() => navigate('/create/keepsake-birthday-scrapbook')}
+                        className="flex items-center gap-space-xs p-space-sm bg-surface-container-lowest hover:bg-surface-container rounded-xl shadow-sm text-on-surface font-body-sm text-body-sm transition-colors cursor-pointer text-left border border-primary/40"
                       >
-                        <span className="material-symbols-outlined text-[18px] text-[#C9982F]">school</span>
-                        <span className="font-semibold text-[#182449]">EnrollDesk Hub</span>
+                        <span className="material-symbols-outlined text-[18px] text-primary">celebration</span>
+                        <span className="font-semibold text-primary">Stitch Keepsake</span>
                       </button>
                       <button
-                        onClick={() => navigate('/create/wedding-01')}
+                        onClick={() => navigate('/create/cinematic-elena-julian-wedding')}
                         className="flex items-center gap-space-xs p-space-sm bg-surface-container-lowest hover:bg-surface-container rounded-xl shadow-sm text-on-surface font-body-sm text-body-sm transition-colors cursor-pointer text-left"
                       >
                         <span className="material-symbols-outlined text-[18px] text-primary">favorite</span>
-                        <span>Wedding</span>
+                        <span>Cinematic Wedding</span>
                       </button>
                       <button
-                        onClick={() => navigate('/create/birthday-01')}
+                        onClick={() => navigate('/create/royal-luxury-envelope')}
                         className="flex items-center gap-space-xs p-space-sm bg-surface-container-lowest hover:bg-surface-container rounded-xl shadow-sm text-on-surface font-body-sm text-body-sm transition-colors cursor-pointer text-left"
                       >
-                        <span className="material-symbols-outlined text-[18px] text-tertiary">cake</span>
-                        <span>Birthday</span>
+                        <span className="material-symbols-outlined text-[18px] text-tertiary">mark_email_unread</span>
+                        <span>Royal Wax Envelope</span>
                       </button>
                       <button
-                        onClick={() => navigate('/create/opening-01')}
+                        onClick={() => navigate('/create/midsummer-evening-invitation')}
                         className="flex items-center gap-space-xs p-space-sm bg-surface-container-lowest hover:bg-surface-container rounded-xl shadow-sm text-on-surface font-body-sm text-body-sm transition-colors cursor-pointer text-left"
                       >
-                        <span className="material-symbols-outlined text-[18px] text-secondary">storefront</span>
-                        <span>Opening</span>
+                        <span className="material-symbols-outlined text-[18px] text-secondary">local_florist</span>
+                        <span>Midsummer Evening</span>
                       </button>
                     </div>
 

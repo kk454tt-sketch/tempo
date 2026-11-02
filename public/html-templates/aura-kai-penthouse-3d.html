@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>AURA // KAI'S 25TH BASH • VIP 3D PASS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Space+Grotesk:wght@600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<style>
+    :root {
+      --bg-dark: #050508;
+      --neon-cyan: #00F0FF;
+      --neon-violet: #8A2BE2;
+      --neon-pink: #FF007A;
+      --molten-gold: #FFD700;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    .font-syne { font-family: 'Syne', sans-serif; }
+    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+    .font-space { font-family: 'Space Grotesk', sans-serif; }
+
+    /* Moving Marquee Loop */
+    @keyframes marqueeRight {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes marqueeLeft {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0%); }
+    }
+
+    .animate-marquee-right {
+      display: flex;
+      width: 200%;
+      animation: marqueeRight 24s linear infinite;
+    }
+    .animate-marquee-left {
+      display: flex;
+      width: 200%;
+      animation: marqueeLeft 22s linear infinite;
+    }
+
+    /* Giant 3D Backdrop Number Pulse */
+    @keyframes pulse3D {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1) rotate(-3deg);
+        filter: drop-shadow(0 0 50px rgba(138, 43, 226, 0.35)) drop-shadow(0 0 100px rgba(0, 240, 255, 0.2));
+        opacity: 0.16;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.08) rotate(1deg);
+        filter: drop-shadow(0 0 90px rgba(255, 0, 122, 0.45)) drop-shadow(0 0 160px rgba(0, 240, 255, 0.35));
+        opacity: 0.26;
+      }
+    }
+
+    .giant-backdrop-number {
+      animation: pulse3D 8s ease-in-out infinite;
+    }
+
+    /* Liquid Gradient Metallic Text */
+    .liquid-gradient-text {
+      background: linear-gradient(135deg, #ffffff 0%, #00F0FF 25%, #FF007A 50%, #FFD700 75%, #ffffff 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: liquidShift 6s ease infinite;
+    }
+
+    @keyframes liquidShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Glassmorphism Card 3D Perspective */
+    .perspective-container {
+      perspective: 1200px;
+    }
+
+    .card-3d-wrapper {
+      transform-style: preserve-3d;
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+    }
+
+    .card-flip-inner {
+      transform-style: preserve-3d;
+      transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-flip-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Holographic Foil Shimmer */
+    .holo-sheen {
+      background: linear-gradient(105deg, 
+        transparent 20%, 
+        rgba(255, 255, 255, 0.15) 35%, 
+        rgba(0, 240, 255, 0.35) 45%, 
+        rgba(255, 0, 122, 0.3) 55%, 
+        transparent 70%);
+      background-size: 200% 200%;
+      pointer-events: none;
+      animation: holoSweep 7s infinite linear;
+    }
+
+    @keyframes holoSweep {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Pulsing Pin Ring */
+    @keyframes pulseRing {
+      0% { transform: scale(0.9); opacity: 0.9; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+    .pulse-ring-fx {
+      animation: pulseRing 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    /* Staggered Motion Blur Entrance */
+    @keyframes motionReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+        filter: blur(12px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+      }
+    }
+
+    .reveal-delay-1 { animation: motionReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .reveal-delay-2 { animation: motionReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
+    .reveal-delay-3 { animation: motionReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+    .reveal-delay-4 { animation: motionReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both; }
+
+    /* Custom Slider Grip styling */
+    .slider-track {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+    }
+  </style>
+
+<style id="tempo-responsive-override">
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  /* Prevent animated ping or oversized elements from overflowing viewport */
+  .animate-ping {
+    max-width: 100% !important;
+  }
+</style>
+
+</head>
+<body class="relative min-h-screen text-white flex flex-col justify-between selection:bg-cyan-400 selection:text-black overflow-hidden">
+<!-- TIER 3 WEBGL SHADER: LIQUID GRADIENT MESH BACKGROUND -->
+<!-- STITCH_SHADER_START:ANIMATION_5 class="fixed inset-0 w-full h-full pointer-events-none z-0" -->
+<div class="fixed inset-0 w-full h-full pointer-events-none z-0" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_5" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_5');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+
+// Simplex-inspired 2D noise & liquid gradient mesh
+vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+
+float snoise(vec2 v) {
+    const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
+                        0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
+                       -0.577350269189626,  // -1.0 + 2.0 * C.x
+                        0.024390243902439); // 1.0 / 41.0
+    vec2 i  = floor(v + dot(v, C.yy) );
+    vec2 x0 = v -   i + dot(i, C.xx);
+    vec2 i1;
+    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+    vec4 x12 = x0.xyxy + C.xxzz;
+    x12.xy -= i1;
+    i = mod289(i);
+    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+        + i.x + vec3(0.0, i1.x, 1.0 ));
+    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+    m = m*m ;
+    m = m*m ;
+    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+    vec3 h = abs(x) - 0.5;
+    vec3 ox = floor(x + 0.5);
+    vec3 a0 = x - ox;
+    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+    vec3 g;
+    g.x  = a0.x  * x0.x  + h.x  * x0.y;
+    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+    return 130.0 * dot(m, g);
+}
+
+void main() {
+    vec2 st = gl_FragCoord.xy / u_resolution.xy;
+    vec2 mouse = u_mouse / u_resolution.xy;
+    if (u_mouse.x == 0.0 && u_mouse.y == 0.0) {
+        mouse = vec2(0.5, 0.5);
+    }
+    
+    // Coordinates centered
+    vec2 p = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+    vec2 mPos = (mouse * 2.0 - 1.0);
+    
+    float t = u_time * 0.35;
+    
+    // Liquid warp calculation
+    float q = snoise(p * 1.2 + vec2(t * 0.4, -t * 0.2) + mPos * 0.3);
+    float r = snoise(p * 1.8 + vec2(-t * 0.3, t * 0.5) + vec2(q * 1.5, q));
+    float s = snoise(p * 2.5 + vec2(r * 1.2, -r * 0.8) + vec2(cos(t * 0.5), sin(t * 0.5)));
+    
+    // Distance to interactive mouse aura
+    float distMouse = length(p - mPos);
+    float mouseGlow = smoothstep(1.2, 0.0, distMouse) * 0.6;
+    
+    // Color stops: Deep dark void (#050508), Cyber Violet (#8A2BE2), Neon Cyan (#00F0FF), Hot Pink (#FF007A), Radiant Gold (#FFD700)
+    vec3 bgVoid = vec3(0.019, 0.019, 0.031);
+    vec3 neonCyan = vec3(0.0, 0.94, 1.0);
+    vec3 neonViolet = vec3(0.54, 0.17, 0.92);
+    vec3 neonMagenta = vec3(1.0, 0.0, 0.48);
+    vec3 moltenGold = vec3(1.0, 0.84, 0.0);
+    
+    // Blend organic liquid waves
+    vec3 color = bgVoid;
+    color = mix(color, neonViolet, smoothstep(-0.6, 0.8, q) * 0.55);
+    color = mix(color, neonMagenta, smoothstep(-0.4, 0.9, r) * 0.45);
+    color = mix(color, neonCyan, smoothstep(-0.2, 1.0, s) * 0.4);
+    
+    // Mouse interaction dynamic flare
+    color += mix(neonCyan, moltenGold, sin(t + distMouse * 3.0) * 0.5 + 0.5) * mouseGlow;
+    
+    // Vignette towards edge for infinite luxury void
+    float vignette = 1.0 - smoothstep(0.4, 1.6, length(p));
+    color *= mix(0.3, 1.15, vignette);
+    
+    // Film grain / micro-dither
+    float dither = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898,78.233))) * 43758.5453) * 0.025;
+    color += vec3(dither);
+    
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_5 -->
+<!-- AMBIENT SCANLINE / LUXE OVERLAYS -->
+<div class="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_rgba(5,5,8,0.85)_100%)] pointer-events-none z-0"></div>
+<!-- GIANT 3D GLOWING BACKDROP NUMBER: "25" -->
+<div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
+<div class="giant-backdrop-number font-syne text-[26rem] sm:text-[34rem] md:text-[42rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white/30 via-violet-500/10 to-transparent leading-none">
+      25
+    </div>
+</div>
+<!-- TOP KINETIC MARQUEE LOOP -->
+<header class="relative z-20 w-full py-3.5 border-b border-white/10 backdrop-blur-md bg-black/30 overflow-hidden">
+<div class="animate-marquee-right whitespace-nowrap text-xs sm:text-sm font-mono-code uppercase tracking-[0.25em] text-white/70">
+<span class="mx-6">★ JOIN THE PARTY</span>
+<span class="mx-6 text-cyan-400">● SPECIAL NIGHT</span>
+<span class="mx-6">SAVE THE DATE // OCT 28</span>
+<span class="mx-6 text-pink-500">◆ STRICT VIP ACCESS ONLY</span>
+<span class="mx-6 text-amber-300">▲ SKYLINE CLUB PENTHOUSE</span>
+<span class="mx-6">★ JOIN THE PARTY</span>
+<span class="mx-6 text-cyan-400">● SPECIAL NIGHT</span>
+<span class="mx-6">SAVE THE DATE // OCT 28</span>
+<span class="mx-6 text-pink-500">◆ STRICT VIP ACCESS ONLY</span>
+<span class="mx-6 text-amber-300">▲ SKYLINE CLUB PENTHOUSE</span>
+</div>
+</header>
+<!-- MAIN EXPERIENCE: FLOATING 3D GLASSMORPHISM CARD -->
+<main class="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-6 py-6 perspective-container">
+<div class="card-3d-wrapper w-full max-w-lg md:max-w-xl transition-all duration-300" id="card3D">
+<div class="card-flip-inner relative w-full" id="cardFlipper">
+<!-- ================= FRONT: INVITATION HERO PASS ================= -->
+<div class="card-front relative rounded-3xl p-6 sm:p-9 bg-neutral-950/70 border border-white/20 shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_80px_rgba(138,43,226,0.35)] backdrop-blur-2xl overflow-hidden">
+<!-- Holographic Shimmer Layer -->
+<div class="holo-sheen absolute inset-0 z-0"></div>
+<!-- Top Status Bar & Sound Indicator -->
+<div class="relative z-10 flex items-center justify-between pb-5 border-b border-white/10 reveal-delay-1">
+<div class="flex items-center gap-2.5">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-400 shadow-[0_0_12px_#00F0FF]"></span>
+</span>
+<span class="font-mono-code text-[11px] tracking-widest text-cyan-300 font-bold uppercase">SECURED PASS // ID-2598</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono-code font-bold tracking-wider bg-white/10 text-white/90 border border-white/15">
+                TIER-0 VIP
+              </span>
+<!-- Hologram Chip Emblem -->
+<div class="w-7 h-5 rounded bg-gradient-to-tr from-amber-400/80 via-yellow-200 to-amber-600 border border-amber-300/60 shadow-[0_0_10px_rgba(255,215,0,0.4)] flex items-center justify-center">
+<div class="w-4 h-2.5 border border-black/30 rounded-xs"></div>
+</div>
+</div>
+</div>
+<!-- Central Title & Subtitle Badge -->
+<div class="relative z-10 py-7 text-center reveal-delay-2">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-violet-600/30 to-pink-600/30 border border-violet-400/30 text-white/90 text-xs font-mono-code tracking-widest uppercase mb-3 shadow-[0_0_20px_rgba(138,43,226,0.3)]">
+<span>✦ CHAPTER XXV CELEBRATION ✦</span>
+</div>
+<!-- Huge Bold Liquid Metallic Title -->
+<h1 class="liquid-gradient-text font-syne text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight uppercase leading-none drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]">
+              KAI'S BASH
+            </h1>
+</div>
+<!-- Grid of 3 Interactive Visual Badges / Pills -->
+<div class="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3 my-4 reveal-delay-3">
+<!-- Pill 1: Date -->
+<div class="group relative rounded-2xl p-4 bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 hover:border-cyan-400/50 transition-all duration-300 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-[0_0_25px_rgba(0,240,255,0.25)] hover:-translate-y-0.5 cursor-pointer">
+<span class="text-xs font-mono-code text-cyan-300 tracking-wider mb-1 flex items-center gap-1.5">
+<span class="text-sm">📅</span> DATE
+              </span>
+<span class="font-syne text-2xl font-black text-white tracking-wide group-hover:text-cyan-300 transition-colors">
+                OCT 28
+              </span>
+<span class="text-[10px] font-mono-code text-white/50 tracking-widest mt-0.5">SATURDAY</span>
+</div>
+<!-- Pill 2: Time with Live Countdown -->
+<div class="group relative rounded-2xl p-4 bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 hover:border-pink-500/50 transition-all duration-300 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-[0_0_25px_rgba(255,0,122,0.25)] hover:-translate-y-0.5 cursor-pointer">
+<span class="text-xs font-mono-code text-pink-400 tracking-wider mb-1 flex items-center gap-1.5">
+<span class="text-sm">⏰</span> TIME
+              </span>
+<span class="font-syne text-2xl font-black text-white tracking-wide group-hover:text-pink-400 transition-colors">
+                08:00 PM
+              </span>
+<div class="mt-0.5 px-2 py-0.5 rounded-full bg-pink-500/20 border border-pink-500/40 text-[9px] font-mono-code text-pink-200 tracking-widest font-bold animate-pulse" id="countdownBadge">
+                T-MINUS 18D 04H
+              </div>
+</div>
+<!-- Pill 3: Venue with Interactive Pulse Pin -->
+<div class="group relative rounded-2xl p-4 bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 hover:border-amber-400/50 transition-all duration-300 flex flex-col items-center justify-center text-center shadow-lg hover:shadow-[0_0_25px_rgba(255,215,0,0.25)] hover:-translate-y-0.5 cursor-pointer">
+<span class="text-xs font-mono-code text-amber-300 tracking-wider mb-1 flex items-center gap-1.5">
+<span class="relative flex h-2 w-2">
+<span class="pulse-ring-fx absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-80"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-amber-400 shadow-[0_0_8px_#FFD700]"></span>
+</span>
+                LOCATION
+              </span>
+<span class="font-syne text-lg sm:text-xl font-black text-white tracking-tight group-hover:text-amber-300 transition-colors leading-tight">
+                SKYLINE CLUB
+              </span>
+<span class="text-[10px] font-mono-code text-white/50 tracking-widest mt-0.5">ROOFTOP FL 48</span>
+</div>
+</div>
+<!-- SLIDE TO CLAIM VIP PASS INTERACTIVE SLIDER -->
+<div class="relative z-10 mt-6 reveal-delay-4">
+<div class="slider-track relative w-full h-16 rounded-2xl p-1.5 flex items-center select-none overflow-hidden group" id="sliderWrapper">
+<!-- Subtle pulsing animated track gradient -->
+<div class="absolute inset-0 bg-gradient-to-r from-violet-600/30 via-cyan-500/25 to-pink-600/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+<!-- Track Label -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="font-mono-code text-xs sm:text-sm font-bold tracking-[0.22em] text-white/80 group-hover:text-white flex items-center gap-2 transition-colors" id="sliderText">
+                  SLIDE TO CLAIM VIP PASS <span class="text-cyan-400 animate-pulse text-base">➔</span>
+</span>
+</div>
+<!-- Draggable Slider Handle -->
+<div class="relative z-20 h-full w-24 sm:w-28 rounded-xl bg-gradient-to-r from-cyan-400 via-pink-500 to-amber-400 p-[1.5px] cursor-grab active:cursor-grabbing shadow-[0_0_25px_rgba(0,240,255,0.6)] flex items-center justify-center transition-all" id="sliderHandle">
+<div class="w-full h-full rounded-[10px] bg-neutral-950 flex items-center justify-center gap-1.5">
+<svg class="w-4 h-4 text-cyan-300 animate-bounce" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 5l7 7-7 7M5 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<span class="font-syne font-black text-xs tracking-wider text-white">VIP</span>
+</div>
+</div>
+<!-- Instant Trigger Pulse Alternative for Quick Click -->
+<button class="absolute right-2 z-20 px-3 py-1.5 rounded-lg text-[10px] font-mono-code uppercase tracking-widest bg-white/10 hover:bg-white/20 border border-white/20 text-white/70 hover:text-white transition-all sm:hidden" id="quickClaimBtn">
+                TAP VIP
+              </button>
+</div>
+<p class="text-center font-mono-code text-[10px] text-white/40 tracking-widest mt-2 uppercase">
+              • Tap or drag handle to claim your golden ticket •
+            </p>
+</div>
+</div>
+<!-- ================= BACK: 3D GOLDEN VIP TICKET PASS ================= -->
+<div class="card-back absolute inset-0 rounded-3xl p-6 sm:p-9 bg-neutral-950/85 border-2 border-amber-400/60 shadow-[0_30px_90px_rgba(0,0,0,0.9),0_0_100px_rgba(255,215,0,0.45)] backdrop-blur-3xl overflow-hidden flex flex-col justify-between">
+<!-- Golden Holographic Sheen -->
+<div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-yellow-200/5 to-transparent pointer-events-none"></div>
+<!-- Top Pass Header -->
+<div class="relative z-10 flex items-center justify-between pb-4 border-b border-amber-400/30">
+<div>
+<span class="font-mono-code text-[10px] tracking-widest text-amber-400 font-bold uppercase block">OFFICIAL ALL-ACCESS CREDENTIAL</span>
+<span class="font-syne text-xl sm:text-2xl font-black text-white tracking-wide">KAI'S BASH XXV</span>
+</div>
+<div class="text-right">
+<span class="px-3 py-1 rounded-full text-xs font-mono-code font-bold tracking-widest bg-amber-400 text-black shadow-[0_0_15px_#FFD700]">
+                CONFIRMED VIP
+              </span>
+<span class="block font-mono-code text-[10px] text-white/50 tracking-wider mt-1">PASS #KAI-0025-GOLD</span>
+</div>
+</div>
+<!-- Middle Pass Body: Interactive Barcode / Hologram -->
+<div class="relative z-10 my-4 p-5 rounded-2xl bg-white/[0.03] border border-amber-400/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+<!-- Left Info -->
+<div class="text-center sm:text-left space-y-1">
+<div class="text-xs font-mono-code text-white/50 uppercase tracking-widest">HOLDER CREDENTIAL</div>
+<div class="font-syne text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-100 to-amber-500">
+                HONORED GUEST
+              </div>
+<div class="text-xs font-mono-code text-cyan-300 flex items-center gap-1 justify-center sm:justify-start">
+<span>✦ ACCESS:</span>
+<span class="text-white font-bold">ALL ROOFTOP ZONES + OPEN BAR</span>
+</div>
+</div>
+<!-- Stylized Luxury QR Code Placeholder -->
+<div class="relative p-2.5 rounded-xl bg-black border border-amber-400/40 shadow-[0_0_20px_rgba(255,215,0,0.2)] flex flex-col items-center">
+<svg class="w-20 h-20 text-amber-300" fill="currentColor" viewbox="0 0 24 24">
+<path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14-2h4v2h-4v-2zm-4 2h2v2h-2v-2zm2 2h2v4h-2v-4zm2 2h2v2h-2v-2zm-4 2h2v2h-2v-2zm-2-6h2v2h-2v-2zm0 4h2v2h-2v-2z"></path>
+</svg>
+<span class="font-mono-code text-[9px] text-amber-300/80 tracking-widest mt-1">SCAN AT ENTRY</span>
+</div>
+</div>
+<!-- Pass Perks Badges -->
+<div class="relative z-10 grid grid-cols-3 gap-2 text-center">
+<div class="p-2 rounded-xl bg-white/[0.03] border border-white/10">
+<div class="text-[10px] font-mono-code text-white/50">DOORS</div>
+<div class="font-syne font-bold text-white text-xs sm:text-sm">08:00 PM</div>
+</div>
+<div class="p-2 rounded-xl bg-white/[0.03] border border-white/10">
+<div class="text-[10px] font-mono-code text-white/50">DRESS</div>
+<div class="font-syne font-bold text-amber-300 text-xs sm:text-sm">NOIR LUXE</div>
+</div>
+<div class="p-2 rounded-xl bg-white/[0.03] border border-white/10">
+<div class="text-[10px] font-mono-code text-white/50">PERK</div>
+<div class="font-syne font-bold text-cyan-300 text-xs sm:text-sm">CHAMPAGNE</div>
+</div>
+</div>
+<!-- Bottom Action Buttons: Save Pass / Flip Back -->
+<div class="relative z-10 pt-4 border-t border-amber-400/20 flex items-center justify-between gap-3">
+<button class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-mono-code tracking-wider text-white/80 hover:text-white transition-all flex items-center gap-1.5" id="flipBackBtn">
+<span>⟲</span> INVITATION
+            </button>
+<button class="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-black font-syne font-bold text-xs tracking-wider shadow-[0_0_20px_rgba(255,215,0,0.5)] transition-all flex items-center gap-1.5" id="addCalendarBtn">
+<span>★</span> ADD TO WALLET / CALENDAR
+            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BOTTOM KINETIC MARQUEE LOOP (REVERSE DIRECTION) -->
+<footer class="relative z-20 w-full py-3.5 border-t border-white/10 backdrop-blur-md bg-black/30 overflow-hidden">
+<div class="animate-marquee-left whitespace-nowrap text-xs sm:text-sm font-mono-code uppercase tracking-[0.25em] text-white/70">
+<span class="mx-6 text-amber-300">● 60FPS IMMERSIVE AUDIO-VISUAL NIGHT</span>
+<span class="mx-6">KAI'S BASH XXV</span>
+<span class="mx-6 text-cyan-400">★ SKYLINE CLUB ROOFTOP</span>
+<span class="mx-6 text-pink-500">◆ DRESS CODE: CYBER LUXE / ALL BLACK</span>
+<span class="mx-6 text-amber-300">● 60FPS IMMERSIVE AUDIO-VISUAL NIGHT</span>
+<span class="mx-6">KAI'S BASH XXV</span>
+<span class="mx-6 text-cyan-400">★ SKYLINE CLUB ROOFTOP</span>
+<span class="mx-6 text-pink-500">◆ DRESS CODE: CYBER LUXE / ALL BLACK</span>
+</div>
+</footer>
+<!-- INTERACTIVITY SCRIPT (3D TILT, DRAG SLIDER, FULL SCREEN GOLDEN CONFETTI SPARKLE) -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const card = document.getElementById('card3D');
+      const flipper = document.getElementById('cardFlipper');
+      const sliderWrapper = document.getElementById('sliderWrapper');
+      const sliderHandle = document.getElementById('sliderHandle');
+      const sliderText = document.getElementById('sliderText');
+      const flipBackBtn = document.getElementById('flipBackBtn');
+      const quickClaimBtn = document.getElementById('quickClaimBtn');
+      const addCalendarBtn = document.getElementById('addCalendarBtn');
+
+      let isFlipped = false;
+
+      // 1. 3D Tilt Effect on mouse movement
+      window.addEventListener('mousemove', (e) => {
+        if (isFlipped) return; // Keep ticket steady when claimed
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const dx = (e.clientX - cx) / cx;
+        const dy = (e.clientY - cy) / cy;
+
+        const tiltX = -dy * 12; // max 12 deg
+        const tiltY = dx * 14;  // max 14 deg
+
+        card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02)`;
+      });
+
+      window.addEventListener('mouseleave', () => {
+        if (!isFlipped) {
+          card.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        }
+      });
+
+      // 2. Confetti Explosion in Golden Sparks + Cyan Hologram
+      function triggerGoldSparkleExplosion() {
+        if (typeof confetti === 'function') {
+          // Multiple bursts for luxury celebration feel
+          const count = 200;
+          const defaults = {
+            origin: { y: 0.6 },
+            zIndex: 9999
+          };
+
+          function fire(particleRatio, opts) {
+            confetti(Object.assign({}, defaults, opts, {
+              particleCount: Math.floor(count * particleRatio)
+            }));
+          }
+
+          fire(0.25, {
+            spread: 26,
+            startVelocity: 55,
+            colors: ['#FFD700', '#FFA500', '#FFFFFF']
+          });
+          fire(0.2, {
+            spread: 60,
+            colors: ['#00F0FF', '#FF007A', '#FFD700']
+          });
+          fire(0.35, {
+            spread: 100,
+            decay: 0.91,
+            scalar: 0.8,
+            colors: ['#FFD700', '#FFE4B5', '#8A2BE2']
+          });
+          fire(0.1, {
+            spread: 120,
+            startVelocity: 25,
+            decay: 0.92,
+            scalar: 1.2,
+            colors: ['#FFD700', '#FFFFFF']
+          });
+          fire(0.1, {
+            spread: 120,
+            startVelocity: 45,
+            colors: ['#00F0FF', '#FFD700']
+          });
+        }
+      }
+
+      // 3. Claim Action: Flip into 3D VIP Ticket
+      function activateVipPass() {
+        if (isFlipped) return;
+        isFlipped = true;
+        
+        triggerGoldSparkleExplosion();
+
+        // Animate card flip
+        card.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        flipper.classList.add('is-flipped');
+      }
+
+      // Flip back to invitation
+      flipBackBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        isFlipped = false;
+        flipper.classList.remove('is-flipped');
+        resetSlider();
+      });
+
+      // Quick tap claim buttons
+      if (quickClaimBtn) {
+        quickClaimBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          activateVipPass();
+        });
+      }
+
+      addCalendarBtn.addEventListener('click', () => {
+        addCalendarBtn.innerHTML = '<span>✓</span> ADDED TO APPLE WALLET';
+        addCalendarBtn.classList.add('bg-green-400');
+        triggerGoldSparkleExplosion();
+      });
+
+      // 4. Slide to claim VIP Pass Drag logic
+      let isDragging = false;
+      let startX = 0;
+      let currentX = 0;
+
+      function resetSlider() {
+        sliderHandle.style.transform = 'translateX(0px)';
+        sliderHandle.style.transition = 'transform 0.3s ease';
+        sliderText.style.opacity = '1';
+      }
+
+      function onDragStart(clientX) {
+        if (isFlipped) return;
+        isDragging = true;
+        startX = clientX;
+        sliderHandle.style.transition = 'none';
+      }
+
+      function onDragMove(clientX) {
+        if (!isDragging || isFlipped) return;
+        const maxDist = sliderWrapper.clientWidth - sliderHandle.clientWidth - 12;
+        let delta = clientX - startX;
+        if (delta < 0) delta = 0;
+        if (delta > maxDist) delta = maxDist;
+
+        sliderHandle.style.transform = `translateX(${delta}px)`;
+        const progress = delta / maxDist;
+        sliderText.style.opacity = (1 - progress * 1.5).toString();
+
+        if (progress >= 0.92) {
+          isDragging = false;
+          activateVipPass();
+        }
+      }
+
+      function onDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        const maxDist = sliderWrapper.clientWidth - sliderHandle.clientWidth - 12;
+        const matrix = window.getComputedStyle(sliderHandle).transform;
+        if (matrix !== 'none') {
+          const values = matrix.split('(')[1].split(')')[0].split(',');
+          const currentDist = parseFloat(values[4]) || 0;
+          if (currentDist >= maxDist * 0.85) {
+            activateVipPass();
+          } else {
+            resetSlider();
+          }
+        } else {
+          resetSlider();
+        }
+      }
+
+      // Mouse events
+      sliderHandle.addEventListener('mousedown', (e) => onDragStart(e.clientX));
+      window.addEventListener('mousemove', (e) => onDragMove(e.clientX));
+      window.addEventListener('mouseup', onDragEnd);
+
+      // Touch events (Mobile support)
+      sliderHandle.addEventListener('touchstart', (e) => onDragStart(e.touches[0].clientX));
+      window.addEventListener('touchmove', (e) => onDragMove(e.touches[0].clientX));
+      window.addEventListener('touchend', onDragEnd);
+    });
+  </script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

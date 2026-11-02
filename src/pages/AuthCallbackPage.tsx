@@ -10,7 +10,7 @@ export const AuthCallbackPage: React.FC = () => {
     const handleAuthCallback = async () => {
       try {
         if (!isSupabaseConfigured) {
-          navigate('/dashboard', { replace: true });
+          navigate('/templates', { replace: true });
           return;
         }
 
@@ -30,21 +30,21 @@ export const AuthCallbackPage: React.FC = () => {
 
         if (data.session) {
           // Successfully established session
-          navigate('/dashboard', { replace: true });
+          navigate('/templates', { replace: true });
         } else {
           // If no immediate session, give onAuthStateChange a brief moment
           const { data: authListener } = supabase.auth.onAuthStateChange(
             (_event, session) => {
               if (session) {
                 authListener.subscription.unsubscribe();
-                navigate('/dashboard', { replace: true });
+                navigate('/templates', { replace: true });
               }
             }
           );
 
           setTimeout(() => {
             authListener.subscription.unsubscribe();
-            navigate('/dashboard', { replace: true });
+            navigate('/templates', { replace: true });
           }, 1500);
         }
       } catch (err) {
@@ -84,3 +84,4 @@ export const AuthCallbackPage: React.FC = () => {
     </div>
   );
 };
+

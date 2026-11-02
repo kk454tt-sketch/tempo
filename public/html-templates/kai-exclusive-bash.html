@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>KAI'S BASH • The Exclusive Invitation</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Space Grotesk & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            mono: ['Space Grotesk', 'monospace'],
+          },
+          colors: {
+            brand: {
+              dark: '#0B0B0E',
+              surface: '#121218',
+              accent: '#8B5CF6',
+              neon: '#06B6D4',
+              pink: '#EC4899',
+              gold: '#F59E0B',
+            }
+          },
+          animation: {
+            'blob-slow': 'blob 14s infinite alternate cubic-bezier(0.4, 0, 0.2, 1)',
+            'blob-reverse': 'blob-reverse 18s infinite alternate cubic-bezier(0.4, 0, 0.2, 1)',
+            'blob-subtle': 'blob-subtle 10s infinite alternate ease-in-out',
+            'float-slow': 'floating 6s ease-in-out infinite',
+            'pulse-glow': 'pulseGlow 2.5s infinite',
+            'shimmer': 'shimmer 3s linear infinite',
+          },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(60px, -50px) scale(1.15)' },
+              '66%': { transform: 'translate(-40px, 40px) scale(0.9)' },
+              '100%': { transform: 'translate(30px, 20px) scale(1.05)' },
+            },
+            'blob-reverse': {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(-50px, 60px) scale(1.1)' },
+              '66%': { transform: 'translate(45px, -30px) scale(0.95)' },
+              '100%': { transform: 'translate(-20px, -40px) scale(1.08)' },
+            },
+            'blob-subtle': {
+              '0%': { transform: 'scale(1) rotate(0deg)' },
+              '50%': { transform: 'scale(1.2) rotate(180deg)' },
+              '100%': { transform: 'scale(1) rotate(360deg)' },
+            },
+            floating: {
+              '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+              '50%': { transform: 'translateY(-12px) rotate(0.5deg)' },
+            },
+            pulseGlow: {
+              '0%, 100%': { boxShadow: '0 0 25px rgba(236,72,153,0.35), 0 0 60px rgba(139,92,246,0.25)' },
+              '50%': { boxShadow: '0 0 45px rgba(236,72,153,0.65), 0 0 95px rgba(6,182,212,0.45)' }
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 3D Perspective & Transform setup */
+    .perspective-container {
+      perspective: 1200px;
+    }
+    .preserve-3d {
+      transform-style: preserve-3d;
+    }
+    
+    /* Sleek Ultra Glassmorphism */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.025);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transition: all 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.22);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    /* Ambient noise overlay */
+    .bg-noise {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* Gradient Text with Shimmer */
+    .text-gradient-aurora {
+      background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 25%, #C084FC 50%, #38BDF8 75%, #F472B6 100%);
+      background-size: 250% 250%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 8s ease infinite;
+    }
+
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #FFF 0%, #FDE68A 40%, #F59E0B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Particle canvas */
+    #particle-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* 3D Title entrance staggered classes */
+    .hero-title-word {
+      opacity: 0;
+      transform: translateY(40px) translateZ(-60px) rotateX(25deg);
+      transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hero-title-word.revealed {
+      opacity: 1;
+      transform: translateY(0px) translateZ(0px) rotateX(0deg);
+    }
+  </style>
+
+<style id="tempo-responsive-override">
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  /* Prevent animated ping or oversized elements from overflowing viewport */
+  .animate-ping {
+    max-width: 100% !important;
+  }
+</style>
+
+</head>
+
+<body class="bg-[#0B0B0E] text-white min-h-screen overflow-x-hidden selection:bg-purple-500/30 selection:text-cyan-200 font-sans relative flex flex-col justify-between">
+
+  <!-- ================= AMBIENT BACKGROUND GLOW & ORBS ================= -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <!-- Ambient Gradient Orb 1: Violet/Purple -->
+    <div class="absolute -top-[15%] -left-[10%] w-[650px] h-[650px] md:w-[850px] md:h-[850px] rounded-full bg-gradient-to-tr from-purple-900/35 via-violet-600/25 to-pink-500/15 blur-[130px] animate-blob-slow"></div>
+    
+    <!-- Ambient Gradient Orb 2: Electric Cyan / Neon Teal -->
+    <div class="absolute top-[35%] -right-[15%] w-[600px] h-[600px] md:w-[800px] md:h-[800px] rounded-full bg-gradient-to-bl from-cyan-600/25 via-blue-700/20 to-purple-900/15 blur-[140px] animate-blob-reverse"></div>
+    
+    <!-- Ambient Gradient Orb 3: Vivid Hot Pink / Magenta Center Glow -->
+    <div class="absolute -bottom-[20%] left-[25%] w-[550px] h-[550px] md:w-[750px] md:h-[750px] rounded-full bg-gradient-to-r from-pink-600/20 via-rose-500/15 to-amber-500/10 blur-[150px] animate-blob-subtle"></div>
+
+    <!-- Micro Grid Noise texture -->
+    <div class="absolute inset-0 bg-noise opacity-30 mix-blend-overlay"></div>
+    
+    <!-- Subtle Vignette Frame -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(11,11,14,0.75)_100%)]"></div>
+  </div>
+
+  <!-- Interactive Canvas Particles -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ================= TOP ULTRA-MINIMAL STATUS BAR ================= -->
+  <header class="relative z-10 w-full px-8 py-7 flex items-center justify-between max-w-7xl mx-auto">
+    <!-- Brand / VIP Badge -->
+    <div class="flex items-center space-x-3">
+      <div class="relative flex items-center justify-center w-8 h-8 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        <span class="absolute w-2 h-2 rounded-full bg-cyan-400"></span>
+      </div>
+      <span class="text-xs font-mono tracking-[0.3em] uppercase text-zinc-400 font-semibold">VIP ACCESS ONLY • #0824</span>
+    </div>
+
+    <!-- Quick Audio Ambience / Volume Toggle (Ambient Night Vibe Simulation) -->
+    <button id="sound-btn" onclick="toggleSound()" class="group px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/10 hover:border-white/30 backdrop-blur-md text-zinc-400 hover:text-white transition-all text-xs font-mono flex items-center space-x-2">
+      <i data-lucide="volume-2" class="w-3.5 h-3.5 text-cyan-400"></i>
+      <span class="tracking-widest uppercase">SOUND: <span id="sound-state" class="text-white">ON</span></span>
+    </button>
+  </header>
+
+  <!-- ================= MAIN INVITATION VIEW ================= -->
+  <main class="relative z-10 flex-grow flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-10 max-w-6xl mx-auto w-full perspective-container">
+    
+    <!-- 3D MOTION HERO SECTION -->
+    <div class="text-center preserve-3d mb-12 md:mb-16">
+      
+      <!-- Staggered Revealing Sub-label -->
+      <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-purple-500/20 backdrop-blur-xl mb-6 shadow-lg shadow-purple-950/20 animate-float-slow">
+        <span class="text-[11px] md:text-xs font-mono uppercase tracking-[0.35em] text-purple-300 font-medium">PRIVATE CELEBRATION</span>
+        <span class="text-zinc-600">•</span>
+        <span class="text-[11px] md:text-xs font-mono uppercase tracking-[0.25em] text-cyan-400">OCTOBER SWELL</span>
+      </div>
+
+      <!-- 3D Reveal Headline -->
+      <h1 class="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight leading-[0.95] select-none">
+        <div class="overflow-hidden py-1">
+          <span id="title-line-1" class="hero-title-word block text-white/90 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
+            YOU'RE INVITED
+          </span>
+        </div>
+        <div class="overflow-hidden py-2">
+          <span id="title-line-2" class="hero-title-word block text-gradient-aurora drop-shadow-[0_20px_40px_rgba(139,92,246,0.35)] animate-float-slow">
+            KAI'S BASH
+          </span>
+        </div>
+      </h1>
+
+      <!-- Minimal Subtitle / Ambient Coordinates -->
+      <div id="hero-meta" class="mt-4 flex items-center justify-center space-x-4 text-xs font-mono text-zinc-500 tracking-[0.25em] uppercase opacity-0 transition-opacity duration-1000">
+        <span>21°24'N 157°49'W</span>
+        <span>•</span>
+        <span class="text-zinc-400">ONE NIGHT ONLY</span>
+      </div>
+    </div>
+
+    <!-- ================= 3 SLEEK FROSTED-GLASS CARDS ================= -->
+    <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-7 mb-14 md:mb-16">
+
+      <!-- CARD 1: 📅 OCT 24 -->
+      <div class="glass-card rounded-3xl p-8 relative overflow-hidden group flex flex-col justify-between min-h-[220px]">
+        <!-- Top Glow Highlight -->
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/35 transition-all"></div>
+        
+        <div class="flex items-center justify-between relative z-10">
+          <span class="text-xs font-mono uppercase tracking-[0.25em] text-purple-400 font-medium">DATE</span>
+          <div class="w-10 h-10 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-purple-300 group-hover:scale-110 group-hover:border-purple-400/50 transition-all">
+            <i data-lucide="calendar" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="relative z-10 mt-6">
+          <div class="text-4xl lg:text-5xl font-black tracking-tight text-white flex items-baseline space-x-2">
+            <span>OCT</span>
+            <span class="text-gradient-aurora">24</span>
+          </div>
+          <div class="text-xs font-mono uppercase tracking-[0.2em] text-zinc-400 mt-2 flex items-center space-x-2">
+            <span>FRIDAY NIGHT</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+            <span>2025</span>
+          </div>
+        </div>
+
+        <!-- Sleek Bottom Interactive Strip -->
+        <div class="mt-6 pt-4 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-mono text-zinc-400">
+          <span class="tracking-wider">CALENDAR SYNC</span>
+          <a href="#" onclick="addToCalendar(event)" class="text-cyan-400 hover:text-white transition-colors flex items-center space-x-1">
+            <span>.ICS FILE</span>
+            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- CARD 2: ⏰ 08:00 PM -->
+      <div class="glass-card rounded-3xl p-8 relative overflow-hidden group flex flex-col justify-between min-h-[220px]">
+        <!-- Top Glow Highlight -->
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl group-hover:bg-cyan-500/35 transition-all"></div>
+
+        <div class="flex items-center justify-between relative z-10">
+          <span class="text-xs font-mono uppercase tracking-[0.25em] text-cyan-400 font-medium">TIME</span>
+          <div class="w-10 h-10 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-cyan-300 group-hover:scale-110 group-hover:border-cyan-400/50 transition-all">
+            <i data-lucide="clock" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="relative z-10 mt-6">
+          <div class="text-4xl lg:text-5xl font-black tracking-tight text-white flex items-baseline space-x-2">
+            <span>08:00</span>
+            <span class="text-cyan-400 text-3xl lg:text-4xl">PM</span>
+          </div>
+          <div class="text-xs font-mono uppercase tracking-[0.2em] text-zinc-400 mt-2 flex items-center space-x-2">
+            <span>DOORS OPEN SHARP</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+            <span>TILL LATE</span>
+          </div>
+        </div>
+
+        <!-- Live Countdown Pill -->
+        <div class="mt-6 pt-4 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-mono text-zinc-400">
+          <span class="tracking-wider">COUNTDOWN</span>
+          <span id="countdown-timer" class="text-emerald-400 font-semibold tracking-widest">T-MINUS 24D 06H</span>
+        </div>
+      </div>
+
+      <!-- CARD 3: 📍 CLUB NEON -->
+      <div class="glass-card rounded-3xl p-8 relative overflow-hidden group flex flex-col justify-between min-h-[220px]">
+        <!-- Top Glow Highlight -->
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl group-hover:bg-pink-500/35 transition-all"></div>
+
+        <div class="flex items-center justify-between relative z-10">
+          <span class="text-xs font-mono uppercase tracking-[0.25em] text-pink-400 font-medium">VENUE</span>
+          <button onclick="openMapModal()" class="w-10 h-10 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-pink-400/50 flex items-center justify-center text-pink-400 group-hover:scale-110 group-hover:bg-pink-500/10 transition-all cursor-pointer title='Open Interactive Map'">
+            <i data-lucide="map-pin" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div class="relative z-10 mt-6">
+          <div class="text-3xl lg:text-4xl font-black tracking-tight text-white flex items-center space-x-2">
+            <span class="tracking-wide">CLUB NEON</span>
+          </div>
+          <div class="text-xs font-mono uppercase tracking-[0.2em] text-zinc-400 mt-2 flex items-center space-x-2">
+            <span>ROOFTOP LOUNGE</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
+            <span>HONOLULU</span>
+          </div>
+        </div>
+
+        <!-- Interactive Map Trigger -->
+        <div class="mt-6 pt-4 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-mono text-zinc-400">
+          <span class="tracking-wider">VALET PARKING</span>
+          <button onclick="openMapModal()" class="text-pink-400 hover:text-white transition-colors flex items-center space-x-1 font-semibold">
+            <span>GET DIRECTIONS</span>
+            <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= INTERACTIVE CALL TO ACTION ================= -->
+    <div class="relative z-20 flex flex-col items-center">
+      
+      <!-- Attending Action Button -->
+      <button 
+        id="rsvp-button" 
+        onclick="handleRsvpClick()" 
+        class="group relative inline-flex items-center justify-center px-10 md:px-14 py-5 md:py-6 rounded-full font-mono font-bold tracking-[0.25em] text-sm md:text-base uppercase text-white overflow-hidden transition-all duration-300 transform active:scale-95 animate-pulse-glow"
+        style="background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 50%, #06B6D4 100%);"
+      >
+        <!-- Shimmering overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+        
+        <!-- Button inner glow border -->
+        <div class="absolute inset-[1px] rounded-full bg-[#0B0B0E]/60 backdrop-blur-sm transition-colors group-hover:bg-[#0B0B0E]/30"></div>
+
+        <!-- Button Content -->
+        <span class="relative z-10 flex items-center space-x-3 text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+          <span class="tracking-[0.25em]">ATTENDING?</span>
+          <i data-lucide="sparkles" class="w-5 h-5 text-yellow-300 group-hover:rotate-45 transition-transform"></i>
+        </span>
+      </button>
+
+      <!-- Confirmation Reveal Badge (Initially Hidden) -->
+      <div id="confirmation-badge" class="hidden mt-6 transform scale-90 opacity-0 transition-all duration-500 ease-out">
+        <div class="px-6 py-3 rounded-full bg-emerald-500/10 border border-emerald-500/30 backdrop-blur-xl flex items-center space-x-3 shadow-lg shadow-emerald-950/40">
+          <div class="w-6 h-6 rounded-full bg-emerald-400/20 flex items-center justify-center text-emerald-400">
+            <i data-lucide="check" class="w-4 h-4"></i>
+          </div>
+          <span class="text-xs md:text-sm font-mono tracking-widest uppercase text-emerald-300 font-semibold">
+            YOU'RE ON THE GUESTLIST • SEE YOU OCT 24
+          </span>
+        </div>
+      </div>
+
+      <!-- Guest Counter Ambience -->
+      <p id="guest-counter-text" class="mt-4 text-xs font-mono tracking-[0.25em] uppercase text-zinc-500 transition-all">
+        <span class="text-zinc-300 font-bold" id="guest-tally">84</span> GUESTS CONFIRMED
+      </p>
+    </div>
+
+  </main>
+
+  <!-- ================= SLEEK INTERACTIVE MAP MODAL ================= -->
+  <div id="map-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-300">
+    <div class="glass-card max-w-lg w-full rounded-3xl p-6 md:p-8 relative border border-white/20 transform scale-95 transition-all duration-300">
+      
+      <!-- Close Button -->
+      <button onclick="closeMapModal()" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-zinc-300 hover:text-white transition-all">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <div class="flex items-center space-x-3 mb-5">
+        <div class="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400">
+          <i data-lucide="map-pin" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold tracking-tight text-white">CLUB NEON ROOFTOP</h3>
+          <p class="text-xs font-mono text-zinc-400 tracking-wider">745 ALOHA BLVD, HONOLULU, HI</p>
+        </div>
+      </div>
+
+      <!-- Styled Dark Minimalist Map Mockup -->
+      <div class="relative w-full h-48 rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 flex items-center justify-center mb-6 group">
+        <!-- SVG Grid Background -->
+        <svg class="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="modal-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#8B5CF6" stroke-width="0.7"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#modal-grid)" />
+        </svg>
+
+        <!-- Simulated Stylized Map Roads -->
+        <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <path d="M-20 60 Q 150 40 250 110 T 520 80" fill="none" stroke="#38BDF8" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+          <path d="M120 -10 L 220 200" fill="none" stroke="#A855F7" stroke-width="3" stroke-dasharray="6,6" opacity="0.6"/>
+        </svg>
+
+        <!-- Animated Center Pin -->
+        <div class="relative z-10 flex flex-col items-center">
+          <div class="relative">
+            <span class="w-6 h-6 rounded-full bg-pink-500 animate-ping absolute inset-0 opacity-75"></span>
+            <div class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white shadow-[0_0_20px_#EC4899]">
+              <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+            </div>
+          </div>
+          <span class="mt-2 px-2.5 py-1 rounded bg-black/80 border border-white/20 text-[10px] font-mono text-white tracking-widest">
+            VALET ON LEVEL 1
+          </span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-2 gap-3">
+        <a href="https://maps.google.com" target="_blank" class="w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-center font-mono text-xs tracking-wider uppercase text-white transition-all flex items-center justify-center space-x-2">
+          <span>APPLE MAPS</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+        <a href="https://maps.google.com" target="_blank" class="w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-center font-mono text-xs tracking-wider uppercase text-white font-bold transition-all flex items-center justify-center space-x-2 shadow-lg shadow-purple-900/30">
+          <span>GOOGLE MAPS</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MINIMAL FOOTER ================= -->
+  <footer class="relative z-10 w-full px-8 py-6 text-center border-t border-white/[0.04]">
+    <div class="flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto text-[11px] font-mono text-zinc-600 tracking-[0.2em] uppercase">
+      <div>DRESS CODE: ELEVATED NOIR / NEON ACCENT</div>
+      <div class="mt-2 sm:mt-0 text-zinc-500">KAI'S BASH • ALL RIGHTS RESERVED</div>
+    </div>
+  </footer>
+
+  <!-- ================= LOGIC & ANIMATION ENGINE ================= -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // 1. Entrance Motion Reveal
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const line1 = document.getElementById('title-line-1');
+        const line2 = document.getElementById('title-line-2');
+        const meta = document.getElementById('hero-meta');
+
+        if (line1) line1.classList.add('revealed');
+        setTimeout(() => {
+          if (line2) line2.classList.add('revealed');
+        }, 250);
+        setTimeout(() => {
+          if (meta) meta.classList.remove('opacity-0');
+        }, 600);
+      }, 150);
+
+      initParticleSystem();
+      startCountdownTimer();
+    });
+
+    // 2. Subtle Floating Ambient Particle System
+    function initParticleSystem() {
+      const canvas = document.getElementById('particle-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let particles = [];
+      const particleCount = 45;
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.6 + 0.4,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: -Math.random() * 0.45 - 0.15,
+          alpha: Math.random() * 0.6 + 0.15,
+          color: ['#A855F7', '#38BDF8', '#EC4899', '#FFFFFF'][Math.floor(Math.random() * 4)]
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.y < 0) {
+            p.y = height + 10;
+            p.x = Math.random() * width;
+          }
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    // 3. Main CTA Attending Handler with Full Screen Confetti Explosion
+    let hasConfirmed = false;
+    function handleRsvpClick() {
+      const btn = document.getElementById('rsvp-button');
+      const badge = document.getElementById('confirmation-badge');
+      const tally = document.getElementById('guest-tally');
+
+      if (hasConfirmed) {
+        // Trigger celebratory confetti again!
+        fireConfettiBurst();
+        return;
+      }
+
+      hasConfirmed = true;
+
+      // Update tally
+      if (tally) {
+        let current = parseInt(tally.innerText) || 84;
+        tally.innerText = current + 1;
+      }
+
+      // Fire Massive Confetti Blast
+      fireConfettiBurst();
+
+      // Transform button & reveal badge
+      btn.classList.remove('animate-pulse-glow');
+      btn.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
+      btn.innerHTML = `
+        <span class="relative z-10 flex items-center space-x-2 text-white font-mono">
+          <span>SPOT SECURED</span>
+          <i data-lucide="check-circle" class="w-5 h-5 text-white"></i>
+        </span>
+      `;
+      lucide.createIcons();
+
+      // Show confirmation badge
+      if (badge) {
+        badge.classList.remove('hidden');
+        setTimeout(() => {
+          badge.classList.remove('scale-90', 'opacity-0');
+          badge.classList.add('scale-100', 'opacity-100');
+        }, 50);
+      }
+    }
+
+    function fireConfettiBurst() {
+      if (typeof confetti !== 'function') return;
+
+      // Center explosion
+      confetti({
+        particleCount: 90,
+        spread: 100,
+        origin: { y: 0.65 },
+        colors: ['#EC4899', '#8B5CF6', '#06B6D4', '#F59E0B', '#FFFFFF'],
+        ticks: 300,
+        gravity: 0.85,
+        scalar: 1.15
+      });
+
+      // Side fireworks cannons
+      setTimeout(() => {
+        confetti({
+          particleCount: 50,
+          angle: 60,
+          spread: 75,
+          origin: { x: 0.1, y: 0.75 },
+          colors: ['#06B6D4', '#8B5CF6', '#F472B6']
+        });
+        confetti({
+          particleCount: 50,
+          angle: 120,
+          spread: 75,
+          origin: { x: 0.9, y: 0.75 },
+          colors: ['#EC4899', '#38BDF8', '#FDE047']
+        });
+      }, 180);
+    }
+
+    // 4. Interactive Map Modal
+    function openMapModal() {
+      const modal = document.getElementById('map-modal');
+      if (modal) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100');
+        modal.children[0].classList.remove('scale-95');
+        modal.children[0].classList.add('scale-100');
+      }
+    }
+
+    function closeMapModal() {
+      const modal = document.getElementById('map-modal');
+      if (modal) {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.classList.remove('opacity-100');
+        modal.children[0].classList.add('scale-95');
+        modal.children[0].classList.remove('scale-100');
+      }
+    }
+
+    // 5. Calendar File (.ics) Generation
+    function addToCalendar(e) {
+      e.preventDefault();
+      const icsData = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "BEGIN:VEVENT",
+        "SUMMARY:Kai's Birthday Bash @ Club Neon",
+        "DESCRIPTION:Ultra-exclusive private celebration with music, cocktails, and night rooftop views.",
+        "LOCATION:Club Neon Rooftop, 745 Aloha Blvd, Honolulu, HI",
+        "DTSTART:20251024T200000Z",
+        "DTEND:20251025T030000Z",
+        "STATUS:CONFIRMED",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ].join("\r\n");
+
+      const blob = new Blob([icsData], { type: "text/calendar;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute("download", "Kais_Bash_Oct24.ics");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // 6. Sound / Ambiance Mock toggle
+    let soundOn = true;
+    function toggleSound() {
+      soundOn = !soundOn;
+      const stateEl = document.getElementById('sound-state');
+      if (stateEl) {
+        stateEl.innerText = soundOn ? 'ON' : 'MUTED';
+        stateEl.className = soundOn ? 'text-white' : 'text-zinc-500';
+      }
+    }
+
+    // 7. Dynamic Countdown
+    function startCountdownTimer() {
+      const timerEl = document.getElementById('countdown-timer');
+      if (!timerEl) return;
+      const targetDate = new Date('2025-10-24T20:00:00').getTime();
+
+      setInterval(() => {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+
+        if (diff > 0) {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          timerEl.innerText = `T-MINUS ${days}D ${hours}H ${minutes}M`;
+        }
+      }, 60000);
+    }
+
+    // Close modal on Escape
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMapModal();
+    });
+  </script>
+
+<!-- Default Birthday Song Controller -->
+<audio id="tempo-birthday-audio" loop preload="auto" src="/music/happy-birthday.mp3"></audio>
+<script>
+  (function() {
+    // If not already controlled by parent iframe
+    if (window.self === window.top) {
+      window.addEventListener('click', function() {
+        const a = document.getElementById('tempo-birthday-audio');
+        if (a && a.paused) {
+          a.play().catch(function() {});
+        }
+      }, { once: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

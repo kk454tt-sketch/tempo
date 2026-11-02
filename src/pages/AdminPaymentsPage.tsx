@@ -48,7 +48,7 @@ export const AdminPaymentsPage = () => {
     finally { setBusy(''); }
   };
 
-  return <main className="min-h-screen bg-surface pt-28 pb-16 px-4 sm:px-8"><div className="max-w-7xl mx-auto">
+  return <main className="min-h-screen bg-surface pt-20 pb-16 px-4 sm:px-8"><div className="max-w-7xl mx-auto">
     <div className="flex flex-wrap items-end justify-between gap-4 mb-8"><div><p className="text-label-sm uppercase tracking-widest text-primary">Tempo · Admin</p><h1 className="font-display text-4xl mt-2">Payment orders</h1><p className="text-sm text-on-surface-variant mt-2">Only sanitized order details are shown here. Payment references remain internal.</p></div>
       <div className="flex gap-2"><Button variant="secondary" onClick={load} disabled={loading}><RefreshCw size={16} className={loading ? 'animate-spin' : ''}/>Refresh</Button><Button onClick={processInbox} disabled={busy === 'inbox'}>{busy === 'inbox' ? <LoaderCircle size={16} className="animate-spin"/> : null}Process Gmail inbox</Button></div></div>
     {error && <div role="alert" className="mb-5 rounded-xl border border-error/30 bg-error-container/30 p-4 text-sm text-error">{error}</div>}
@@ -61,3 +61,4 @@ export const AdminPaymentsPage = () => {
     </tbody></table></div>
   </div></main>;
 };
+
