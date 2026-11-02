@@ -12,10 +12,10 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedPreview, setSelectedPreview] = useState<TemplateMetadata | null>(null);
 
-  const featuredTemplates = templatesRegistry.slice(0, 3);
+  const portfolioTemplates = templatesRegistry.filter((t) => t.category === 'portfolio');
+  const featuredTemplates = portfolioTemplates.slice(0, 3);
   const birthdayTemplates = templatesRegistry.filter((t) => t.category === 'birthday');
   const weddingTemplates = templatesRegistry.filter((t) => t.category === 'wedding');
-  const portfolioTemplates = templatesRegistry.filter((t) => t.category === 'portfolio');
 
   return (
     <div className="min-h-screen bg-surface flex flex-col antialiased">
@@ -30,161 +30,161 @@ export const HomePage: React.FC = () => {
             {/* Typographic Header Block */}
             <div className="max-w-3xl flex flex-col items-start gap-space-sm mb-space-xl">
               <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm tracking-widest uppercase shadow-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
-                <span>Curated Web Artifacts</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Next-Gen 3D &amp; Creator Portfolios</span>
               </div>
 
               <h1 className="font-display-hero text-display-hero text-on-surface tracking-tight leading-[1.05]">
-                Templates made to be yours.
+                Portfolios made to command attention.
               </h1>
 
               <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl leading-relaxed">
-                Discover beautiful templates for your special moments. Impeccably crafted digital foundations engineered for effortless customization.
+                Showcase your engineering craft, 3D character art, Minecraft worlds, and motion reels. Featuring interactive 3D avatars, tilt physics, and instant WhatsApp inquiry contact.
               </p>
 
               <div className="flex flex-wrap items-center gap-space-sm pt-space-xs">
                 <Link
-                  to="/templates"
-                  className="h-10 px-6 rounded-lg bg-primary text-on-primary font-label-md text-label-md inline-flex items-center justify-center hover:bg-primary-container transition-all shadow-sm font-medium"
+                  to="/templates?category=portfolio"
+                  className="h-10 px-6 rounded-lg bg-primary text-on-primary font-label-md text-label-md inline-flex items-center justify-center hover:bg-primary-container transition-all shadow-sm font-semibold"
                 >
-                  Explore Templates
+                  Explore Portfolios
                 </Link>
                 <Link
-                  to="/templates?price=free"
+                  to="/templates"
                   className="h-10 px-5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md inline-flex items-center justify-center hover:bg-surface-container transition-all shadow-[0_1px_2px_rgba(0,0,0,0.05)] border border-surface-container-high/60"
                 >
-                  Browse Free Templates
+                  Browse All Templates
                 </Link>
               </div>
             </div>
 
             {/* Asymmetric Overlapping Montage Stage (Desktop) */}
             <div className="relative w-full h-[620px] lg:h-[700px] hidden md:block select-none">
-              {/* Card 4: Floating Top-Right (Royal Heritage Wax Envelope Soirée) */}
+              {/* Card 4: Floating Top-Right (2022 Design Gallery Portfolio) */}
               <div
-                onClick={() => navigate('/templates/royal-luxury-envelope')}
+                onClick={() => navigate('/templates/design-gallery-portfolio')}
                 className="absolute right-4 top-2 w-[340px] z-10 rounded-xl overflow-hidden bg-surface-container-lowest shadow-md transition-transform duration-300 hover:scale-[1.02] border border-surface-container-high cursor-pointer"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
                   <img
                     className="w-full h-full object-cover"
-                    alt="Royal Heritage Wax Envelope Soirée"
-                    src="/templates/royal-luxury-envelope-poster.jpg"
+                    alt="2022 Design Gallery Portfolio"
+                    src="/templates/design-gallery-portfolio-poster.png"
                   />
                   <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm font-bold text-primary">
-                    Wax Seal · Regal
+                    Swiss Editorial · Brutalist
                   </span>
                 </div>
                 <div className="p-3.5 flex items-center justify-between">
                   <div>
-                    <p className="font-headline-sm text-headline-sm text-on-surface leading-tight font-bold">Royal Heritage Envelope</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">Wax Envelope Soirée</p>
+                    <p className="font-headline-sm text-headline-sm text-on-surface leading-tight font-bold">Design Gallery</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Editorial Archive &amp; Ribbons</p>
                   </div>
                   <span className="font-label-md text-label-md text-emerald-600 font-bold">FREE</span>
                 </div>
               </div>
 
-              {/* Card 2: Overlapping Left (Elena & Julian Cinematic 3D Wedding) */}
+              {/* Card 2: Overlapping Left (3D in Motion Portfolio) */}
               <div
-                onClick={() => navigate('/templates/cinematic-elena-julian-wedding')}
+                onClick={() => navigate('/templates/3d-in-motion-portfolio')}
                 className="absolute left-0 top-16 w-[410px] z-20 rounded-xl overflow-hidden bg-surface-container-lowest shadow-lg transition-transform duration-300 hover:scale-[1.02] border border-surface-container-high cursor-pointer"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
                   <img
                     className="w-full h-full object-cover"
-                    alt="Elena & Julian Cinematic 3D Wedding"
-                    src="/templates/cinematic-elena-julian-wedding-screen.png"
+                    alt="3D in Motion Portfolio"
+                    src="/templates/3d-in-motion-portfolio-poster.png"
                   />
                   <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">
-                    Wedding · Cinematic 3D
+                    3D Motion · Character Art
                   </span>
                 </div>
                 <div className="p-4 flex items-center justify-between">
                   <div>
-                    <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">Elena & Julian</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">Cinematic 3D Wedding</p>
-                  </div>
-                  <span className="font-label-md text-label-md text-on-surface font-semibold">₹1,499</span>
-                </div>
-              </div>
-
-              {/* Card 1: CENTERPIECE (Stitch Keepsake Birthday Invitation) */}
-              <div
-                onClick={() => navigate('/templates/keepsake-birthday-scrapbook')}
-                className="absolute left-1/2 -translate-x-1/2 top-4 w-[540px] z-30 rounded-xl overflow-hidden bg-surface-container-lowest shadow-2xl transition-transform duration-300 hover:scale-[1.01] border border-surface-container-high cursor-pointer"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
-                  <img
-                    className="w-full h-full object-cover"
-                    alt="Stitch Keepsake Birthday Invitation"
-                    src="/templates/keepsake-preview.jpg"
-                  />
-                  <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                    <span className="px-2.5 py-1 rounded-md bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
-                      Curator's Choice
-                    </span>
-                    <span className="px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">
-                      Tactile Keepsake · 3D Seal
-                    </span>
-                  </div>
-                </div>
-                <div className="p-4 bg-surface-container-lowest flex items-center justify-between">
-                  <div>
-                    <p className="font-headline-md text-headline-md text-on-surface leading-snug">Stitch Keepsake Birthday</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">
-                      Sensory Wax Seal &amp; Paper Keepsake Card
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-label-md text-label-md text-emerald-600 font-bold">FREE</span>
-                    <p className="font-label-sm text-label-sm text-on-tertiary-container font-medium">Interactive Audio</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 3: Overlapping Right (Margaux & Eric Midsummer Evening) */}
-              <div
-                onClick={() => navigate('/templates/midsummer-evening-invitation')}
-                className="absolute right-8 bottom-14 w-[430px] z-20 rounded-xl overflow-hidden bg-surface-container-lowest shadow-lg transition-transform duration-300 hover:scale-[1.02] border border-surface-container-high cursor-pointer"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
-                  <img
-                    className="w-full h-full object-cover"
-                    alt="Margaux & Eric Midsummer Evening"
-                    src="/templates/midsummer-evening-invitation-screen.png"
-                  />
-                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">
-                    Wedding · Twilight Soirée
-                  </span>
-                </div>
-                <div className="p-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">Margaux & Eric</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">Botanical Twilight Invitation</p>
+                    <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">3D in Motion</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">3D Character Artist &amp; Animator</p>
                   </div>
                   <span className="font-label-md text-label-md text-emerald-600 font-bold">FREE</span>
                 </div>
               </div>
 
-              {/* Card 5: Floating Bottom-Left (Janamdin Mubarak) */}
+              {/* Card 1: CENTERPIECE (3D Web Developer Portfolio) */}
               <div
-                onClick={() => navigate('/templates/janamdin-mubarak-hindi')}
+                onClick={() => navigate('/templates/web-developer-portfolio')}
+                className="absolute left-1/2 -translate-x-1/2 top-4 w-[540px] z-30 rounded-xl overflow-hidden bg-surface-container-lowest shadow-2xl transition-transform duration-300 hover:scale-[1.01] border border-surface-container-high cursor-pointer ring-2 ring-primary/20"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
+                  <img
+                    className="w-full h-full object-cover"
+                    alt="3D Web Developer Portfolio"
+                    src="/templates/web-developer-portfolio-poster.png"
+                  />
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                    <span className="px-2.5 py-1 rounded-md bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
+                      Featured Portfolio
+                    </span>
+                    <span className="px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">
+                      3D Figurines · WhatsApp Hire
+                    </span>
+                  </div>
+                </div>
+                <div className="p-4 bg-surface-container-lowest flex items-center justify-between">
+                  <div>
+                    <p className="font-headline-md text-headline-md text-on-surface leading-snug">3D Web Developer Portfolio</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">
+                      Dual Collectible Avatars &amp; Stage Tilt Physics
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-label-md text-label-md text-emerald-600 font-bold">FREE</span>
+                    <p className="font-label-sm text-label-sm text-on-tertiary-container font-medium">Interactive 3D</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 3: Overlapping Right (Alex 3D Designer Portfolio) */}
+              <div
+                onClick={() => navigate('/templates/alex-3d-designer-portfolio')}
+                className="absolute right-8 bottom-14 w-[430px] z-20 rounded-xl overflow-hidden bg-surface-container-lowest shadow-lg transition-transform duration-300 hover:scale-[1.02] border border-surface-container-high cursor-pointer"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
+                  <img
+                    className="w-full h-full object-cover"
+                    alt="Alex 3D Designer Portfolio"
+                    src="/templates/alex-3d-designer-portfolio-poster.png"
+                  />
+                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">
+                    Interactive 3D · Tilt Physics
+                  </span>
+                </div>
+                <div className="p-4 flex items-center justify-between">
+                  <div>
+                    <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">Alex 3D Designer</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Sensory Head-Tilt &amp; Ornaments</p>
+                  </div>
+                  <span className="font-label-md text-label-md text-emerald-600 font-bold">FREE</span>
+                </div>
+              </div>
+
+              {/* Card 5: Floating Bottom-Left (Motion Graphics Designer Portfolio) */}
+              <div
+                onClick={() => navigate('/templates/motion-designer-portfolio')}
                 className="absolute left-16 bottom-4 w-[360px] z-10 rounded-xl overflow-hidden bg-surface-container-lowest shadow-md transition-transform duration-300 hover:scale-[1.02] border border-surface-container-high cursor-pointer"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
                   <img
                     className="w-full h-full object-cover"
-                    alt="जन्मदिन मुबारक - Janamdin Mubarak"
-                    src="/templates/janamdin-mubarak-hindi-poster.jpg"
+                    alt="Motion Graphics Designer Portfolio"
+                    src="/templates/motion-designer-portfolio-poster.png"
                   />
                   <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface font-label-sm text-label-sm">
-                    Birthday · Hindi Poetry
+                    Motion &amp; VFX Showreel
                   </span>
                 </div>
                 <div className="p-3.5 flex items-center justify-between">
                   <div>
-                    <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">जन्मदिन मुबारक</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">Poetic Hindi Birthday Celebration</p>
+                    <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">Motion Graphics</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Cinematic Reel &amp; Kinetic FX</p>
                   </div>
                   <span className="font-label-md text-label-md text-emerald-600 font-bold">FREE</span>
                 </div>
@@ -196,17 +196,17 @@ export const HomePage: React.FC = () => {
               <div className="aspect-[16/10] w-full overflow-hidden bg-surface-container relative">
                 <img
                   className="w-full h-full object-cover"
-                  alt="Stitch Keepsake Birthday Invitation"
-                  src="/templates/keepsake-preview.jpg"
+                  alt="3D Web Developer Portfolio"
+                  src="/templates/web-developer-portfolio-poster.png"
                 />
                 <span className="absolute top-3 left-3 px-2.5 py-1 rounded bg-primary text-on-primary font-label-sm text-label-sm uppercase font-semibold">
-                  Curator's Choice
+                  Featured Portfolio
                 </span>
               </div>
               <div className="p-4 flex items-center justify-between">
                 <div>
-                  <p className="font-headline-sm text-headline-sm text-on-surface">Stitch Keepsake Birthday</p>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant">Tactile Sensory Wax Seal Keepsake</p>
+                  <p className="font-headline-sm text-headline-sm text-on-surface font-bold">3D Web Developer Portfolio</p>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant">Interactive 3D Avatars &amp; Stage Tilt</p>
                 </div>
                 <span className="font-label-md text-label-md text-emerald-600 font-bold">FREE</span>
               </div>
@@ -222,24 +222,24 @@ export const HomePage: React.FC = () => {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-sm mb-space-lg">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">
-                    Weekly Selection
+                    Editor's Spotlight
                   </p>
                 </div>
                 <h2 className="font-headline-xl text-headline-xl text-on-surface tracking-tight">
-                  Featured Releases
+                  Featured Portfolios &amp; Showcases
                 </h2>
                 <p className="font-body-md text-body-md text-on-surface-variant mt-1">
-                  Curated templates selected by our editorial team this week.
+                  High-impact portfolios engineered for engineers, designers, artists, and creators.
                 </p>
               </div>
 
               <Link
-                to="/templates"
+                to="/templates?category=portfolio"
                 className="font-label-md text-label-md text-on-surface flex items-center gap-1 hover:text-on-surface-variant transition-colors group font-semibold"
               >
-                <span>View all templates</span>
+                <span>View all portfolios</span>
                 <span className="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">
                   arrow_forward
                 </span>
