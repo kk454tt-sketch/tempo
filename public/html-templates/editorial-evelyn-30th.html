@@ -169,7 +169,7 @@
 
       <!-- Calligraphy Guest Name Tag -->
       <div id="recipientLine" class="text-center mb-6">
-        <p class="font-script text-3xl sm:text-4xl text-ink-brown tracking-wide opacity-95">for Evelyn Vance</p>
+        <p class="font-script text-3xl sm:text-4xl text-ink-brown tracking-wide opacity-95" data-sync-key="recipientTag">for Evelyn Vance</p>
       </div>
 
       <!-- 3D Perspective Envelope Container -->
@@ -190,9 +190,9 @@
           <div id="slidingCard" class="absolute left-[12px] right-[12px] bottom-[6px] h-[270px] bg-cream rounded-[2px] card-shadow z-20 overflow-hidden transform translate-y-0">
             <!-- Subtle Card Border -->
             <div class="absolute inset-2 border border-gold/45 p-3 flex flex-col items-center text-center justify-start pointer-events-none">
-              <span class="font-sans text-[7.5px] uppercase tracking-[0.2em] text-ink-brown/70 mt-1">You Are Invited To</span>
-              <span class="font-script text-2xl text-ink-brown mt-0.5">Evelyn's</span>
-              <span class="font-serif italic text-lg text-ink-brown -mt-1 font-medium">30th Birthday</span>
+              <span class="font-sans text-[7.5px] uppercase tracking-[0.2em] text-ink-brown/70 mt-1" data-sync-key="invitationKicker">You Are Invited To</span>
+              <span class="font-script text-2xl text-ink-brown mt-0.5" data-sync-key="celebrantName">Evelyn's</span>
+              <span class="font-serif italic text-lg text-ink-brown -mt-1 font-medium" data-sync-key="eventTitle">30th Birthday</span>
               <div class="w-8 h-[1px] bg-gold/50 my-1.5"></div>
               <span class="font-sans text-[7px] uppercase tracking-[0.15em] text-ink-brown/80 font-medium">Saturday, June 14th</span>
               
@@ -332,15 +332,15 @@
 
         <!-- Header Titles -->
         <div class="w-full text-center pt-2 flex flex-col items-center">
-          <p class="inv-line font-sans text-[9px] uppercase tracking-[0.24em] text-ink-brown/75 font-medium mb-3">
+          <p class="inv-line font-sans text-[9px] uppercase tracking-[0.24em] text-ink-brown/75 font-medium mb-3" data-sync-key="invitationKicker">
             You Are Invited To
           </p>
 
-          <h2 class="inv-line font-script text-5xl sm:text-6xl text-ink-brown leading-tight tracking-wide">
+          <h2 class="inv-line font-script text-5xl sm:text-6xl text-ink-brown leading-tight tracking-wide" data-sync-key="celebrantName">
             Evelyn's
           </h2>
 
-          <h1 class="inv-line font-serif italic text-3xl sm:text-4xl text-ink-brown tracking-normal font-normal -mt-1">
+          <h1 class="inv-line font-serif italic text-3xl sm:text-4xl text-ink-brown tracking-normal font-normal -mt-1" data-sync-key="eventTitle">
             30th Birthday
           </h1>
 
@@ -349,13 +349,13 @@
 
         <!-- Event Particulars (Stacked small-caps) -->
         <div class="w-full text-center space-y-2 py-1">
-          <p class="inv-line font-sans text-[10px] sm:text-[10.5px] uppercase tracking-[0.16em] text-ink-brown/85 font-medium">
+          <p class="inv-line font-sans text-[10px] sm:text-[10.5px] uppercase tracking-[0.16em] text-ink-brown/85 font-medium" data-sync-key="eventDate">
             Saturday, June Fourteenth
           </p>
-          <p class="inv-line font-sans text-[9.5px] sm:text-[10px] uppercase tracking-[0.16em] text-ink-brown/80 font-normal">
+          <p class="inv-line font-sans text-[9.5px] sm:text-[10px] uppercase tracking-[0.16em] text-ink-brown/80 font-normal" data-sync-key="eventTime">
             Six O'Clock in the Evening
           </p>
-          <p class="inv-line font-sans text-[9px] sm:text-[9.5px] uppercase tracking-[0.14em] text-ink-brown/75">
+          <p class="inv-line font-sans text-[9px] sm:text-[9.5px] uppercase tracking-[0.14em] text-ink-brown/75" data-sync-key="eventVenue">
             The Glasshouse Conservatory · Hudson Valley
           </p>
         </div>
@@ -364,11 +364,11 @@
         <div class="w-full text-center my-3 max-w-[280px]">
           <div class="inv-line w-6 h-[1px] bg-dusty-rose/60 mx-auto mb-3"></div>
           
-          <p class="inv-line font-sans text-[8.5px] uppercase tracking-[0.18em] text-ink-brown/70 mb-2">
+          <p class="inv-line font-sans text-[8.5px] uppercase tracking-[0.18em] text-ink-brown/70 mb-2" data-sync-key="dressCode">
             Dress Code: Garden Formal & Earth Tones
           </p>
           
-          <p class="inv-line font-serif italic text-sm sm:text-[15px] text-ink-brown/90 leading-relaxed px-2">
+          <p class="inv-line font-serif italic text-sm sm:text-[15px] text-ink-brown/90 leading-relaxed px-2" data-sync-key="invitationNote">
             “Join us under the dusk lanterns for an evening of shared wine, laughter, and timeless memories.”
           </p>
           
@@ -377,11 +377,11 @@
 
         <!-- Footer RSVP Button Section -->
         <div class="w-full flex flex-col items-center pt-2 pb-1 z-30">
-          <button id="rsvpBtn" class="inv-line relative px-10 py-3 rounded-full bg-olive hover:bg-olive-hover text-cream font-sans text-[11px] tracking-[0.2em] uppercase font-medium shadow-md hover:shadow-lg transition-all transform active:scale-95 cursor-pointer">
+          <button id="rsvpBtn" data-sync-key="rsvpBtn" class="inv-line relative px-10 py-3 rounded-full bg-olive hover:bg-olive-hover text-cream font-sans text-[11px] tracking-[0.2em] uppercase font-medium shadow-md hover:shadow-lg transition-all transform active:scale-95 cursor-pointer">
             RSVP
           </button>
           
-          <span class="inv-line font-sans text-[8px] uppercase tracking-[0.16em] text-ink-brown/60 mt-3 font-medium">
+          <span class="inv-line font-sans text-[8px] uppercase tracking-[0.16em] text-ink-brown/60 mt-3 font-medium" data-sync-key="rsvpDeadline">
             Kindly Respond by May 20th
           </span>
         </div>
@@ -406,7 +406,7 @@
 
         <div class="text-center mb-5">
           <span class="font-sans text-[8px] uppercase tracking-[0.2em] text-gold font-medium">Celebration of Evelyn</span>
-          <h3 class="font-serif italic text-2xl text-ink-brown font-medium mt-0.5">Will You Join Us?</h3>
+          <h3 class="font-serif italic text-2xl text-ink-brown font-medium mt-0.5" data-sync-key="rsvpHeading">Will You Join Us?</h3>
         </div>
 
         <form id="rsvpForm" class="space-y-4 text-left">
@@ -618,6 +618,7 @@
       function openInvitation() {
         if (isOpened) return;
         isOpened = true;
+        window.__isInvitationOpened = true;
 
         // Stop idle float
         if (idleTween) idleTween.pause();
@@ -726,6 +727,7 @@
         e.stopPropagation();
         openInvitation();
       });
+      window.openInvitation = openInvitation;
 
       // ----------------------------------------------------
       // RSVP Modal Interactions

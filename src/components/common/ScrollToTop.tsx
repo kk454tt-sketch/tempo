@@ -12,12 +12,22 @@ export const ScrollToTop = () => {
   }, []);
 
   useLayoutEffect(() => {
-    if (hash) {
-      // If there's an anchor hash like #features or #categories, scroll to that element
-      const element = document.querySelector(hash);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-        return;
+    // If there is an anchor hash (and NOT an OAuth callback or query parameter string)
+    if (hash && !hash.includes('=') && !hash.includes('&') && !hash.includes('access_token')) {
+      const rawId = hash.replace(/^#/, '');
+      if (rawId) {
+        try {
+          const element =
+            document.getElementById(rawId) ||
+            document.getElementById(decodeURIComponent(rawId));
+
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+            return;
+          }
+        } catch {
+          // Ignore element lookup errors safely
+        }
       }
     }
 

@@ -94,7 +94,7 @@ dialog{border:0;padding:14px;background:#fff;width:min(92vw,520px);box-shadow:0 
 </head><body>
 <section class="hero">
 <nav><div><a href="#invite">Invite</a><a href="#rsvp">RSVP</a><a href="#gallery">Gallery</a></div><a class="pill" href="#rsvp">RSVP</a></nav>
-<p class="tag">You are invited!</p>
+<p class="tag" data-sync-key="heroTag">You are invited!</p>
 <i class="pp pl"></i><i class="pp pr"></i>
 <div class="box fl"><i class="sun s1"></i><i class="sun s2"></i></div>
 <div class="bd" role="img" aria-label="Birthday"></div><div class="hp" role="img" aria-label="Happy"></div>
@@ -103,14 +103,14 @@ dialog{border:0;padding:14px;background:#fff;width:min(92vw,520px);box-shadow:0 
 <div class="mq" aria-hidden="true"><div class="mqi" id="mq"></div></div>
 
 <section class="sec" id="invite"><div class="note"><div class="paper">
-<h3>You are invited!</h3>
-<p class="to">to celebrate <span data-b="name"></span>'s birthday</p>
-<p class="d"><b data-b="date"></b><span data-b="time"></span></p>
-<p class="d"><b data-b="venue"></b><span data-b="address"></span></p>
-<a id="map" target="_blank" rel="noopener">Open in Maps</a>
+<h3 data-sync-key="inviteHeading">You are invited!</h3>
+<p class="to">to celebrate <span data-b="name" data-sync-key="celebrantName"></span>'s birthday</p>
+<p class="d"><b data-b="date" data-sync-key="eventDate"></b><span data-b="time" data-sync-key="eventTime"></span></p>
+<p class="d"><b data-b="venue" data-sync-key="eventVenue"></b><span data-b="address" data-sync-key="eventAddress"></span></p>
+<a id="map" target="_blank" rel="noopener" data-sync-key="mapBtn">Open in Maps</a>
 </div></div></section>
 
-<section class="sec" id="rsvp"><h2>Will you come?</h2>
+<section class="sec" id="rsvp"><h2 data-sync-key="rsvpHeading">Will you come?</h2>
 <div class="card"><form id="f">
 <label class="f">Your name<input type="text" id="n" required autocomplete="name"></label>
 <fieldset><legend>Your answer</legend>
@@ -119,15 +119,15 @@ dialog{border:0;padding:14px;background:#fff;width:min(92vw,520px);box-shadow:0 
 <label class="opt"><input type="radio" name="r" value="Can't make it"><span>Can't make it</span></label></fieldset>
 <label class="f">How many people are coming?<select id="g"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
 <label class="f">A note for <span data-b="name"></span> (optional)<textarea id="m"></textarea></label>
-<button class="btn" type="submit">Create my RSVP</button></form>
+<button class="btn" type="submit" data-sync-key="rsvpSubmit">Create my RSVP</button></form>
 <div id="out" aria-live="polite"><label class="f">Your RSVP is ready. Send it to the host:<textarea id="msg" readonly></textarea></label>
-<div class="row"><a class="btn" id="wa" target="_blank" rel="noopener">Send on WhatsApp</a><button class="btn alt" id="cp" type="button">Copy message</button></div></div>
+<div class="row"><a class="btn" id="wa" target="_blank" rel="noopener" data-sync-key="waBtn">Send on WhatsApp</a><button class="btn alt" id="cp" type="button">Copy message</button></div></div>
 </div></section>
 
 <section class="sec gal" id="gallery"><h2>Gallery</h2>
 <div class="rail"><div class="track" id="t1"></div></div><div class="rail"><div class="track rev" id="t2"></div></div></section>
 <dialog id="dlg"><div class="ph" id="big"></div></dialog>
-<p class="end">See you there!</p>
+<p class="end" data-sync-key="closingTag">See you there!</p>
 <script>
 document.documentElement.classList.add('js');
 const C={name:'Your Name',date:'Saturday, 24 October 2026',time:'7:00 PM',venue:'Sunflower Terrace',address:'12 Garden Road, Agra, Uttar Pradesh 282001',phone:''};

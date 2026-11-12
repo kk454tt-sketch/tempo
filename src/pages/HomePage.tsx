@@ -15,7 +15,6 @@ export const HomePage: React.FC = () => {
   const portfolioTemplates = templatesRegistry.filter((t) => t.category === 'portfolio');
   const featuredTemplates = portfolioTemplates.slice(0, 3);
   const birthdayTemplates = templatesRegistry.filter((t) => t.category === 'birthday');
-  const weddingTemplates = templatesRegistry.filter((t) => t.category === 'wedding');
 
   return (
     <div className="min-h-screen bg-surface flex flex-col antialiased">
@@ -393,39 +392,7 @@ export const HomePage: React.FC = () => {
             </section>
           )}
 
-          {/* Group 2: Wedding Templates */}
-          {weddingTemplates.length > 0 && (
-            <section className="w-full" id="wedding-section">
-              <div className="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg">
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-space-xs mb-space-md">
-                  <div>
-                    <h2 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">
-                      Wedding &amp; Union Templates
-                    </h2>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
-                      Timeless digital invitations, cinematic 3D experiences, and botanical evening pages.
-                    </p>
-                  </div>
-                  <Link
-                    to="/templates?category=wedding"
-                    className="font-label-md text-label-md text-on-surface flex items-center gap-1 hover:text-on-surface-variant transition-colors whitespace-nowrap font-medium"
-                  >
-                    View all Wedding Templates →
-                  </Link>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-                  {weddingTemplates.map((template) => (
-                    <TemplateCard
-                      key={template.id}
-                      template={template}
-                      onPreviewClick={(t) => setSelectedPreview(t)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
         </div>
       </main>
 

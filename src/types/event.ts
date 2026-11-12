@@ -234,10 +234,14 @@ export interface PortfolioCardData {
 }
 
 export interface PortfolioData {
+  templateId?: string;
   creatorName?: string;
   brand?: string;
   title?: string;
   discipline?: string;
+  statusNote?: string;
+  creatorRole?: string;
+  customAvatarUrl?: string;
   manifesto?: string;
   statement?: string;
   projects?: PortfolioProject[];
@@ -249,6 +253,8 @@ export interface PortfolioData {
   activeCardIndex?: number;
   hire?: PortfolioHireConfig;
   nav?: PortfolioNavConfig;
+  socialLinks?: Record<string, string>;
+  defaultTexts?: Record<string, string>;
 }
 
 export interface TastingCourseItem {

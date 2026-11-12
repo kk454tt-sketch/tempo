@@ -120,9 +120,9 @@ nav{position:fixed;inset:0;z-index:-1;flex-direction:column;justify-content:cent
 <a class="skip" href="#work">Skip to content</a>
 <header id="hd">
  <div class="wrap nb">
-  <a class="logo" href="#top">Motion Studio</a>
-  <nav id="menu" aria-label="Main"><a href="#work">Work</a><a href="#services">Services</a><a href="#about">About</a><a href="#process">Process</a><a href="#contact">Contact</a></nav>
-  <a class="btn y" href="#contact">Let’s talk</a>
+  <a class="logo" data-sync-key="brandName" href="#top">Motion Studio</a>
+  <nav id="menu" aria-label="Main"><a href="#work" data-sync-key="navWork">Work</a><a href="#services" data-sync-key="navServices">Services</a><a href="#about" data-sync-key="navAbout">About</a><a href="#process" data-sync-key="navProcess">Process</a><a href="#contact" data-sync-key="navContact">Contact</a></nav>
+  <a class="btn y" data-sync-key="navCta" href="#contact">Let’s talk</a>
   <button class="burger" id="bg" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><i></i><i></i></button>
  </div>
 </header>
@@ -131,23 +131,23 @@ nav{position:fixed;inset:0;z-index:-1;flex-direction:column;justify-content:cent
  <div class="croc" role="img" aria-label="Green 3D clay crocodile with sticker badges, tongue out"><div class="a hero-a"></div><div class="a vibes" aria-hidden="true"></div></div>
  <div class="hc">
   <h1 class="hl"><span>Motion</span><span>Graphics</span></h1>
-  <p>Design in motion. Ideas in motion.</p>
-  <div><a class="btn" href="#work">View my work</a><a class="btn g" href="#contact">Let’s talk</a></div>
+  <p data-sync-key="heroSubtitle">Design in motion. Ideas in motion.</p>
+  <div><a class="btn" data-sync-key="btnViewWork" href="#work">View my work</a><a class="btn g" data-sync-key="btnTalk" href="#contact">Let’s talk</a></div>
  </div>
  <div class="ck" aria-hidden="true"></div>
 </section>
 
 <section id="work">
  <div class="wrap">
-  <div class="sh"><h2>Selected work</h2><p>Sample projects</p></div>
+  <div class="sh"><h2 data-sync-key="selectedHeading">Selected work</h2><p data-sync-key="selectedSub">Sample projects</p></div>
   <ul class="bento">
-   <li class="t1"><figure class="tile" style="--bg:#1596f5;height:100%"><div class="a front" role="img" aria-label="Green clay crocodile mascot"></div><figcaption>Mascot Reel</figcaption></figure></li>
-   <li><figure class="tile" style="--bg:#06215a;height:100%"><div class="a star" role="img" aria-label="3D gold star"></div><figcaption>Star Loop</figcaption></figure></li>
-   <li><figure class="tile" style="--bg:#ffd93b;--fg:#06215a;height:100%"><div class="a vibes" role="img" aria-label="Good Vibes sticker"></div><figcaption>Sticker Set</figcaption></figure></li>
-   <li><figure class="tile" style="--bg:#0a5fcc;height:100%"><div class="a crown" role="img" aria-label="Gold crown"></div><figcaption>Crown Reveal</figcaption></figure></li>
-   <li><figure class="tile" style="--bg:#fff;--fg:#06215a;height:100%"><div class="a heart" role="img" aria-label="3D pink heart"></div><figcaption>Heart Pop</figcaption></figure></li>
-   <li class="t6"><figure class="tile" style="--bg:#bfe9ff;--fg:#06215a;height:100%"><div class="a relax" role="img" aria-label="Crocodile lying down"></div><figcaption>Idle Loop</figcaption></figure></li>
-   <li class="t7"><figure class="tile" style="--bg:#06215a;height:100%"><div class="a clap" role="img" aria-label="Clapperboard"></div><div class="a reel" role="img" aria-label="Film reel"></div><figcaption>Title Sequence</figcaption></figure></li>
+   <li class="t1"><figure class="tile" style="--bg:#1596f5;height:100%"><div class="a front" role="img" aria-label="Green clay crocodile mascot"></div><figcaption data-sync-key="project1">Mascot Reel</figcaption></figure></li>
+   <li><figure class="tile" style="--bg:#06215a;height:100%"><div class="a star" role="img" aria-label="3D gold star"></div><figcaption data-sync-key="project2">Star Loop</figcaption></figure></li>
+   <li><figure class="tile" style="--bg:#ffd93b;--fg:#06215a;height:100%"><div class="a vibes" role="img" aria-label="Good Vibes sticker"></div><figcaption data-sync-key="project3">Sticker Set</figcaption></figure></li>
+   <li><figure class="tile" style="--bg:#0a5fcc;height:100%"><div class="a crown" role="img" aria-label="Gold crown"></div><figcaption data-sync-key="project4">Crown Reveal</figcaption></figure></li>
+   <li><figure class="tile" style="--bg:#fff;--fg:#06215a;height:100%"><div class="a heart" role="img" aria-label="3D pink heart"></div><figcaption data-sync-key="project5">Heart Pop</figcaption></figure></li>
+   <li class="t6"><figure class="tile" style="--bg:#bfe9ff;--fg:#06215a;height:100%"><div class="a relax" role="img" aria-label="Crocodile lying down"></div><figcaption data-sync-key="project6">Idle Loop</figcaption></figure></li>
+   <li class="t7"><figure class="tile" style="--bg:#06215a;height:100%"><div class="a clap" role="img" aria-label="Clapperboard"></div><div class="a reel" role="img" aria-label="Film reel"></div><figcaption data-sync-key="project7">Title Sequence</figcaption></figure></li>
   </ul>
  </div>
 </section>
@@ -155,13 +155,13 @@ nav{position:fixed;inset:0;z-index:-1;flex-direction:column;justify-content:cent
 <section id="featured" class="fz">
  <div class="wrap ft">
   <div class="fv"><div class="a cloud" aria-hidden="true"></div><div class="a shades" role="img" aria-label="Green crocodile in yellow sunglasses"></div></div>
-  <div class="fi"><h2>Character Loop</h2><p>A sample case study: a 3D mascot made for social.</p><a class="btn y" href="#contact">Start a project</a></div>
+  <div class="fi"><h2 data-sync-key="project8">Character Loop</h2><p data-sync-key="caseStudyCallout">A sample case study: a 3D mascot made for social.</p><a class="btn y" href="#contact">Start a project</a></div>
  </div>
 </section>
 
 <section id="services" class="sv-s">
  <div class="wrap">
-  <div class="sh"><h2>Services</h2></div>
+  <div class="sh"><h2 data-sync-key="servicesHeading">Services</h2></div>
   <ul class="sv">
    <li><h3>Motion Graphics</h3><span class="a clap" aria-hidden="true"></span></li>
    <li><h3>3D Animation</h3><span class="a pyr" aria-hidden="true"></span></li>
@@ -176,20 +176,20 @@ nav{position:fixed;inset:0;z-index:-1;flex-direction:column;justify-content:cent
 <section id="about">
  <div class="wrap ab">
   <div class="a smile" role="img" aria-label="Smiley sticker ball"></div>
-  <div><h2>Independent motion designer</h2><p>From bold logo animations to playful 3D worlds. Open for new projects.</p></div>
+  <div><h2 data-sync-key="aboutHeading">Independent motion designer</h2><p data-sync-key="aboutBio">From bold logo animations to playful 3D worlds. Open for new projects.</p></div>
  </div>
 </section>
 
 <section id="process" class="pr">
  <div class="wrap">
-  <div class="sh"><h2>Process</h2></div>
+  <div class="sh"><h2 data-sync-key="processHeading">Process</h2></div>
   <ol class="steps"><li><h3>Concept</h3></li><li><h3>Storyboard</h3></li><li><h3>Design</h3></li><li><h3>Animation</h3></li><li><h3>Delivery</h3></li></ol>
  </div>
 </section>
 
 <section id="contact" class="ct">
  <div class="wrap cg">
-  <div><h2>Let’s talk</h2><a class="mail" data-mail href="#contact">hello@example.com</a><ul class="soc" data-social aria-label="Social links"></ul></div>
+  <div><h2 data-sync-key="contactHeading">Let’s talk</h2><a class="mail" data-mail data-sync-key="contactEmail" href="#contact">hello@example.com</a><ul class="soc" data-social aria-label="Social links"></ul></div>
   <form id="f" novalidate>
    <label for="n">Name<input id="n" name="name" autocomplete="name" required aria-describedby="en"></label><span class="er" id="en" data-e="name"></span>
    <label for="e">Email<input id="e" name="email" type="email" autocomplete="email" required aria-describedby="ee"></label><span class="er" id="ee" data-e="email"></span>
@@ -201,7 +201,7 @@ nav{position:fixed;inset:0;z-index:-1;flex-direction:column;justify-content:cent
 </section>
 </main>
 <footer>
- <div class="wrap fr"><a class="logo" href="#top">Motion Studio</a><small>© <span id="yr"></span> Motion Studio</small><button type="button" id="up">Back to top ↑</button></div>
+ <div class="wrap fr"><a class="logo" href="#top">Motion Studio</a><small data-sync-key="footerCopyright">© <span id="yr"></span> Motion Studio</small><button type="button" id="up" data-sync-key="backToTop">Back to top ↑</button></div>
 </footer>
 <script>
 const C={email:'hello@example.com',social:{Instagram:'https://www.instagram.com/',Behance:'https://www.behance.net/',Vimeo:'https://vimeo.com/',LinkedIn:'https://www.linkedin.com/'}};

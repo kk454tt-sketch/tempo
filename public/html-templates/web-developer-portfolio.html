@@ -64,8 +64,8 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:4px}
 <main class="hero" id="hero">
 <div class="glow"></div>
 <header class="nav">
-<a class="brand" href="#hero"><i></i>Your Name</a>
-<nav class="links"><a href="https://github.com/">Projects</a><a href="#hero">Resume</a><a class="hire" href="mailto:hello@yourname.dev">Hire me</a></nav>
+<a class="brand" data-sync-key="brandName" href="#hero"><i></i>Your Name</a>
+<nav class="links"><a href="https://github.com/" data-sync-key="navProjects">Projects</a><a href="#hero" data-sync-key="navResume">Resume</a><a class="hire" data-sync-key="btnHire" href="mailto:hello@yourname.dev">Hire me</a></nav>
 </header>
 </main>
 <div class="ring" id="ring"></div>
@@ -81,11 +81,14 @@ const S=[
 ];
 const hero=document.getElementById('hero');
 const arrow='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-hero.insertAdjacentHTML('beforeend',S.map(s=>`<section class="slide" style="--ar:${s.ar}" aria-label="${s.word}">
-<div class="stage"><div class="word" aria-hidden="true">${[...s.word].map((c,j)=>`<b style="--i:${j}">${c}</b>`).join('')}</div><img class="char" src="${s.img}" alt="${s.alt}"></div>
-<div class="meta"><h2>${s.title.join('<br>')}</h2>${s.meta.map(m=>`<p>${m}</p>`).join('')}<p>${s.links.map(l=>`<a href="${l[1]}">${l[0]}</a>`).join(', ')}</p></div>
-<div class="side"><p>${s.desc}</p><div class="arrows"><button data-dir="-1" aria-label="Previous">${arrow}</button><button data-dir="1" aria-label="Next">${arrow}</button></div></div>
-</section>`).join(''));
+hero.insertAdjacentHTML('beforeend',S.map((s,i)=>{
+  const p = i === 0 ? 'slide1' : 'slide2';
+  return `<section class="slide" style="--ar:${s.ar}" aria-label="${s.word}">
+<div class="stage"><div class="word" data-sync-key="${p}Word" aria-hidden="true">${[...s.word].map((c,j)=>`<b style="--i:${j}">${c}</b>`).join('')}</div><img class="char" src="${s.img}" alt="${s.alt}"></div>
+<div class="meta"><h2 data-sync-key="${p}Title">${s.title.join('<br>')}</h2><p data-sync-key="${p}Available">${s.meta[0]}</p><p data-sync-key="${p}Stack">${s.meta[1]}</p><p><a href="${s.links[0][1]}" data-sync-key="${p}Link1">${s.links[0][0]}</a>, <a href="${s.links[1][1]}" data-sync-key="${p}Link2">${s.links[1][0]}</a></p></div>
+<div class="side"><p data-sync-key="${p}SideText">${s.desc}</p><div class="arrows"><button data-dir="-1" aria-label="Previous">${arrow}</button><button data-dir="1" aria-label="Next">${arrow}</button></div></div>
+</section>`;
+}).join(''));
 const el=[...hero.querySelectorAll('.slide')];
 let cur=0,busy=false,timer;
 const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;

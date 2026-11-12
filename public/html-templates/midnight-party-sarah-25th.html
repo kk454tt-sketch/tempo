@@ -1048,7 +1048,7 @@
          STATE 1: THE SEALED INVITE
          ============================================== -->
     <div id="state-sealed">
-      <div class="guest-tag">You're on the list, Alex M.</div>
+      <div class="guest-tag" data-sync-key="guestTag">You're on the list, Alex M.</div>
 
       <div class="envelope-wrapper" onclick="triggerOpenInvite()">
         <div class="envelope-halo"></div>
@@ -1110,20 +1110,20 @@
       <!-- Poster Layout: Asymmetric, layered headline & Polaroid -->
       <div class="poster-hero-block">
         <!-- Giant outlined "25" filling screen -->
-        <div class="giant-age-backdrop">25</div>
+        <div class="giant-age-backdrop" data-sync-key="giantAge">25</div>
         <div class="age-light-leak"></div>
 
         <!-- Polaroid tilted 6° taped to corner -->
         <div class="polaroid-container">
           <div class="polaroid-tape"></div>
           <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB89fpV7rK5gTXqqvHC0qJ36pXxF6GWspXUxJjndMTkq5pXuExGWSvno03_8CN2w670Rs4ube2e50FRRlpVaTH7WFHk9jNa3SReA58pSUQrSfSoLy7aCD8-RlwPNms4TpOuE2ZM_dfNOmzoj7xnngA247OXLMeIXNmmngJIwglCzTNy1Wt9l3s3RxjQ4YHKDvr3y0u4Fz9X-ouqURs3BfAQuTsiyF8zQ2yTNAHZxp09Z_Rx9aG2ghV8-Q" alt="Sarah holding sparkler" class="polaroid-photo">
-          <div class="polaroid-caption">Sarah's 25th! ✨</div>
+          <div class="polaroid-caption" data-sync-key="polaroidCaption">Sarah's 25th! ✨</div>
         </div>
 
         <!-- Sarah's Name Headline + Brush Script Overlap -->
         <div class="poster-headline-group">
-          <div class="brush-accent">birthday</div>
-          <h1 class="name-headline">SARAH</h1>
+          <div class="brush-accent" data-sync-key="brushAccent">birthday</div>
+          <h1 class="name-headline" data-sync-key="celebrantName">SARAH</h1>
         </div>
       </div>
 
@@ -1136,17 +1136,17 @@
           <div class="ticket-meta-row">
             <div>
               <div class="ticket-label">DATE // TIME</div>
-              <div class="ticket-val-hero">SAT 24 OCT • 10:00 PM</div>
+              <div class="ticket-val-hero" data-sync-key="eventDateTime">SAT 24 OCT • 10:00 PM</div>
             </div>
             <div style="text-align: right;">
               <div class="ticket-label">ADMIT</div>
-              <div class="ticket-val-hero" style="color: var(--lime);">VIP ONE</div>
+              <div class="ticket-val-hero" style="color: var(--lime);" data-sync-key="ticketAdmit">VIP ONE</div>
             </div>
           </div>
 
           <div style="margin-top: 10px;">
             <div class="ticket-label">LOCATION</div>
-            <div class="ticket-venue">THE VELVET BASEMENT<br><span style="color: rgba(244,240,232,0.6); font-size: 10px;">742 BROADWAY, NEW YORK, NY</span></div>
+            <div class="ticket-venue"><span data-sync-key="venueName">THE VELVET BASEMENT</span><br><span style="color: rgba(244,240,232,0.6); font-size: 10px;" data-sync-key="venueAddress">742 BROADWAY, NEW YORK, NY</span></div>
           </div>
         </div>
 
@@ -1175,7 +1175,7 @@
 
           <div class="dress-code-badge">
             <span>DRESS CODE</span>
-            <div class="dress-code-val">MIDNIGHT GLAM & SPARKLE</div>
+            <div class="dress-code-val" data-sync-key="dressCode">MIDNIGHT GLAM & SPARKLE</div>
           </div>
         </div>
       </div>
@@ -1202,7 +1202,7 @@
 
       <!-- Scrolling Marquee Banner -->
       <div class="marquee-bar">
-        <div class="marquee-track">
+        <div class="marquee-track" data-sync-key="marqueeTrack">
           BRING YOUR ENERGY • SARAH'S 25TH • SEE YOU THERE • DRINKS FLOWING TILL 4AM • BRING YOUR ENERGY • SARAH'S 25TH • SEE YOU THERE •
         </div>
       </div>
@@ -1224,7 +1224,7 @@
       <div class="rsvp-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle" onclick="closeRsvpSheet()"></div>
         <div class="sheet-header">
-          <div class="sheet-title">JOIN THE NIGHT</div>
+          <div class="sheet-title" data-sync-key="sheetTitle">JOIN THE NIGHT</div>
           <button class="sheet-close-btn" onclick="closeRsvpSheet()">✕</button>
         </div>
 
@@ -1256,7 +1256,7 @@
             <input type="text" class="form-input" placeholder="Can't wait! Play 90s house...">
           </div>
 
-          <button type="submit" class="btn-submit-rsvp" id="btn-submit">
+          <button type="submit" class="btn-submit-rsvp" id="btn-submit" data-sync-key="rsvpSubmitBtn">
             CONFIRM RSVP
           </button>
         </form>

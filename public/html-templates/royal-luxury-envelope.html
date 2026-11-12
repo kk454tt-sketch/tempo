@@ -80,16 +80,16 @@ input:focus,textarea:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(74,
 <div class="col" id="col">
  <div class="inside">
   <div class="scroll" id="sc">
-   <p class="eyebrow rv" style="--i:0">You are cordially invited</p>
-   <p class="eyebrow rv" style="--i:1;margin-top:8px">to celebrate</p>
-   <h1 class="script rv" style="--i:2" data-k="name"></h1>
-   <p class="age rv" style="--i:3"><span data-k="age"></span> Birthday Celebration</p>
+   <p class="eyebrow rv" style="--i:0" data-sync-key="eyebrow1">You are cordially invited</p>
+   <p class="eyebrow rv" style="--i:1;margin-top:8px" data-sync-key="eyebrow2">to celebrate</p>
+   <h1 class="script rv" style="--i:2" data-k="name" data-sync-key="celebrantName"></h1>
+   <p class="age rv" style="--i:3"><span data-k="age" data-sync-key="celebrantAge"></span> Birthday Celebration</p>
    <div class="orn rv" style="--i:4"><i></i><b></b><i></i></div>
-   <div class="card rv"><h2>When</h2><p data-k="date"></p><small data-k="time"></small></div>
-   <div class="card rv"><h2>Where</h2><p data-k="venue"></p><small data-k="address"></small><a class="btn" id="map" target="_blank" rel="noopener">View Location</a></div>
-   <div class="card rv"><h2>With Love</h2><p style="font-style:italic" data-k="note"></p></div>
+   <div class="card rv"><h2>When</h2><p data-k="date" data-sync-key="eventDate"></p><small data-k="time" data-sync-key="eventTime"></small></div>
+   <div class="card rv"><h2>Where</h2><p data-k="venue" data-sync-key="eventVenue"></p><small data-k="address" data-sync-key="eventAddress"></small><a class="btn" id="map" target="_blank" rel="noopener">View Location</a></div>
+   <div class="card rv"><h2>With Love</h2><p style="font-style:italic" data-k="note" data-sync-key="invitationNote"></p></div>
    <div class="orn rv"><i></i><b></b><i></i></div>
-   <div class="card rv" id="rsvp"><h2>RSVP</h2><p style="font-size:1rem" data-k="rsvpBy"></p>
+   <div class="card rv" id="rsvp"><h2>RSVP</h2><p style="font-size:1rem" data-k="rsvpBy" data-sync-key="rsvpDeadline"></p>
     <form id="f">
      <label for="n">Your name</label><input id="n" type="text" required autocomplete="name">
      <span class="lab">Will you join us?</span>
@@ -99,9 +99,9 @@ input:focus,textarea:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(74,
      <label for="t">A little message</label><textarea id="t" rows="3"></textarea>
      <div style="text-align:center"><button class="btn" type="submit">Send RSVP</button></div>
     </form>
-    <div class="thanks"><h2 style="margin-top:8px">Thank you!</h2><p>Your reply is on its way. We can't wait to celebrate with you 💜</p></div>
+    <div class="thanks"><h2 style="margin-top:8px" data-sync-key="thankYouHeading">Thank you!</h2><p>Your reply is on its way. We can't wait to celebrate with you 💜</p></div>
    </div>
-   <p class="script rv" style="font-size:2rem;margin-top:10px">See you there</p>
+   <p class="script rv" style="font-size:2rem;margin-top:10px" data-sync-key="thankYouNote">See you there</p>
   </div>
  </div>
  <div class="frame"><div class="c tl"></div><div class="c tr"></div><div class="c bl"></div><div class="c br"></div></div>
@@ -123,6 +123,7 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 function openIt(){if(opened)return;opened=true;col.classList.add('open');
  setTimeout(()=>sc.querySelectorAll('.rv').forEach(e=>io.observe(e)),2400);setTimeout(()=>cv.style.display='none',4800);}
 cv.addEventListener('click',openIt);
+window.openIt = openIt;
 cv.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openIt()}});
 let g=1;const go=document.getElementById('g');
 document.getElementById('p').onclick=()=>{g=Math.min(10,g+1);go.textContent=g};

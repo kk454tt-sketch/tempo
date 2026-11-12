@@ -25,7 +25,6 @@ export const TemplatesPage: React.FC = () => {
 
   // Per-category template lists for explore sections (shown when no filter active)
   const birthdayTemplates = useMemo(() => templatesRegistry.filter((t) => t.category === 'birthday').slice(0, 4), []);
-  const weddingTemplates = useMemo(() => templatesRegistry.filter((t) => t.category === 'wedding').slice(0, 4), []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,7 +119,7 @@ export const TemplatesPage: React.FC = () => {
                   Explore Templates
                 </h1>
                 <p className="font-body-md text-xs sm:text-sm text-on-surface-variant mt-0.5">
-                  Handcrafted digital experiences for birthdays and weddings.
+                  Handcrafted digital experiences for creator portfolios and birthday celebrations.
                 </p>
               </div>
 
@@ -322,39 +321,7 @@ export const TemplatesPage: React.FC = () => {
                 </section>
               )}
 
-              {/* Wedding Explore Section (Single row 2 templates on mobile) */}
-              {weddingTemplates.length > 0 && (
-                <section className="w-full" id="wedding-section">
-                  <div className="max-w-[1440px] mx-auto px-3 sm:px-margin md:px-margin lg:px-margin-lg">
-                    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-4 sm:mb-6">
-                      <div>
-                        <h2 className="font-headline-lg text-lg sm:text-2xl font-bold text-on-surface tracking-tight">
-                          Wedding &amp; Union Templates
-                        </h2>
-                        <p className="font-body-sm text-xs sm:text-sm text-on-surface-variant mt-0.5">
-                          Timeless digital invitations, gift registries, and story pages designed for unforgettable moments.
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleCategorySelect('wedding')}
-                        className="font-label-md text-xs sm:text-sm text-primary flex items-center gap-1 hover:underline whitespace-nowrap font-semibold cursor-pointer"
-                      >
-                        View all Wedding Templates →
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-                      {weddingTemplates.map((template) => (
-                        <TemplateCard
-                          key={template.id}
-                          template={template}
-                          onPreviewClick={(t) => setSelectedPreview(t)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </section>
-              )}
+              
 
               
             </div>

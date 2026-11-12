@@ -79,5 +79,93 @@ react/cjs/react-jsx-runtime.production.js:
    *)
 */
 </script>
+<script>
+(function() {
+  function tagElements() {
+    var brand = document.querySelector('a[href="#top"].font-pixel');
+    if (brand && !brand.getAttribute('data-sync-key')) brand.setAttribute('data-sync-key', 'brandName');
+    var ftBrand = document.querySelector('footer span.font-pixel');
+    if (ftBrand && !ftBrand.getAttribute('data-sync-key')) ftBrand.setAttribute('data-sync-key', 'brandName');
+
+    var navLinks = document.querySelectorAll('nav[aria-label="Main"] a');
+    var navKeys = ['navAbout', 'navWorld', 'navGameplay', 'navAchievements', 'navContact'];
+    navLinks.forEach(function(a, i) {
+      if (navKeys[i] && !a.getAttribute('data-sync-key')) a.setAttribute('data-sync-key', navKeys[i]);
+    });
+
+    var heroH1 = document.querySelector('#top h1');
+    if (heroH1 && !heroH1.getAttribute('data-sync-key')) heroH1.setAttribute('data-sync-key', 'heroName');
+
+    var heroSub = document.querySelector('#top p.text-stone');
+    if (heroSub && !heroSub.getAttribute('data-sync-key')) heroSub.setAttribute('data-sync-key', 'heroSubtitle');
+
+    var btnWorld = document.querySelector('#top a[href="#world"]');
+    if (btnWorld && !btnWorld.getAttribute('data-sync-key')) btnWorld.setAttribute('data-sync-key', 'btnExploreWorld');
+
+    var btnGameplay = document.querySelector('#top a[href="#gameplay"]');
+    if (btnGameplay && !btnGameplay.getAttribute('data-sync-key')) btnGameplay.setAttribute('data-sync-key', 'btnWatchGameplay');
+
+    var aboutH2 = document.querySelector('#about h2');
+    if (aboutH2 && !aboutH2.getAttribute('data-sync-key')) aboutH2.setAttribute('data-sync-key', 'aboutHeading');
+
+    var aboutP = document.querySelector('#about p.text-stone');
+    if (aboutP && !aboutP.getAttribute('data-sync-key')) aboutP.setAttribute('data-sync-key', 'aboutBio');
+
+    var skills = document.querySelectorAll('#skills ul li p');
+    var skillKeys = ['skill1', 'skill2', 'skill3', 'skill4'];
+    skills.forEach(function(p, i) {
+      if (skillKeys[i] && !p.getAttribute('data-sync-key')) p.setAttribute('data-sync-key', skillKeys[i]);
+    });
+
+    var worldH2 = document.querySelector('#world h2');
+    if (worldH2 && !worldH2.getAttribute('data-sync-key')) worldH2.setAttribute('data-sync-key', 'worldHeading');
+
+    var biomes = document.querySelectorAll('#world ul li span');
+    var biomeKeys = ['biome1', 'biome2', 'biome3'];
+    biomes.forEach(function(s, i) {
+      if (biomeKeys[i] && !s.getAttribute('data-sync-key')) s.setAttribute('data-sync-key', biomeKeys[i]);
+    });
+
+    var gameplayH2 = document.querySelector('#gameplay h2');
+    if (gameplayH2 && !gameplayH2.getAttribute('data-sync-key')) gameplayH2.setAttribute('data-sync-key', 'gameplayHeading');
+
+    var bigVideo = document.querySelector('#gameplay a:first-of-type span:last-child');
+    if (bigVideo && !bigVideo.getAttribute('data-sync-key')) bigVideo.setAttribute('data-sync-key', 'gameplayFeatured');
+
+    var subVideos = document.querySelectorAll('#gameplay div.grid a span:last-child');
+    if (subVideos[0] && !subVideos[0].getAttribute('data-sync-key')) subVideos[0].setAttribute('data-sync-key', 'videoTitle');
+
+    var achieveH2 = document.querySelector('#achievements h2');
+    if (achieveH2 && !achieveH2.getAttribute('data-sync-key')) achieveH2.setAttribute('data-sync-key', 'achievementsHeading');
+
+    var achieveCards = document.querySelectorAll('#achievements ul li');
+    if (achieveCards[0]) {
+      var tSpan = achieveCards[0].querySelector('span.text-white');
+      if (tSpan && !tSpan.getAttribute('data-sync-key')) tSpan.setAttribute('data-sync-key', 'achievement1');
+      var nSpan = achieveCards[0].querySelector('span.text-stone');
+      if (nSpan && !nSpan.getAttribute('data-sync-key')) nSpan.setAttribute('data-sync-key', 'addYoursPrompt');
+    }
+
+    var contactH2 = document.querySelector('#contact h2');
+    if (contactH2 && !contactH2.getAttribute('data-sync-key')) contactH2.setAttribute('data-sync-key', 'communityHeading');
+  }
+
+  tagElements();
+  var count = 0;
+  var interval = setInterval(function() {
+    tagElements();
+    count++;
+    if (count > 40) clearInterval(interval);
+  }, 100);
+
+  var root = document.getElementById('root');
+  if (root) {
+    var obs = new MutationObserver(function() {
+      tagElements();
+    });
+    obs.observe(root, { childList: true, subtree: true });
+  }
+})();
+</script>
 </body>
 </html>

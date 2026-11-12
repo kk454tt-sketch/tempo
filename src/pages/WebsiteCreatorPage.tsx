@@ -13,8 +13,9 @@ import { BirthdayMainInfoSection, DressCodeData } from '@/components/editor/Birt
 import { BirthdayDefaultInfoSection } from '@/components/editor/BirthdayDefaultInfoSection';
 import { MusicEditorSection, MusicSettingsData } from '@/components/editor/MusicEditorSection';
 import { WeddingEditSection } from '@/components/editor/WeddingEditSection';
-import { PortfolioEditSection } from '@/components/editor/PortfolioEditSection';
+import { StitchMinimalPortfolioEditor } from '@/components/editor/StitchMinimalPortfolioEditor';
 import { PortfolioStudioView } from '@/components/editor/PortfolioStudioView';
+import { getPortfolioSiteConfig } from '@/components/editor/portfolioSiteDefaults';
 import { DEFAULT_PORTFOLIO_CARD_1, DEFAULT_PORTFOLIO_CARD_2 } from '@/templates/components/portfolioAssets';
 import { RestaurantEditSection } from '@/components/editor/RestaurantEditSection';
 import { SaasEditSection } from '@/components/editor/SaasEditSection';
@@ -113,14 +114,59 @@ export const WebsiteCreatorPage: React.FC = () => {
   );
   const [portfolioData, setPortfolioData] = useState<PortfolioData | undefined>(() => {
     const existing = initialTemplate.defaultData.portfolioData;
-    if (existing && existing.card1 && existing.card2) return existing;
+    const siteConfig = getPortfolioSiteConfig(initialTemplate.id);
+
+    if (initialTemplate.id === 'web-developer-portfolio') {
+      return {
+        templateId: initialTemplate.id,
+        creatorName: 'Alex Rivers',
+        discipline: 'Full-stack web developer',
+        title: 'Web Developer Portfolio',
+        statusNote: 'Crafting fast, dynamic websites and web apps. Focus on interactive UI.',
+        creatorRole: 'Full-stack web developer',
+        card1: existing?.card1 || DEFAULT_PORTFOLIO_CARD_1,
+        card2: existing?.card2 || DEFAULT_PORTFOLIO_CARD_2,
+        activeCardIndex: existing?.activeCardIndex ?? 0,
+        projects: existing?.projects,
+        defaultTexts: { ...siteConfig.defaultTexts },
+      };
+    }
+
+    // For all other portfolio sites: 3D in motion, Alex 3D, Design Gallery, EMIWAY, Motion Designer
     return {
-      creatorName: initialTemplate.defaultData.title || 'Alex Rivers',
-      discipline: 'Full-stack & 3D Web Developer',
-      card1: existing?.card1 || DEFAULT_PORTFOLIO_CARD_1,
-      card2: existing?.card2 || DEFAULT_PORTFOLIO_CARD_2,
-      activeCardIndex: existing?.activeCardIndex ?? 0,
-      projects: existing?.projects,
+      templateId: initialTemplate.id,
+      creatorName: siteConfig.creatorName,
+      brand: siteConfig.creatorName,
+      discipline: siteConfig.discipline,
+      title: siteConfig.defaultTexts.heroTitle || siteConfig.defaultTexts.heroHeading || siteConfig.name,
+      statusNote: siteConfig.defaultTexts.heroYearTag || siteConfig.defaultTexts.statusNote || siteConfig.defaultTexts.headerDate || '',
+      creatorRole: siteConfig.discipline,
+      defaultTexts: { ...siteConfig.defaultTexts },
+      hire: {
+        mode: 'whatsapp',
+        whatsapp: '919876543210',
+        waText: 'Hi! I saw your portfolio and would like to discuss an opportunity.',
+        email: siteConfig.defaultTexts.contactEmail || siteConfig.defaultTexts.emailAddress || 'hello@yourname.com',
+        phone: '+91 98765 43210',
+        label: siteConfig.defaultTexts.btnViewWork || siteConfig.defaultTexts.btnExploreWorld || siteConfig.defaultTexts.hireSticker || 'Work With Me',
+        fallback: siteConfig.defaultTexts.contactEmail ? `mailto:${siteConfig.defaultTexts.contactEmail}` : 'mailto:hello@yourname.com',
+      },
+      nav: {
+        l1: 'Projects',
+        u1: '#work',
+        l2: siteConfig.defaultTexts.btnContact || siteConfig.defaultTexts.btnWatchGameplay || 'Contact',
+        u2: '#contact',
+      },
+      socialLinks: {
+        instagram: 'https://instagram.com/',
+        behance: 'https://behance.net/',
+        artstation: 'https://artstation.com/',
+        linkedin: 'https://linkedin.com/',
+        github: 'https://github.com/',
+        twitter: 'https://twitter.com/',
+        youtube: 'https://youtube.com/',
+        discord: 'https://discord.gg/',
+      },
     };
   });
   const [restaurantData, setRestaurantData] = useState<RestaurantData | undefined>(
@@ -287,6 +333,59 @@ export const WebsiteCreatorPage: React.FC = () => {
         setSchedule(initialTemplate.defaultData.schedule);
       }
       setSubdomain((templateId || 'invitation').toLowerCase().replace(/[^a-z0-9]/g, '-'));
+
+      // Always reset and scope portfolioData to the selected template
+      const siteConfig = getPortfolioSiteConfig(initialTemplate.id);
+      if (initialTemplate.id === 'web-developer-portfolio') {
+        setPortfolioData({
+          templateId: initialTemplate.id,
+          creatorName: 'Alex Rivers',
+          discipline: 'Full-stack web developer',
+          title: 'Web Developer Portfolio',
+          statusNote: 'Crafting fast, dynamic websites and web apps. Focus on interactive UI.',
+          creatorRole: 'Full-stack web developer',
+          card1: DEFAULT_PORTFOLIO_CARD_1,
+          card2: DEFAULT_PORTFOLIO_CARD_2,
+          activeCardIndex: 0,
+          defaultTexts: { ...siteConfig.defaultTexts },
+        });
+      } else {
+        setPortfolioData({
+          templateId: initialTemplate.id,
+          creatorName: siteConfig.creatorName,
+          brand: siteConfig.creatorName,
+          discipline: siteConfig.discipline,
+          title: siteConfig.defaultTexts.heroTitle || siteConfig.defaultTexts.heroHeading || siteConfig.name,
+          statusNote: siteConfig.defaultTexts.heroYearTag || siteConfig.defaultTexts.statusNote || siteConfig.defaultTexts.headerDate || '',
+          creatorRole: siteConfig.discipline,
+          defaultTexts: { ...siteConfig.defaultTexts },
+          hire: {
+            mode: 'whatsapp',
+            whatsapp: '919876543210',
+            waText: 'Hi! I saw your portfolio and would like to discuss an opportunity.',
+            email: siteConfig.defaultTexts.contactEmail || siteConfig.defaultTexts.emailAddress || 'hello@yourname.com',
+            phone: '+91 98765 43210',
+            label: siteConfig.defaultTexts.btnViewWork || siteConfig.defaultTexts.btnExploreWorld || siteConfig.defaultTexts.hireSticker || 'Work With Me',
+            fallback: siteConfig.defaultTexts.contactEmail ? `mailto:${siteConfig.defaultTexts.contactEmail}` : 'mailto:hello@yourname.com',
+          },
+          nav: {
+            l1: 'Projects',
+            u1: '#work',
+            l2: siteConfig.defaultTexts.btnContact || siteConfig.defaultTexts.btnWatchGameplay || 'Contact',
+            u2: '#contact',
+          },
+          socialLinks: {
+            instagram: 'https://instagram.com/',
+            behance: 'https://behance.net/',
+            artstation: 'https://artstation.com/',
+            linkedin: 'https://linkedin.com/',
+            github: 'https://github.com/',
+            twitter: 'https://twitter.com/',
+            youtube: 'https://youtube.com/',
+            discord: 'https://discord.gg/',
+          },
+        });
+      }
     }
   }, [templateId, websiteId, initialTemplate]);
 
@@ -569,25 +668,23 @@ export const WebsiteCreatorPage: React.FC = () => {
 
 
 
-  // Dedicated Immersive Studio Mode for Portfolio templates
-  if (templateCategory === 'portfolio' || initialTemplate.id === 'web-developer-portfolio') {
-    return (
-      <PortfolioStudioView
-        template={initialTemplate}
-        eventData={currentEventData}
-        portfolioData={portfolioData}
-        onChangePortfolioData={setPortfolioData}
-        onSave={handleSave}
-        isSaving={isSaving}
-        isPublishing={isPublishing}
-        publishStatus={publishStatus}
-        subdomain={subdomain}
-        onChangeSubdomain={setSubdomain}
-        onToast={showToast}
-        onBack={() => navigate('/templates')}
-      />
-    );
-  }
+  // Dedicated Immersive Studio Mode for ALL Templates (Portfolio & Birthday)
+  return (
+    <PortfolioStudioView
+      template={initialTemplate}
+      eventData={currentEventData}
+      portfolioData={portfolioData}
+      onChangePortfolioData={setPortfolioData}
+      onSave={handleSave}
+      isSaving={isSaving}
+      isPublishing={isPublishing}
+      publishStatus={publishStatus}
+      subdomain={subdomain}
+      onChangeSubdomain={setSubdomain}
+      onToast={showToast}
+      onBack={() => navigate('/templates')}
+    />
+  );
 
   return (
     <div className="min-h-screen bg-surface flex flex-col antialiased">
@@ -760,13 +857,25 @@ export const WebsiteCreatorPage: React.FC = () => {
                     type="button"
                     onClick={() => setActiveTab('main-info')}
                     className={`flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                      activeTab !== 'share'
+                      activeTab === 'main-info' || activeTab === 'general'
                         ? 'bg-white text-[#14305A] shadow-sm border border-gray-200/80 ring-1 ring-black/5'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[17px] text-primary">tune</span>
-                    <span>1. Customization</span>
+                    <span className="material-symbols-outlined text-[17px] text-amber-500">edit_note</span>
+                    <span>1. Main Text</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('default-info')}
+                    className={`flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                      activeTab === 'default-info'
+                        ? 'bg-white text-[#14305A] shadow-sm border border-gray-200/80 ring-1 ring-black/5'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[17px] text-amber-500">tune</span>
+                    <span>2. Default Text</span>
                   </button>
                   <button
                     type="button"
@@ -778,7 +887,7 @@ export const WebsiteCreatorPage: React.FC = () => {
                     }`}
                   >
                     <span className="material-symbols-outlined text-[17px] text-emerald-600">link</span>
-                    <span>2. Link &amp; Share</span>
+                    <span>3. Link &amp; Share</span>
                   </button>
                 </div>
               ) : templateCategory === 'restaurant' ? (
@@ -947,9 +1056,10 @@ export const WebsiteCreatorPage: React.FC = () => {
                 />
               )}
 
-              {/* PORTFOLIO & ARCHITECTURE EDIT SECTION */}
+              {/* STITCH MINIMAL PORTFOLIO WEBSITE EDITOR PANEL */}
               {(templateCategory as any) === 'portfolio' && activeTab !== 'share' && (
-                <PortfolioEditSection
+                <StitchMinimalPortfolioEditor
+                  templateId={initialTemplate.id}
                   title={siteTitle}
                   tagline={siteTagline}
                   note={welcomeNote}
@@ -958,6 +1068,8 @@ export const WebsiteCreatorPage: React.FC = () => {
                   date={eventDate}
                   photos={photos}
                   portfolioData={portfolioData}
+                  activeSubTab={activeTab === 'default-info' ? 'default-info' : 'main-info'}
+                  onSubTabChange={(tab: 'main-info' | 'default-info') => setActiveTab(tab)}
                   onChangeTitle={setSiteTitle}
                   onChangeTagline={setSiteTagline}
                   onChangeNote={setWelcomeNote}

@@ -10,7 +10,6 @@ export const eventCategories: CategoryFilterItem[] = [
   { id: 'all', label: 'All' },
   { id: 'portfolio', label: 'Portfolio' },
   { id: 'birthday', label: 'Birthday' },
-  { id: 'wedding', label: 'Wedding' },
 ];
 
 export interface MomentGridItem {
@@ -36,15 +35,7 @@ export const momentCategories: MomentGridItem[] = [
     category: 'birthday',
     title: 'Birthday & Celebrations',
     subtitle: 'Keepsake envelopes, wax seals, music & party hubs',
-    count: '10 Templates',
-    imageUrl: '/templates/keepsake-preview.jpg',
-  },
-  {
-    number: '03',
-    category: 'wedding',
-    title: 'Weddings & RSVP',
-    subtitle: 'Ceremonies, 3D cinematic experiences & botanical evenings',
-    count: '2 Templates',
-    imageUrl: '/templates/cinematic-elena-julian-wedding-screen.png',
+    count: '7 Templates',
+    imageUrl: '/templates/royal-luxury-envelope-poster.png',
   },
 ];

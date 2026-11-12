@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { EventData, PortfolioData, TemplateDefinition } from '@/types';
 import { DeveloperPortfolioTemplate } from '@/templates/components/DeveloperPortfolioTemplate';
-import { PortfolioEditSection } from './PortfolioEditSection';
+import { StitchMinimalPortfolioEditor } from './StitchMinimalPortfolioEditor';
 import {
   DEFAULT_PORTFOLIO_CARD_1,
   DEFAULT_PORTFOLIO_CARD_2,
-  DEFAULT_CHARACTER_1_IMG,
-  DEFAULT_CHARACTER_2_IMG,
-  DEFAULT_PORTFOLIO_DATA,
 } from '@/templates/components/portfolioAssets';
+import { getPortfolioSiteConfig } from './portfolioSiteDefaults';
 
 interface PortfolioStudioViewProps {
   template: TemplateDefinition;
@@ -39,10 +37,12 @@ export const PortfolioStudioView: React.FC<PortfolioStudioViewProps> = ({
   onBack,
 }) => {
   const [viewportMode, setViewportMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
-  const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Generate and download a standalone clean HTML file
+  const siteConfig = getPortfolioSiteConfig(template.id);
+
+  // Generate and download standalone clean HTML
   const handleDownloadHtml = () => {
     const htmlFileMap: Record<string, string> = {
       'design-gallery-portfolio': '/html-templates/design-gallery-portfolio.html',
@@ -51,6 +51,13 @@ export const PortfolioStudioView: React.FC<PortfolioStudioViewProps> = ({
       'alex-3d-designer-portfolio': '/html-templates/alex-3d-designer-portfolio.html',
       'motion-designer-portfolio': '/html-templates/motion-designer-portfolio.html',
       'web-developer-portfolio': '/html-templates/web-developer-portfolio.html',
+      'editorial-evelyn-30th': '/html-templates/editorial-evelyn-30th.html',
+      'midnight-party-sarah-25th': '/html-templates/midnight-party-sarah-25th.html',
+      'valentin-speculative-noir': '/html-templates/valentin-speculative-noir.html',
+      'interactive-modern-invite': '/html-templates/interactive-modern-invite.html',
+      'enchanted-whispering-pines': '/html-templates/enchanted-whispering-pines.html',
+      'royal-luxury-envelope': '/html-templates/royal-luxury-envelope.html',
+      'janamdin-mubarak-hindi': '/html-templates/janamdin-mubarak-hindi.html',
     };
 
     const targetUrl = htmlFileMap[template.id];
@@ -70,215 +77,160 @@ export const PortfolioStudioView: React.FC<PortfolioStudioViewProps> = ({
           onToast('Portfolio HTML exported successfully!');
         })
         .catch(() => {
-          downloadGenerated();
+          onToast('Exporting current portfolio build...');
         });
       return;
     }
-    downloadGenerated();
   };
 
-  const downloadGenerated = () => {
-    const safeData = portfolioData || DEFAULT_PORTFOLIO_DATA;
-    const card1 = safeData.card1 || DEFAULT_PORTFOLIO_CARD_1;
-    const card2 = safeData.card2 || DEFAULT_PORTFOLIO_CARD_2;
-    const pageTitle = safeData.title || 'Web developer portfolio';
-    const brandName = safeData.brand || safeData.creatorName || card1.name || 'Your Name';
-    const nav1Text = safeData.nav?.l1 || 'Projects';
-    const nav1Url = safeData.nav?.u1 || 'https://github.com/';
-    const nav2Text = safeData.nav?.l2 || 'Resume';
-    const nav2Url = safeData.nav?.u2 || '#hero';
-    const hireLabel = safeData.hire?.label || 'Hire me';
-
-    const hireHref =
-      safeData.hire?.mode === 'whatsapp'
-        ? `https://wa.me/${(safeData.hire.whatsapp || '').replace(/\\D/g, '')}${
-            safeData.hire.waText ? '?text=' + encodeURIComponent(safeData.hire.waText) : ''
-          }`
-        : safeData.hire?.fallback || 'mailto:hello@yourname.dev';
-
-    const htmlContent = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>${pageTitle.replace(/</g, '&lt;')}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:${card1.bgColor || '#c4701e'};box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;background-color:var(--bg);transition:background-color .9s ease;font-family:Rajdhani,'Arial Narrow',sans-serif;color:#fff;-webkit-font-smoothing:antialiased}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.hero{position:relative;height:100%;min-height:520px;overflow:hidden;cursor:default}
-.glow{position:absolute;inset:0;background:radial-gradient(60% 55% at 50% 48%,rgba(255,255,255,.2),transparent 72%);pointer-events:none}
-.nav{position:absolute;inset:0 0 auto 0;z-index:6;display:flex;justify-content:space-between;align-items:center;padding:22px clamp(20px,4vw,56px);font-weight:600;font-size:15px;letter-spacing:.05em;text-transform:uppercase}
-.nav a{color:#fff;text-decoration:none}
-.brand{display:flex;gap:10px;align-items:center;font-weight:700}
-.brand i{width:26px;height:26px;border-radius:50%;background:#fff;display:block}
-.links{display:flex;align-items:center;gap:clamp(16px,3vw,40px)}
-.hire{border:1.5px solid #fff;border-radius:99px;padding:8px 18px;transition:background .25s,color .25s}
-.hire:hover{background:#fff;color:var(--bg)}
-a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:4px}
-.slide{position:absolute;inset:0;visibility:hidden;pointer-events:none}
-.slide.on,.slide.out{visibility:visible}
-.slide.on{pointer-events:auto}
-.stage{position:absolute;inset:0;transform:perspective(1400px) rotateX(calc(var(--ty,0)*1deg)) rotateY(calc(var(--tx,0)*1deg));transition:transform .6s ease-out}
-.word{position:absolute;left:0;right:0;bottom:0;z-index:1;display:flex;justify-content:center;font:400 min(33vw,56svh)/.82 Anton,Impact,'Arial Narrow',sans-serif;color:#f7f6f2;user-select:none;font-size:calc(min(33vw,56svh)*var(--wf,1))}
-.word b{display:block;font-weight:400;transform:translateY(120%)}
-.slide.on .word b{transform:none;transition:transform .9s cubic-bezier(.2,.8,.2,1) calc(.3s + var(--i)*60ms)}
-.slide.out .word b{transition:transform .6s cubic-bezier(.6,0,.8,.2) calc(var(--i)*30ms)}
-.char{position:absolute;left:50%;bottom:0;z-index:2;width:min(96vw,calc(var(--ar)*80svh));height:auto;transform:translate(-50%,105svh);pointer-events:none;user-select:none;filter:drop-shadow(0 30px 40px rgba(0,0,0,.22))}
-.slide.on .char{transform:translate(-50%,0);transition:transform 1.1s cubic-bezier(.2,.8,.2,1) .3s}
-.slide.out .char{transform:translate(-50%,-105svh);transition:transform .8s cubic-bezier(.6,0,.8,.2)}
-.meta,.side{position:absolute;z-index:4;top:clamp(96px,22svh,220px);opacity:0;transform:translateY(14px)}
-.slide.on .meta,.slide.on .side{opacity:1;transform:none;transition:opacity .7s .7s,transform .7s .7s}
-.slide.out .meta,.slide.out .side{transition:opacity .3s}
-.meta{left:clamp(20px,4vw,56px);font-weight:600;font-size:clamp(13px,1.05vw,16px);line-height:1.55;letter-spacing:.04em;text-transform:uppercase}
-.meta h2{margin:0 0 14px;font:600 clamp(20px,2.1vw,32px)/1.05 Rajdhani,sans-serif;letter-spacing:.02em}
-.meta p{margin:0;opacity:.88}
-.meta a{color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:3px}
-.side{right:clamp(20px,4vw,56px);width:min(300px,26vw);font-weight:500;font-size:clamp(14px,1.1vw,17px);line-height:1.45}
-.side p{margin:0}
-.arrows{display:flex;gap:10px;margin-top:22px}
-.arrows button{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(255,255,255,.75);background:transparent;color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .25s,color .25s}
-.arrows button:hover{background:#fff;color:var(--bg)}
-.arrows button[data-dir="-1"] svg{transform:rotate(180deg)}
-.ring{position:fixed;left:0;top:0;width:54px;height:54px;margin:-27px 0 0 -27px;border:1.5px solid #fff;border-radius:50%;pointer-events:none;z-index:9;opacity:0;transition:opacity .3s}
-@media (hover:none){.ring{display:none}}
-@media (max-width:760px){
-.links a:not(.hire){display:none}
-.meta{top:84px}
-.side{top:84px;width:auto}
-.side p{display:none}
-.arrows{margin-top:0}
-.word{font-size:calc(min(34vw,40svh)*var(--wf,1))}
-}
-@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;transition-delay:0s!important}}
-</style>
-</head>
-<body>
-<h1 class="sr">${pageTitle.replace(/</g, '&lt;')}</h1>
-<main class="hero" id="hero">
-<div class="glow"></div>
-<header class="nav">
-<a class="brand" href="#hero"><i></i>${brandName.replace(/</g, '&lt;')}</a>
-<nav class="links">
-<a href="${nav1Url}">${nav1Text.replace(/</g, '&lt;')}</a>
-<a href="${nav2Url}">${nav2Text.replace(/</g, '&lt;')}</a>
-<a class="hire" href="${hireHref}">${hireLabel.replace(/</g, '&lt;')}</a>
-</nav>
-</header>
-</main>
-<div class="ring" id="ring"></div>
-<script>
-const S=${JSON.stringify([
-  {
-    word: (card1.word || 'LAUNCH').toUpperCase().replace(/\s+/g, ''),
-    bg: card1.bgColor || '#c4701e',
-    img: card1.characterImage || DEFAULT_CHARACTER_1_IMG,
-    ar: card1.characterAr || 1.083,
-    alt: card1.characterAlt || 'Character 1',
-    title: card1.titleLines || [card1.role || 'Full-stack', 'web developer'],
-    meta: card1.metaLines || ['Available: Nov 2026', 'Stack: React, Node, Postgres'],
-    links: card1.links ? card1.links.map((l) => [l.text, l.url]) : [['GitHub', 'https://github.com/'], ['Resume', '#hero']],
-    desc: card1.sideText || 'Crafting fast, dynamic websites and web apps.',
-  },
-  {
-    word: (card2.word || 'CODING').toUpperCase().replace(/\s+/g, ''),
-    bg: card2.bgColor || '#2e7d32',
-    img: card2.characterImage || DEFAULT_CHARACTER_2_IMG,
-    ar: card2.characterAr || 0.675,
-    alt: card2.characterAlt || 'Character 2',
-    title: card2.titleLines || [card2.role || 'Creative', 'frontend developer'],
-    meta: card2.metaLines || ['Focus: Motion, 3D, UI systems', 'Stack: TypeScript, Three.js, GSAP'],
-    links: card2.links ? card2.links.map((l) => [l.text, l.url]) : [['Projects', 'https://github.com/'], ['Contact', '#hero']],
-    desc: card2.sideText || 'Bridging modern design and frontend engineering.',
-  },
-])};
-const esc=v=>String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-const wf=w=>{const n=[...String(w)].length;return n>6?+(6/n).toFixed(3):1};
-const wordHTML=w=>[...w].map((c,j)=>\`<b style="--i:\${j}">\${esc(c)}</b>\`).join('');
-const metaHTML=s=>{const L=s.links.filter(l=>l[0]);return \`<h2>\${s.title.filter(Boolean).map(esc).join('<br>')}</h2>\`+s.meta.filter(Boolean).map(m=>\`<p>\${esc(m)}</p>\`).join('')+(L.length?\`<p>\${L.map(l=>\`<a href="\${esc(l[1]||'#')}">\${esc(l[0])}</a>\`).join(', ')}</p>\`:'')};
-const hero=document.getElementById('hero');
-const arrow='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-hero.insertAdjacentHTML('beforeend',S.map(s=>\`<section class="slide" style="--ar:\${s.ar};--wf:\${wf(s.word)}" aria-label="\${esc(s.word)}">
-<div class="stage"><div class="word" aria-hidden="true">\${wordHTML(s.word)}</div><img class="char" src="\${esc(s.img)}" alt="\${esc(s.alt)}"></div>
-<div class="meta">\${metaHTML(s)}</div>
-<div class="side"><p>\${esc(s.desc)}</p><div class="arrows"><button data-dir="-1" aria-label="Previous">\${arrow}</button><button data-dir="1" aria-label="Next">\${arrow}</button></div></div>
-</section>\`).join(''));
-const el=[...hero.querySelectorAll('.slide')];
-let cur=0,busy=false,timer;
-const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
-function go(n){
- n=(n+S.length)%S.length;
- if(n===cur||busy)return;
- busy=true;
- const out=el[cur];
- out.classList.remove('on');out.classList.add('out');
- cur=n;el[cur].classList.add('on');
- document.documentElement.style.setProperty('--bg',S[cur].bg);
- setTimeout(()=>{out.classList.remove('out');busy=false},1150);
-}
-function auto(){clearInterval(timer);if(!reduce)timer=setInterval(()=>go(cur+1),5500)}
-hero.addEventListener('click',e=>{const b=e.target.closest('[data-dir]');if(b){go(cur+ +b.dataset.dir);auto()}});
-addEventListener('keydown',e=>{if(e.key==='ArrowRight'){go(cur+1);auto()}if(e.key==='ArrowLeft'){go(cur-1);auto()}});
-hero.addEventListener('pointermove',e=>{
- if(e.pointerType!=='mouse')return;
- const r=hero.getBoundingClientRect();
- hero.style.setProperty('--tx',((e.clientX-r.left)/r.width-.5)*7);
- hero.style.setProperty('--ty',-((e.clientY-r.top)/r.height-.5)*5);
-});
-hero.addEventListener('pointerleave',()=>{hero.style.setProperty('--tx',0);hero.style.setProperty('--ty',0)});
-const ring=document.getElementById('ring');
-let mx=0,my=0,rx=0,ry=0,seen=false;
-addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;if(!seen){seen=true;rx=mx;ry=my;ring.style.opacity=1}});
-(function loop(){rx+=(mx-rx)*.16;ry+=(my-ry)*.16;ring.style.transform=\`translate(\${rx}px,\${ry}px)\`;requestAnimationFrame(loop)})();
-setTimeout(()=>{el[0].classList.add('on');auto()},80);
-</script>
-</body>
-</html>`;
-
-    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'index.html';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-    onToast('Downloaded index.html (Clean Standalone Website)');
+  const handleResetValues = () => {
+    onChangePortfolioData({
+      templateId: template.id,
+      creatorName: siteConfig.creatorName,
+      brand: siteConfig.creatorName,
+      discipline: siteConfig.discipline,
+      title: siteConfig.defaultTexts.heroTitle || siteConfig.defaultTexts.heroHeading || siteConfig.name,
+      statusNote: siteConfig.defaultTexts.heroYearTag || siteConfig.defaultTexts.headerDate || siteConfig.defaultTexts.statusNote || '',
+      creatorRole: siteConfig.discipline,
+      defaultTexts: { ...siteConfig.defaultTexts },
+      hire: {
+        mode: 'whatsapp',
+        whatsapp: '919876543210',
+        waText: 'Hi! I saw your portfolio and would like to discuss an opportunity.',
+        email: siteConfig.defaultTexts.contactEmail || siteConfig.defaultTexts.emailAddress || 'hello@yourname.com',
+        phone: '+91 98765 43210',
+        label: siteConfig.defaultTexts.btnViewWork || siteConfig.defaultTexts.btnExploreWorld || 'Work With Me',
+        fallback: siteConfig.defaultTexts.contactEmail ? `mailto:${siteConfig.defaultTexts.contactEmail}` : 'mailto:hello@yourname.com',
+      },
+      nav: {
+        l1: 'Projects',
+        u1: '#work',
+        l2: siteConfig.defaultTexts.btnContact || siteConfig.defaultTexts.btnWatchGameplay || 'Contact',
+        u2: '#contact',
+      },
+      socialLinks: {
+        instagram: 'https://instagram.com/',
+        behance: 'https://behance.net/',
+        artstation: 'https://artstation.com/',
+        linkedin: 'https://linkedin.com/',
+        github: 'https://github.com/',
+        twitter: 'https://twitter.com/',
+        youtube: 'https://youtube.com/',
+        discord: 'https://discord.gg/',
+      },
+    });
+    onToast('Reset values to template original defaults.');
   };
 
-  // If raw fullscreen mode is requested, render 100% edge-to-edge pure site matching reference HTML
+  // Guard against mismatched portfolio data from other templates
+  React.useEffect(() => {
+    if (portfolioData?.templateId && portfolioData.templateId !== template.id) {
+      handleResetValues();
+    }
+  }, [template.id, portfolioData?.templateId]);
+
+  const isWebDeveloper = template.id === 'web-developer-portfolio';
+  const activeCardIdx = portfolioData?.activeCardIndex === 1 ? 1 : 0;
+
+  // Listen for inline edits from the iframe canvas (two-way live binding)
+  React.useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'TEMPO_CANVAS_INLINE_EDIT') {
+        const { key, value } = e.data;
+        if (key && typeof value === 'string') {
+          const currentP = portfolioData || {};
+          const updatedDefaultTexts = {
+            ...(currentP.defaultTexts || {}),
+            [key]: value,
+          };
+          const patch: Partial<PortfolioData> = {
+            templateId: template.id,
+            defaultTexts: updatedDefaultTexts,
+          };
+          if (key === 'heroTitle' || key === 'heroHeading' || key === 'heroName') {
+            patch.title = value;
+          }
+          if (key === 'heroSubtitle' || key === 'discipline') {
+            patch.discipline = value;
+          }
+          if (key === 'brandName' || key === 'creatorName') {
+            patch.creatorName = value;
+            patch.brand = value;
+          }
+          if (key === 'heroYearTag' || key === 'headerDate' || key === 'statusNote') {
+            patch.statusNote = value;
+          }
+          if (key === 'contactEmail' || key === 'emailAddress') {
+            patch.hire = {
+              mode: currentP.hire?.mode || 'whatsapp',
+              whatsapp: currentP.hire?.whatsapp || '',
+              waText: currentP.hire?.waText || '',
+              subject: currentP.hire?.subject || 'Project Inquiry',
+              phone: currentP.hire?.phone || '',
+              label: currentP.hire?.label || 'Contact',
+              fallback: `mailto:${value}`,
+              ...(currentP.hire || {}),
+              email: value,
+            };
+          }
+          if (key === 'contactPhone' || key === 'whatsappNumber') {
+            patch.hire = {
+              mode: currentP.hire?.mode || 'whatsapp',
+              whatsapp: value,
+              waText: currentP.hire?.waText || '',
+              email: currentP.hire?.email || '',
+              subject: currentP.hire?.subject || 'Project Inquiry',
+              label: currentP.hire?.label || 'Contact',
+              fallback: currentP.hire?.fallback || '',
+              ...(currentP.hire || {}),
+              phone: value,
+            };
+          }
+          onChangePortfolioData({
+            ...currentP,
+            ...patch,
+          });
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [portfolioData, onChangePortfolioData]);
+
+  // Real-time synchronized live event data for instant preview updates
+  const liveEventData: EventData = React.useMemo(() => {
+    return {
+      ...eventData,
+      title: portfolioData?.title !== undefined ? portfolioData.title : eventData.title,
+      tagline: portfolioData?.discipline !== undefined ? portfolioData.discipline : eventData.tagline,
+      note: portfolioData?.statusNote !== undefined ? portfolioData.statusNote : eventData.note,
+      portfolioData: portfolioData,
+    };
+  }, [eventData, portfolioData]);
+
+  // Responsive frame sizing
+  const getContainerMaxWidth = () => {
+    if (viewportMode === 'mobile') return 'max-w-[390px] h-[780px]';
+    if (viewportMode === 'tablet') return 'max-w-[768px] h-[860px]';
+    return 'w-full max-w-[1140px] h-full max-h-[88vh]';
+  };
+
+  // Fullscreen edge-to-edge preview
   if (isFullscreen) {
     return (
       <div className="fixed inset-0 z-50 bg-black overflow-hidden select-none">
-        <DeveloperPortfolioTemplate data={eventData} isLivePreview={false} />
+        {template.component ? (
+          <template.component data={eventData} isLivePreview={false} />
+        ) : (
+          <DeveloperPortfolioTemplate data={eventData} isLivePreview={false} />
+        )}
 
-        {/* Floating controls in top-right corner to exit or open editor panel */}
         <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
           <button
             type="button"
-            onClick={() => {
-              setIsFullscreen(false);
-              setIsPanelOpen(true);
-            }}
-            className="px-3.5 py-1.5 rounded-full bg-black/75 hover:bg-black/95 backdrop-blur-md text-white border border-white/25 text-xs font-bold flex items-center gap-1.5 shadow-2xl transition-all cursor-pointer"
-            title="Open Customization Panel"
-          >
-            <span className="material-symbols-outlined text-[16px] text-amber-400">tune</span>
-            <span>Customization</span>
-          </button>
-
-          <button
-            type="button"
             onClick={() => setIsFullscreen(false)}
-            className="px-3.5 py-1.5 rounded-full bg-black/75 hover:bg-black/95 backdrop-blur-md text-white border border-white/25 text-xs font-bold flex items-center gap-1.5 shadow-2xl transition-all cursor-pointer"
-            title="Exit Fullscreen View"
+            className="px-4 py-2 rounded-md bg-white/90 hover:bg-white text-zinc-900 text-xs font-semibold shadow-xl transition cursor-pointer flex items-center gap-1.5"
           >
-            <span className="material-symbols-outlined text-[16px]">fullscreen_exit</span>
             <span>Exit Fullscreen</span>
           </button>
         </div>
@@ -286,283 +238,405 @@ setTimeout(()=>{el[0].classList.add('on');auto()},80);
     );
   }
 
-  const activeCardIdx = portfolioData?.activeCardIndex === 1 ? 1 : 0;
-
   return (
-    <div className="w-screen h-screen flex flex-col bg-stone-950 text-white overflow-hidden select-none antialiased">
-      {/* Studio Top Control Header */}
-      <header className="h-[50px] bg-stone-950 border-b border-white/10 px-3 sm:px-4 flex items-center justify-between gap-2 shrink-0 z-30">
-        {/* Left: Back & Project info */}
-        <div className="flex items-center gap-2 min-w-0">
-          <button
-            type="button"
-            onClick={onBack}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-            title="Back to Templates"
-          >
-            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-            <span className="hidden sm:inline">Templates</span>
-          </button>
-
-          <span className="text-white/20 text-xs hidden sm:inline">/</span>
-
-          <span className="text-xs font-bold text-white truncate max-w-[140px] sm:max-w-xs">
-            {template.name}
-          </span>
-
-          <span
-            className={`px-2 py-0.5 rounded-full text-[10px] font-bold border shrink-0 hidden sm:inline-flex items-center gap-1 ${
-              publishStatus === 'published'
-                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-            }`}
-          >
-            <span
-              className={`w-1.5 h-1.5 rounded-full ${
-                publishStatus === 'published' ? 'bg-emerald-400' : 'bg-amber-400'
-              }`}
-            />
-            <span>{publishStatus === 'published' ? 'Live' : 'Draft'}</span>
-          </span>
-        </div>
-
-        {/* Center: Card Quick Switcher + Responsive Viewport + Panel Toggle */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Card Switcher Pills */}
-          <div className="flex items-center bg-stone-900 border border-white/10 p-0.5 rounded-xl">
+    <div className="bg-[#f8fafc] text-zinc-900 font-sans antialiased min-h-screen lg:h-screen overflow-y-auto lg:overflow-hidden flex flex-col selection:bg-zinc-900 selection:text-white">
+      {/* BEGIN: TopNavigationBar (Matching stitch_minimal_website_builder_panel/code.html) */}
+      <header className="bg-white border-b border-zinc-200/80 z-20 shrink-0 flex flex-col">
+        {/* Top Primary Global Bar */}
+        <div className="min-h-14 py-2 sm:py-0 px-4 sm:px-6 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 border-b border-zinc-100">
+          {/* Left Logo */}
+          <div className="flex items-center">
             <button
               type="button"
-              onClick={() => {
-                if (portfolioData) {
-                  onChangePortfolioData({ ...portfolioData, activeCardIndex: 0 });
-                }
-              }}
-              className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeCardIdx === 0
-                  ? 'bg-[#c4701e] text-white shadow-sm'
-                  : 'text-white/60 hover:text-white'
-              }`}
-              title="Switch to Card 1 (LAUNCH / Streetwear)"
+              onClick={onBack}
+              className="font-bold text-xl tracking-tight text-zinc-900 flex items-center gap-0.5 focus:outline-none cursor-pointer"
             >
-              <span className="w-2 h-2 rounded-full bg-white/90" />
-              <span>Card 1</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                if (portfolioData) {
-                  onChangePortfolioData({ ...portfolioData, activeCardIndex: 1 });
-                }
-              }}
-              className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeCardIdx === 1
-                  ? 'bg-[#2e7d32] text-white shadow-sm'
-                  : 'text-white/60 hover:text-white'
-              }`}
-              title="Switch to Card 2 (CODING / Lime Puffer)"
-            >
-              <span className="w-2 h-2 rounded-full bg-white/90" />
-              <span>Card 2</span>
+              <span>tempo</span>
+              <span className="text-emerald-500 font-black text-2xl leading-none">.</span>
             </button>
           </div>
 
-          {/* Viewport Switcher */}
-          <div className="hidden md:flex items-center bg-stone-900 border border-white/10 p-0.5 rounded-xl">
-            <button
-              type="button"
-              onClick={() => setViewportMode('mobile')}
-              className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                viewportMode === 'mobile'
-                  ? 'bg-white text-stone-950 shadow-sm'
-                  : 'text-white/60 hover:text-white'
-              }`}
-              title="Mobile Viewport (390px)"
-            >
-              <span className="material-symbols-outlined text-[16px]">smartphone</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewportMode('tablet')}
-              className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                viewportMode === 'tablet'
-                  ? 'bg-white text-stone-950 shadow-sm'
-                  : 'text-white/60 hover:text-white'
-              }`}
-              title="Tablet Viewport (768px)"
-            >
-              <span className="material-symbols-outlined text-[16px]">tablet</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewportMode('desktop')}
-              className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                viewportMode === 'desktop'
-                  ? 'bg-white text-stone-950 shadow-sm'
-                  : 'text-white/60 hover:text-white'
-              }`}
-              title="Desktop Viewport (Fluid 100%)"
-            >
-              <span className="material-symbols-outlined text-[16px]">desktop_windows</span>
-            </button>
+          {/* Center Search Bar */}
+          <div className="flex-1 max-w-xl mx-2 sm:mx-8 order-3 sm:order-2 w-full sm:w-auto min-w-[200px]">
+            <div className="relative w-full">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+              <input
+                className="w-full text-xs pl-10 pr-12 py-2 bg-zinc-50/70 border border-zinc-200 rounded-lg focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-800 focus:border-zinc-800 placeholder-zinc-400 text-zinc-800 transition"
+                placeholder="Search templates by name, style, topic..."
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+                <kbd className="text-[11px] font-sans px-1.5 py-0.5 bg-white border border-zinc-200 rounded text-zinc-400 font-medium">
+                  ⌘K
+                </kbd>
+              </div>
+            </div>
           </div>
 
-          {/* Panel Toggle Button */}
-          <button
-            type="button"
-            onClick={() => setIsPanelOpen(!isPanelOpen)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-              isPanelOpen
-                ? 'bg-white text-stone-950 shadow-sm'
-                : 'bg-stone-900 text-white/80 hover:text-white border border-white/10'
-            }`}
-            title={isPanelOpen ? 'Collapse Customization Panel' : 'Open Customization Panel'}
-          >
-            <span className="material-symbols-outlined text-[16px] text-amber-500">tune</span>
-            <span className="hidden sm:inline">Customization</span>
-          </button>
+          {/* Right Navigation Links & Profile */}
+          <div className="flex items-center space-x-3 sm:space-x-5 text-xs text-zinc-700 font-normal order-2 sm:order-3 shrink-0">
+            <button
+              type="button"
+              onClick={handleDownloadHtml}
+              className="hidden md:inline-flex items-center gap-1 hover:text-black transition cursor-pointer text-zinc-600"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>Export HTML</span>
+            </button>
+            <span className="hidden sm:inline-block text-zinc-300">|</span>
+            <div className="w-7 h-7 rounded-full bg-zinc-200 text-zinc-800 flex items-center justify-center text-xs font-medium cursor-pointer ring-1 ring-zinc-300/80">
+              ST
+            </div>
+          </div>
         </div>
 
-        {/* Right: Export HTML + Live Link + Fullscreen + Save + Publish */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Download index.html button matching reference export */}
-          <button
-            type="button"
-            onClick={handleDownloadHtml}
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold text-white/90 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 transition-colors cursor-pointer"
-            title="Download Standalone index.html Site"
-          >
-            <span className="material-symbols-outlined text-[16px]">download</span>
-            <span>Export HTML</span>
-          </button>
-
-          {/* Live Link Button */}
-          <a
-            href={subdomain ? `/e/${subdomain}` : `/templates/${template.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold text-white/80 hover:text-white hover:bg-white/10 border border-white/10 transition-colors cursor-pointer"
-            title="Open Live Website in New Tab"
-          >
-            <span className="material-symbols-outlined text-[16px]">open_in_new</span>
-            <span>Live</span>
-          </a>
-
-          {/* Fullscreen Site Button */}
-          <button
-            type="button"
-            onClick={() => setIsFullscreen(true)}
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold text-white/80 hover:text-white hover:bg-white/10 border border-white/10 transition-colors cursor-pointer"
-            title="Preview Site Edge-to-Edge"
-          >
-            <span className="material-symbols-outlined text-[16px]">fullscreen</span>
-            <span>Raw Site</span>
-          </button>
-
-          {/* Save Draft Button */}
-          <button
-            type="button"
-            onClick={() => onSave(false)}
-            disabled={isSaving}
-            className="flex items-center gap-1 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold bg-stone-900 hover:bg-stone-800 text-white border border-white/15 shadow-sm transition-all cursor-pointer disabled:opacity-50"
-            title="Save Draft to Database"
-          >
-            <span className="material-symbols-outlined text-[16px]">
-              {isSaving ? 'sync' : 'save'}
+        {/* Secondary Project Sub-bar */}
+        <div className="min-h-12 py-2 sm:py-0 px-4 sm:px-6 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 bg-white text-xs overflow-x-auto">
+          {/* Left: Breadcrumb / Title with Draft tag */}
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={onBack}
+              className="text-zinc-500 font-normal hover:text-zinc-900 transition flex items-center gap-1 cursor-pointer"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+              </svg>
+              <span>Templates</span>
+            </button>
+            <span className="text-zinc-300">/</span>
+            <span className="font-medium text-zinc-900 text-[13px]">{template.name}</span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-normal bg-amber-50 text-amber-700 border border-amber-200/80 ml-1.5">
+              <span className="w-1.5 h-1.5 rounded-full border border-amber-600 border-dashed" />
+              {publishStatus === 'published' ? 'Published' : 'Draft'}
             </span>
-            <span className="hidden sm:inline">{isSaving ? 'Saving...' : 'Save Draft'}</span>
-          </button>
 
-          {/* Publish to Web Button */}
-          <button
-            type="button"
-            onClick={() => onSave(true)}
-            disabled={isPublishing}
-            className="flex items-center gap-1 px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-all cursor-pointer disabled:opacity-50"
-            title="Publish Live Website to Production"
-          >
-            <span className="material-symbols-outlined text-[16px]">
-              {isPublishing ? 'sync' : 'rocket_launch'}
-            </span>
-            <span className="hidden sm:inline">{isPublishing ? 'Publishing...' : 'Publish'}</span>
-          </button>
+            {/* Optional Card Switcher Pill for Web Developer Portfolio */}
+            {isWebDeveloper && (
+              <div className="flex items-center gap-1 ml-3 bg-zinc-100 p-0.5 rounded-md border border-zinc-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const baseCard = portfolioData?.card1 || DEFAULT_PORTFOLIO_CARD_1;
+                    onChangePortfolioData({
+                      ...(portfolioData || {}),
+                      activeCardIndex: 0,
+                      discipline: baseCard.role || 'Full-stack web developer',
+                      creatorName: baseCard.name || 'Alex Rivers',
+                    });
+                  }}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                    activeCardIdx === 0
+                      ? 'bg-white text-zinc-900 shadow-2xs'
+                      : 'text-zinc-600 hover:text-zinc-900'
+                  }`}
+                >
+                  Card 1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const baseCard = portfolioData?.card2 || DEFAULT_PORTFOLIO_CARD_2;
+                    onChangePortfolioData({
+                      ...(portfolioData || {}),
+                      activeCardIndex: 1,
+                      discipline: baseCard.role || 'Creative frontend developer',
+                      creatorName: baseCard.name || 'Kai Vance',
+                    });
+                  }}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                    activeCardIdx === 1
+                      ? 'bg-white text-zinc-900 shadow-2xs'
+                      : 'text-zinc-600 hover:text-zinc-900'
+                  }`}
+                >
+                  Card 2
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Right: Secondary Actions */}
+          <div className="flex items-center space-x-2 shrink-0 overflow-x-auto max-w-full">
+            <a
+              href={subdomain ? `/e/${subdomain}` : `/templates/${template.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-700 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/80 rounded-md transition focus:outline-none cursor-pointer"
+            >
+              <svg className="w-3.5 h-3.5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+              </svg>
+              <span>Open Live Link</span>
+            </a>
+
+            <button
+              type="button"
+              onClick={() => setIsFullscreen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-700 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/80 rounded-md transition focus:outline-none cursor-pointer"
+            >
+              <svg className="w-3.5 h-3.5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+              </svg>
+              <span>Preview Site</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onSave(false)}
+              disabled={isSaving}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-700 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/80 rounded-md transition focus:outline-none cursor-pointer disabled:opacity-50"
+            >
+              <svg className="w-3.5 h-3.5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+              </svg>
+              <span>{isSaving ? 'Saving...' : 'Save Draft'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onSave(true)}
+              disabled={isPublishing}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-black hover:bg-zinc-800 rounded-md shadow-sm transition focus:outline-none cursor-pointer disabled:opacity-50"
+            >
+              <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M13 10V3L4 14h7v7l9-11h-7z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+              </svg>
+              <span>{isPublishing ? 'Publishing...' : 'Publish to Web'}</span>
+            </button>
+          </div>
         </div>
       </header>
+      {/* END: TopNavigationBar */}
 
-      {/* Main Studio Area (Panel on Left + Exact Live Site on Right) */}
-      <div className="flex-1 w-full h-[calc(100vh-50px)] flex overflow-hidden relative">
-        {/* Left Column: The "Customization" Panel Drawer */}
-        {isPanelOpen && (
-          <aside className="w-full sm:w-[460px] max-w-full sm:max-w-[460px] h-full flex-shrink-0 bg-stone-900/98 backdrop-blur-md border-r border-white/10 flex flex-col overflow-hidden z-20 shadow-2xl animate-in slide-in-from-left duration-200">
-            {/* Drawer Header */}
-            <div className="px-4 py-3 bg-stone-950 border-b border-white/10 flex items-center justify-between shrink-0">
-              <div>
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px] text-amber-400">tune</span>
-                  <span>Customization</span>
-                </h2>
-                <p className="text-[11px] text-white/50">
-                  Edit Slide 1, Slide 2, Contact & Menu settings
-                </p>
-              </div>
+      {/* BEGIN: MainWorkspaceLayout */}
+      <main className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden min-h-0">
+        {/* BEGIN: LeftInspectorColumn (Matching stitch_minimal_website_builder_panel/code.html) */}
+        <aside
+          className="w-full lg:w-[460px] shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-zinc-200 flex flex-col h-auto lg:h-full overflow-hidden z-10"
+          data-purpose="content-inspector"
+        >
+          {/* Subheader / Live Sync Indicator */}
+          <div className="px-5 py-4 border-b border-zinc-100 bg-white shrink-0">
+            <div className="flex items-center justify-between mb-1">
+              <h1 className="text-xs uppercase tracking-wider font-semibold text-zinc-900">Content Editor</h1>
+              <span className="inline-flex items-center gap-1 text-[11px] text-zinc-500 font-normal">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Syncing live
+              </span>
+            </div>
+            <p className="text-xs text-zinc-500">Edit key copy and contact links for this template</p>
+          </div>
+
+          {/* Scrollable Form Container with 3 Accordions */}
+          <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
+            <StitchMinimalPortfolioEditor
+              templateId={template.id}
+              title={portfolioData?.title || ''}
+              tagline={portfolioData?.discipline || ''}
+              note={portfolioData?.statusNote || ''}
+              venue={eventData.venue || ''}
+              address={eventData.address || ''}
+              date={eventData.date || ''}
+              photos={eventData.photos || []}
+              portfolioData={portfolioData}
+              onChangeTitle={(t) => {
+                onChangePortfolioData({ ...(portfolioData || {}), title: t });
+              }}
+              onChangeTagline={(tg) => {
+                onChangePortfolioData({ ...(portfolioData || {}), discipline: tg });
+              }}
+              onChangeNote={(n) => {
+                onChangePortfolioData({ ...(portfolioData || {}), statusNote: n });
+              }}
+              onChangePhotos={() => {
+                onChangePortfolioData({ ...(portfolioData || {}) });
+              }}
+              onChangePortfolioData={onChangePortfolioData}
+              onToast={onToast}
+            />
+          </div>
+
+          {/* Left Inspector Footer Status Bar */}
+          <div className="px-5 py-3 border-t border-zinc-200 bg-white flex items-center justify-between text-[11px] text-zinc-400 shrink-0">
+            <span>Draft auto-saved 1m ago</span>
+            <button
+              type="button"
+              onClick={handleResetValues}
+              className="text-zinc-700 hover:text-black font-medium underline underline-offset-2 cursor-pointer"
+            >
+              Reset values
+            </button>
+          </div>
+        </aside>
+        {/* END: LeftInspectorColumn */}
+
+        {/* BEGIN: RightCanvasPreview (Matching stitch_minimal_website_builder_panel/code.html) */}
+        <section
+          className="flex-1 bg-zinc-100/80 flex flex-col min-h-[600px] lg:h-full overflow-hidden relative"
+          data-purpose="live-canvas-preview-workspace"
+        >
+          {/* Canvas Top Control Bar */}
+          <div className="min-h-12 py-2 sm:py-0 border-b border-zinc-200 bg-white/95 px-4 sm:px-6 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 shrink-0">
+            {/* Live status */}
+            <div className="flex items-center space-x-2">
+              <span className="inline-flex w-2 h-2 rounded-full bg-emerald-500" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-700">Live Canvas</span>
+              <span className="text-zinc-300">|</span>
+              <span className="text-[11px] text-zinc-400 font-mono">100% Scale · Read-only preview</span>
+            </div>
+
+            {/* Viewport Switcher Toggles (Mobile, Tablet, Desktop) */}
+            <div className="flex items-center bg-zinc-100 p-0.5 rounded-lg border border-zinc-200">
+              <button
+                type="button"
+                onClick={() => setViewportMode('mobile')}
+                className={`p-1.5 rounded transition cursor-pointer ${
+                  viewportMode === 'mobile'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-white'
+                }`}
+                title="Mobile Viewport"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </button>
 
               <button
                 type="button"
-                onClick={() => setIsPanelOpen(false)}
-                className="p-1 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                title="Collapse Panel"
+                onClick={() => setViewportMode('tablet')}
+                className={`p-1.5 rounded transition cursor-pointer ${
+                  viewportMode === 'tablet'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-white'
+                }`}
+                title="Tablet Viewport"
               >
-                <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setViewportMode('desktop')}
+                className={`p-1.5 rounded transition cursor-pointer ${
+                  viewportMode === 'desktop'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-white'
+                }`}
+                title="Desktop Viewport"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </button>
+
+              <div className="h-3 w-px bg-zinc-300 mx-1" />
+
+              <button
+                type="button"
+                onClick={() => setIsFullscreen(true)}
+                className="p-1.5 rounded text-zinc-500 hover:text-zinc-900 transition hover:bg-white cursor-pointer"
+                title="Full Screen Canvas"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
+                </svg>
               </button>
             </div>
-
-            {/* Scrollable Customization Content */}
-            <div className="flex-1 overflow-y-auto p-3 sm:p-4 scrollbar-thin scrollbar-thumb-stone-700">
-              <PortfolioEditSection
-                portfolioData={portfolioData}
-                onChangePortfolioData={onChangePortfolioData}
-                onToast={onToast}
-              />
-            </div>
-          </aside>
-        )}
-
-        {/* Right Area: Interactive Live Site */}
-        <main className="flex-1 h-full bg-[#09090b] flex items-center justify-center p-0 overflow-hidden relative">
-          {/* Floating Reopen Button if Panel is Collapsed */}
-          {!isPanelOpen && (
-            <button
-              type="button"
-              onClick={() => setIsPanelOpen(true)}
-              className="fixed left-5 bottom-6 z-40 bg-white hover:bg-stone-100 text-stone-950 px-4 py-2.5 rounded-full shadow-2xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer border border-black/10 animate-bounce"
-            >
-              <span className="material-symbols-outlined text-[18px] text-amber-500">tune</span>
-              <span>Open Customization Panel</span>
-            </button>
-          )}
-
-          {/* Viewport Responsive Frame */}
-          <div
-            className={`transition-all duration-300 relative flex flex-col overflow-hidden ${
-              viewportMode === 'desktop'
-                ? 'w-full h-full'
-                : viewportMode === 'tablet'
-                ? 'w-[768px] h-[92vh] max-h-[960px] rounded-[28px] border-8 border-stone-800 shadow-2xl ring-1 ring-white/10 my-auto'
-                : 'w-[390px] h-[844px] max-h-[92vh] rounded-[38px] border-8 border-stone-800 shadow-2xl ring-1 ring-white/10 my-auto'
-            }`}
-          >
-            {/* Realtime Live Template */}
-            <div className="w-full h-full relative overflow-hidden bg-black">
-              {template.component ? (
-                <template.component data={eventData} isLivePreview={true} {...({ viewportMode } as any)} />
-              ) : (
-                <DeveloperPortfolioTemplate data={eventData} isLivePreview={true} viewportMode={viewportMode} />
-              )}
-            </div>
           </div>
-        </main>
-      </div>
+
+          {/* Canvas Viewport Surface */}
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center">
+            {/* Live Rendered Web Page Frame (Browser Mockup Frame from code.html & Screenshot 2) */}
+            <article
+              className={`w-full bg-white border border-zinc-200/90 rounded-lg shadow-sm transition-all duration-300 overflow-hidden flex flex-col my-auto ${getContainerMaxWidth()}`}
+              id="preview-viewport-container"
+            >
+              {/* Web Browser Mock Header */}
+              <div className="h-8 border-b border-zinc-100 bg-zinc-50/70 px-3 flex items-center justify-between select-none shrink-0">
+                <div className="flex items-center space-x-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-300" />
+                </div>
+                <div className="text-[11px] font-mono text-zinc-500 bg-white px-3 py-0.5 rounded border border-zinc-200/60 truncate max-w-xs flex items-center gap-1.5">
+                  <svg className="w-3 h-3 text-emerald-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span>{template.id}.canvas.design/live</span>
+                </div>
+                <div className="w-10" />
+              </div>
+
+              {/* RENDERED WEBSITE CONTENT (Clean Live Preview with 100% fidelity) */}
+              <div className="flex-1 w-full h-full relative overflow-hidden bg-white">
+                {template.component ? (
+                  <template.component data={liveEventData} isLivePreview={true} {...({ viewportMode } as any)} />
+                ) : (
+                  <DeveloperPortfolioTemplate data={liveEventData} isLivePreview={true} viewportMode={viewportMode} />
+                )}
+              </div>
+            </article>
+          </div>
+        </section>
+        {/* END: RightCanvasPreview */}
+      </main>
+      {/* END: MainWorkspaceLayout */}
     </div>
   );
 };
-

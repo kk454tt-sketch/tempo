@@ -193,7 +193,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ compact = false, className
   // Template category icons
   const categoryIcon = (categoryLabel: string): string => {
     const map: Record<string, string> = {
-      Wedding: 'favorite',
+      Portfolio: 'folder_open',
       Birthday: 'cake',
       Opening: 'storefront',
       'Dinner Party': 'wine_bar',
@@ -307,7 +307,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ compact = false, className
                 No results for "<strong className="text-on-surface">{query}</strong>"
               </p>
               <p className="font-caption text-caption text-on-surface-variant/60 mt-1">
-                Try searching for "wedding", "birthday", or a template name
+                Try searching for "portfolio", "birthday", or a template name
               </p>
             </div>
           ) : (

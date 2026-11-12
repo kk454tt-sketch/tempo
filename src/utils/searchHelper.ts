@@ -5,11 +5,19 @@ import { TemplateMetadata } from '@/types/template';
  */
 export interface KeywordSuggestion {
   keyword: string;
-  category: 'birthday' | 'wedding' | 'all';
+  category: 'birthday' | 'portfolio' | 'all';
   synonyms: string[];
 }
 
 export const CANONICAL_KEYWORDS: KeywordSuggestion[] = [
+  {
+    keyword: 'Portfolio',
+    category: 'portfolio',
+    synonyms: [
+      'portfolio', 'portfilio', 'portflio', 'developer', 'designer', '3d', 'motion',
+      'minecraft', 'creator', 'code', 'showcase', 'work', 'resume', 'cv', 'freelancer'
+    ],
+  },
   {
     keyword: 'Birthday',
     category: 'birthday',
@@ -20,63 +28,9 @@ export const CANONICAL_KEYWORDS: KeywordSuggestion[] = [
     ],
   },
   {
-    keyword: 'Wedding',
-    category: 'wedding',
-    synonyms: [
-      'weddng', 'weding', 'wedin', 'weeding', 'mariage', 'marriage', 'shaadi', 'shadi',
-      'vivah', 'nikah', 'wedding site', 'union', 'matrimony', 'save the date', 'reception',
-      'ceremony', 'bride', 'groom'
-    ],
-  },
-  {
     keyword: 'Stitch Keepsake',
     category: 'birthday',
     synonyms: ['stitch', 'stich', 'keepsake', 'keepsak', 'scrapbook', 'scrapbok', 'wax seal', 'vintage', 'tactile'],
-  },
-  {
-    keyword: 'Royal Heritage Wax Envelope',
-    category: 'birthday',
-    synonyms: ['royal', 'envelope', 'envelop', 'wax envelope', 'heritage', 'heratige', 'regal', 'calligraphy'],
-  },
-  {
-    keyword: 'Janamdin Mubarak',
-    category: 'birthday',
-    synonyms: ['janamdin', 'janmdin', 'mubarak', 'mubark', 'hindi', 'kavita', 'hindi birthday', 'shayari', 'जन्मदिन', 'मुबारक'],
-  },
-  {
-    keyword: 'Valentin Speculative Noir',
-    category: 'birthday',
-    synonyms: ['valentin', 'valentins', 'noir', 'speculative', 'protocol', 'cyberpunk', 'architectural sound', 'dark mode'],
-  },
-  {
-    keyword: 'Elena & Julian Cinematic 3D',
-    category: 'wedding',
-    synonyms: ['elena', 'julian', 'cinematic', '3d wedding', 'luxury wedding', 'cinematic wedding', 'interactive 3d'],
-  },
-  {
-    keyword: 'Margaux & Eric Midsummer',
-    category: 'wedding',
-    synonyms: ['margaux', 'eric', 'midsummer', 'midsummer evening', 'botanical wedding', 'twilight soiree'],
-  },
-  {
-    keyword: 'Royal Rose Moments',
-    category: 'birthday',
-    synonyms: ['royal rose', 'rose moments', 'polaroid', 'rose', 'flowers', 'tap to open'],
-  },
-  {
-    keyword: 'WhatsApp RSVP',
-    category: 'birthday',
-    synonyms: ['whatsapp', 'whatsap', 'watsapp', 'rsvp', 'modern rsvp', 'whatsapp rsvp', 'instant rsvp'],
-  },
-  {
-    keyword: 'Enchanted Whispering Pines',
-    category: 'birthday',
-    synonyms: ['whispering pines', 'pines', 'enchanted', 'starlight', 'riverside', 'nature'],
-  },
-  {
-    keyword: 'Evelyn Editorial 30th',
-    category: 'birthday',
-    synonyms: ['evelyn', 'editorial', '30th', 'vogue', 'magazine', 'high fashion'],
   },
   {
     keyword: 'Golden Stars Celebration',
@@ -84,9 +38,39 @@ export const CANONICAL_KEYWORDS: KeywordSuggestion[] = [
     synonyms: ['golden stars', 'golden', 'stars', 'balloons', 'confetti', 'glamour'],
   },
   {
-    keyword: 'Sarah Midnight Neon',
+    keyword: 'Evelyn Editorial 30th',
     category: 'birthday',
-    synonyms: ['sarah', 'midnight neon', 'neon', 'nightclub', 'cyber', 'party pass', '25th'],
+    synonyms: ['evelyn', 'editorial', '30th', 'vogue', 'magazine', 'high fashion'],
+  },
+  {
+    keyword: '3D in Motion',
+    category: 'portfolio',
+    synonyms: ['3d motion', 'dino', 'character artist', 'animator', 'green dino'],
+  },
+  {
+    keyword: '2022 Design Gallery',
+    category: 'portfolio',
+    synonyms: ['design gallery', 'gallery', 'editorial design', 'swiss brutalist', 'near'],
+  },
+  {
+    keyword: 'EMIWAY Minecraft',
+    category: 'portfolio',
+    synonyms: ['emiway', 'minecraft', 'gamer', 'streamer', 'blocks', 'biomes'],
+  },
+  {
+    keyword: 'Alex 3D Designer',
+    category: 'portfolio',
+    synonyms: ['alex', 'alex 3d', 'head tilt', '3d designer'],
+  },
+  {
+    keyword: 'Motion Graphics Designer',
+    category: 'portfolio',
+    synonyms: ['motion designer', 'motion graphics', 'studio', 'showreel'],
+  },
+  {
+    keyword: '3D Web Developer',
+    category: 'portfolio',
+    synonyms: ['web developer', 'developer portfolio', 'alex rivers', 'figurine'],
   },
 ];
 
@@ -94,14 +78,14 @@ export const CANONICAL_KEYWORDS: KeywordSuggestion[] = [
  * Quick search suggestion pills
  */
 export const POPULAR_SEARCH_PILLS = [
+  'Portfolio',
   'Birthday',
-  'Wedding',
   'Stitch Keepsake',
-  'Wax Envelope',
-  'WhatsApp RSVP',
-  'Janamdin Mubarak',
-  'Cinematic 3D Wedding',
-  'Midnight Neon',
+  '3D in Motion',
+  'Golden Stars',
+  'EMIWAY Minecraft',
+  'Evelyn Editorial',
+  'Web Developer',
 ];
 
 /**
@@ -155,7 +139,6 @@ export function getDidYouMeanSuggestion(query: string): string | null {
   const q = query.toLowerCase().trim();
   if (!q || q.length < 3) return null;
 
-  // If query already exactly matches a canonical keyword, no need for correction
   for (const entry of CANONICAL_KEYWORDS) {
     if (entry.keyword.toLowerCase() === q) return null;
   }
@@ -164,7 +147,6 @@ export function getDidYouMeanSuggestion(query: string): string | null {
   let highestScore = 0;
 
   for (const entry of CANONICAL_KEYWORDS) {
-    // 1. Check synonyms
     for (const syn of entry.synonyms) {
       if (q === syn) {
         return entry.keyword;
@@ -176,7 +158,6 @@ export function getDidYouMeanSuggestion(query: string): string | null {
       }
     }
 
-    // 2. Check keyword itself
     const score = stringSimilarity(q, entry.keyword);
     if (score > highestScore && score >= 0.65) {
       highestScore = score;
@@ -188,9 +169,7 @@ export function getDidYouMeanSuggestion(query: string): string | null {
 }
 
 /**
- * Universal Template Search:
- * Matches templates regardless of current category filter when search query is active.
- * Includes fuzzy matching for typo tolerance.
+ * Universal Template Search
  */
 export function universalTemplateSearch(
   templates: TemplateMetadata[],
@@ -200,7 +179,7 @@ export function universalTemplateSearch(
   results: TemplateMetadata[];
   suggestion: string | null;
   foundInOtherCategories: boolean;
-  categoryBreakdown: { birthday: number; wedding: number };
+  categoryBreakdown: { birthday: number; portfolio: number };
 } {
   const trimmed = query.toLowerCase().trim();
   const suggestion = getDidYouMeanSuggestion(trimmed);
@@ -215,7 +194,7 @@ export function universalTemplateSearch(
       foundInOtherCategories: false,
       categoryBreakdown: {
         birthday: templates.filter((t) => t.category === 'birthday').length,
-        wedding: templates.filter((t) => t.category === 'wedding').length,
+        portfolio: templates.filter((t) => t.category === 'portfolio').length,
       },
     };
   }
@@ -223,23 +202,19 @@ export function universalTemplateSearch(
   const tokens = trimmed.split(/\s+/).filter(Boolean);
   const suggestionTokens = suggestion ? suggestion.toLowerCase().split(/\s+/).filter(Boolean) : [];
 
-  // Match score for every template
   const scored = templates.map((tpl) => {
     const searchable = `${tpl.name} ${tpl.category} ${tpl.categoryLabel} ${tpl.subtitle || ''} ${tpl.description} ${tpl.badge || ''}`.toLowerCase();
 
     let score = 0;
 
-    // 1. Direct includes
     if (searchable.includes(trimmed)) {
       score += 50;
     }
 
-    // 2. Token includes
     for (const token of tokens) {
       if (searchable.includes(token)) {
         score += 20;
       } else {
-        // Fuzzy match against individual words in searchable
         const words = searchable.split(/[\s,·—•/-]+/);
         for (const w of words) {
           if (w.length >= 3 && stringSimilarity(token, w) >= 0.72) {
@@ -250,7 +225,6 @@ export function universalTemplateSearch(
       }
     }
 
-    // 3. Did-you-mean suggestion match
     if (suggestion) {
       if (searchable.includes(suggestion.toLowerCase())) {
         score += 25;
@@ -262,7 +236,6 @@ export function universalTemplateSearch(
       }
     }
 
-    // 4. Boost category match
     if (trimmed.includes(tpl.category)) {
       score += 30;
     }
@@ -275,12 +248,11 @@ export function universalTemplateSearch(
     .sort((a, b) => b.score - a.score)
     .map((item) => item.template);
 
-  // Check if matches belong to other categories than selected
   const hasMatchesOutside = selectedCategory !== 'all' && matchingResults.some((t) => t.category !== selectedCategory);
 
   const categoryBreakdown = {
     birthday: matchingResults.filter((t) => t.category === 'birthday').length,
-    wedding: matchingResults.filter((t) => t.category === 'wedding').length,
+    portfolio: matchingResults.filter((t) => t.category === 'portfolio').length,
   };
 
   return {
