@@ -2,13 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/common/Button';
 import { LoaderCircle, RefreshCw } from 'lucide-react';
+import { auth } from '@/firebase';
 
 type AdminOrder = { orderId: string; customer: string; email: string; product: string; amount: number; status: string; createdAt: string; paidAt: string | null };
 type UnmatchedPayment = { orderId: string | null; amount: number | null; processedAt: string; status: string };
 const filters = ['ALL', 'PENDING', 'VERIFYING', 'PAID', 'FAILED', 'EXPIRED', 'MANUAL_REVIEW'];
 
 export const AdminPaymentsPage = () => {
-  const { session } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [filter, setFilter] = useState('ALL');
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [unmatched, setUnmatched] = useState<UnmatchedPayment[]>([]);
@@ -17,8 +18,10 @@ export const AdminPaymentsPage = () => {
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
   const request = async (path: string, init: RequestInit = {}) => {
-    if (!session?.access_token) throw new Error('Sign in with the configured admin account.');
-    const response = await fetch(`/api${path}`, { ...init, headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json', ...(init.headers || {}) } });
+    const currentUser = auth.currentUser;
+    if (!currentUser) throw new Error('Sign in with the configured admin account.');
+    const idToken = await currentUser.getIdToken();
+    const response = await fetch(`/api${path}`, { ...init, headers: { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json', ...(init.headers || {}) } });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || 'Payment dashboard request failed.');
     return result;
@@ -31,7 +34,7 @@ export const AdminPaymentsPage = () => {
       setUnmatched(data.unmatchedPayments || []);
     } catch (e) { setError(e instanceof Error ? e.message : 'Could not load payments.'); }
     finally { setLoading(false); }
-  }, [session?.access_token, filter]);
+  }, [isAuthenticated, filter]);
   useEffect(() => { load(); }, [load]);
 
   const processInbox = async () => {

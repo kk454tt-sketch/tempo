@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      # Build-time values only. Nothing here is a secret and CI never talks to Supabase.
+      # If your build fetches data at build time, replace these with repository secrets.
+      NEXT_PUBLIC_SUPABASE_URL: https://ci-build.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-build-anon-key
+      NEXT_PUBLIC_SITE_URL: https://ci-build.invalid
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests (vitest)
+        run: npm test
+
+      - name: Repo hygiene (no sample data, no third-party font hosts)
+        run: npm run check:hygiene
+
+      - name: Build
+        run: npm run build
+
+      - name: No server secrets in client bundles
+        run: npm run check:bundle

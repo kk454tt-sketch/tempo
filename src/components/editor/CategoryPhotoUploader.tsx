@@ -46,12 +46,12 @@ export const CategoryPhotoUploader: React.FC<CategoryPhotoUploaderProps> = ({
         if (res.success && res.photo) {
           newPhotos.push(res.photo);
         } else if (res.noBucket) {
-          // If no bucket found in Supabase storage, load as local base64 preview so it's workable
+          // Load as local base64 preview so it's workable
           try {
             const localPhoto = await storageService.createPhotoFromFilePreview(file);
             newPhotos.push(localPhoto);
             if (onToast) {
-              onToast('No Supabase bucket found. Photo loaded into local template preview.');
+              onToast('Photo loaded into local template preview.');
             }
           } catch {
             if (onToast) onToast('Failed to load local image preview.');
@@ -168,7 +168,7 @@ export const CategoryPhotoUploader: React.FC<CategoryPhotoUploaderProps> = ({
           <span className="material-symbols-outlined text-[16px] text-amber-700 shrink-0 mt-0.5">info</span>
           <div>
             <span className="font-semibold">Storage Notice: </span>
-            <span>No Supabase storage bucket is active. You can paste any image URL, select curated presets below, or choose a file for instant local preview.</span>
+            <span>Direct image mode is active. You can paste any image URL, select curated presets below, or choose a file for instant local preview.</span>
           </div>
         </div>
       )}

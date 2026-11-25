@@ -25,6 +25,7 @@ export const TemplatesPage: React.FC = () => {
 
   // Per-category template lists for explore sections (shown when no filter active)
   const birthdayTemplates = useMemo(() => templatesRegistry.filter((t) => t.category === 'birthday').slice(0, 4), []);
+  const pinterestTemplates = useMemo(() => templatesRegistry.filter((t) => t.category === 'pinterest'), []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -320,10 +321,39 @@ export const TemplatesPage: React.FC = () => {
                   </div>
                 </section>
               )}
+              {/* Pinterest Site Explore Section */}
+              {pinterestTemplates.length > 0 && (
+                <section className="w-full" id="pinterest-site-section">
+                  <div className="max-w-[1440px] mx-auto px-3 sm:px-margin md:px-margin lg:px-margin-lg">
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-4 sm:mb-6">
+                      <div>
+                        <h2 className="font-headline-lg text-lg sm:text-2xl font-bold text-on-surface tracking-tight">
+                          Pinterest Site
+                        </h2>
+                        <p className="font-body-sm text-xs sm:text-sm text-on-surface-variant mt-0.5">
+                          Full-stack AffHub storefront with multi-country Amazon links, /go tracking, and Pinterest campaign analytics.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleCategorySelect('pinterest')}
+                        className="font-label-md text-xs sm:text-sm text-primary flex items-center gap-1 hover:underline whitespace-nowrap font-semibold cursor-pointer"
+                      >
+                        View Pinterest Site →
+                      </button>
+                    </div>
 
-              
-
-              
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+                      {pinterestTemplates.map((template) => (
+                        <TemplateCard
+                          key={template.id}
+                          template={template}
+                          onPreviewClick={(t) => setSelectedPreview(t)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              )}
             </div>
           )}
         </div>

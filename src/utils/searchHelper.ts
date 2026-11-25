@@ -5,7 +5,7 @@ import { TemplateMetadata } from '@/types/template';
  */
 export interface KeywordSuggestion {
   keyword: string;
-  category: 'birthday' | 'portfolio' | 'all';
+  category: 'birthday' | 'portfolio' | 'pinterest' | 'all';
   synonyms: string[];
 }
 
@@ -72,6 +72,11 @@ export const CANONICAL_KEYWORDS: KeywordSuggestion[] = [
     category: 'portfolio',
     synonyms: ['web developer', 'developer portfolio', 'alex rivers', 'figurine'],
   },
+  {
+    keyword: 'Pinterest Site',
+    category: 'pinterest',
+    synonyms: ['pinterest', 'affhub', 'affiliate', 'amazon', 'pin links', 'full stack'],
+  },
 ];
 
 /**
@@ -80,6 +85,7 @@ export const CANONICAL_KEYWORDS: KeywordSuggestion[] = [
 export const POPULAR_SEARCH_PILLS = [
   'Portfolio',
   'Birthday',
+  'Pinterest Site',
   'Stitch Keepsake',
   '3D in Motion',
   'Golden Stars',

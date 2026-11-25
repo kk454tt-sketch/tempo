@@ -58,15 +58,15 @@ export const PrivacyPolicyPage: React.FC = () => {
             </section>
 
             <section className="flex flex-col gap-space-sm">
-              <h2 className="font-headline-md text-headline-md text-on-surface">4. Data Storage & Security</h2>
+              <h2 className="font-headline-md text-headline-md text-on-surface">4. Data Storage &amp; Security</h2>
               <p className="text-on-surface-variant">
-                Your data is stored securely using Supabase infrastructure with PostgreSQL databases. We implement industry-standard security measures including:
+                Your data is stored securely using Google Cloud and Firebase infrastructure with Cloud Firestore databases. We implement industry-standard security measures including:
               </p>
               <ul className="list-disc pl-6 flex flex-col gap-space-xs text-on-surface-variant">
-                <li>Row Level Security (RLS) policies ensuring users can only access their own data</li>
+                <li>Firestore Security Rules ensuring users can only access their authorized data</li>
                 <li>Encrypted connections (HTTPS/TLS) for all data transmission</li>
                 <li>OAuth 2.0 authentication through trusted providers (Google)</li>
-                <li>Passwords are never stored directly — authentication is handled by Supabase Auth</li>
+                <li>Passwords are never stored directly — authentication is securely handled by Firebase Authentication</li>
               </ul>
             </section>
 
@@ -77,7 +77,7 @@ export const PrivacyPolicyPage: React.FC = () => {
               </p>
               <ul className="list-disc pl-6 flex flex-col gap-space-xs text-on-surface-variant">
                 <li><strong className="text-on-surface">Published Event Websites:</strong> When you publish an event website, the event details you chose to include become publicly accessible to anyone with the link.</li>
-                <li><strong className="text-on-surface">Service Providers:</strong> We use trusted third-party services (Supabase, Google Cloud) to host and operate our platform.</li>
+                <li><strong className="text-on-surface">Service Providers:</strong> We use trusted third-party cloud services (Firebase, Google Cloud) to host and operate our platform.</li>
                 <li><strong className="text-on-surface">Legal Requirements:</strong> We may disclose information if required by law or in response to valid legal processes.</li>
               </ul>
             </section>

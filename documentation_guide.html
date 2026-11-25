@@ -234,7 +234,7 @@
   <div class="meta-box">
     <strong>Project Name:</strong> Tempo Event Website Builder<br>
     <strong>Core Architecture:</strong> React 18, Vite 6, TypeScript 5 & Tailwind CSS 3<br>
-    <strong>Backend Architecture:</strong> Embedded SQLite (better-sqlite3) & Supabase Client<br>
+    <strong>Backend Architecture:</strong> Cloud Firestore &amp; Firebase Admin SDK<br>
     <strong>Target Audience:</strong> Beginners learning modern web development with AI<br>
     <strong>Workspace Path:</strong> <code>C:\Users\Lenovo\Desktop\Other\d</code><br>
     <strong>Status:</strong> 100% verified against actual project files
@@ -327,14 +327,14 @@
       <td>Enables page switching (Home, Templates, Dashboard, Creator) smoothly without reloading the entire page.</td>
     </tr>
     <tr>
-      <td><strong>Local Backend / API</strong></td>
-      <td><code>better-sqlite3</code> + Vite Dev Middleware</td>
-      <td>Runs an embedded API inside Vite's dev server; stores user accounts, templates, orders, and websites locally in <code>data/tempo.db</code>.</td>
+      <td><strong>Backend / API</strong></td>
+      <td>Firebase Admin SDK + Vite Dev Middleware</td>
+      <td>Runs an API inside Vite's dev server; verifies Firebase ID tokens and manages user accounts, websites, orders, and RSVPs in Cloud Firestore.</td>
     </tr>
     <tr>
-      <td><strong>Cloud Backend (Optional)</strong></td>
-      <td><code>@supabase/supabase-js 2.117.2</code></td>
-      <td>Optional hosted database and file storage for production cloud deployments.</td>
+      <td><strong>Cloud Database &amp; Auth</strong></td>
+      <td>Firebase Authentication &amp; Cloud Firestore</td>
+      <td>Secure NoSQL document store and authentication system for all users, websites, drafts, and payments.</td>
     </tr>
     <tr>
       <td><strong>Icons & Helpers</strong></td>

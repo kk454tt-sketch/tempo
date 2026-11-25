@@ -1,51 +1,65 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createClient } from '@supabase/supabase-js';
+import crypto from 'node:crypto';
+import { adminAuth, adminDb, FieldValue } from './firebaseAdmin.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // Vite serves the local API during development. Vercel uses its own server environment.
 try {
-  for (const line of fs.readFileSync(path.join(root, '.env'), 'utf8').split(/\r?\n/)) {
-    const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
-    if (match && !process.env[match[1]]) process.env[match[1]] = match[2].replace(/^['"]|['"]$/g, '');
+  const envPath = path.join(root, '.env');
+  if (fs.existsSync(envPath)) {
+    for (const line of fs.readFileSync(envPath, 'utf8').split(/\r?\n/)) {
+      const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
+      if (match && !process.env[match[1]]) process.env[match[1]] = match[2].replace(/^['"]|['"]$/g, '');
+    }
   }
 } catch { /* Environment variables are configured by the host in production. */ }
 
 const env = (key, fallback = '') => process.env[key] || fallback;
 const config = {
-  supabaseUrl: env('SUPABASE_URL', env('VITE_SUPABASE_URL')),
-  anonKey: env('SUPABASE_ANON_KEY', env('VITE_SUPABASE_ANON_KEY')),
-  serviceKey: env('SUPABASE_SERVICE_ROLE_KEY'),
   upiId: env('UPI_ID', '9979370684@fam'),
   merchant: env('UPI_MERCHANT_NAME', 'Jaisingh Kushwaha'),
 };
-let adminClient;
-
-function db() {
-  if (!config.supabaseUrl || !config.serviceKey) throw new Error('Persistent payment storage is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY on the server.');
-  if (!adminClient) adminClient = createClient(config.supabaseUrl, config.serviceKey, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
-  return adminClient;
-}
 
 export async function authenticate(req) {
-  const accessToken = req.headers.authorization?.match(/^Bearer\s+(.+)$/i)?.[1];
-  if (!accessToken || !config.supabaseUrl || !config.anonKey) return null;
-  const { data, error } = await db().auth.getUser(accessToken);
-  if (error || !data.user?.id || !data.user.email || !data.user.email_confirmed_at) return null;
-  return { id: data.user.id, email: data.user.email, name: data.user.user_metadata?.full_name || data.user.user_metadata?.name || data.user.email.split('@')[0] };
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return null;
+  const match = authHeader.match(/^Bearer\s+(.+)$/i);
+  if (!match) return null;
+  const token = match[1].trim();
+
+  try {
+    const decodedToken = await adminAuth.verifyIdToken(token);
+    return {
+      id: decodedToken.uid,
+      email: (decodedToken.email || `${decodedToken.uid}@tempo.user`).toLowerCase().trim(),
+      name: decodedToken.name || decodedToken.email?.split('@')[0] || 'Customer',
+    };
+  } catch (err) {
+    console.warn('[Payments Auth] ID token verification failed:', err.message);
+    return null;
+  }
 }
 
 function safeOrder(row) {
-  const payment = new URLSearchParams({ pa: config.upiId, pn: config.merchant, am: (row.amount_paise / 100).toFixed(2), cu: 'INR', tn: row.order_id });
+  const amountNumber = (row.amount_paise || 49900) / 100;
+  const payment = new URLSearchParams({
+    pa: config.upiId,
+    pn: config.merchant,
+    am: amountNumber.toFixed(2),
+    cu: 'INR',
+    tn: row.order_id,
+  });
+
   return {
     orderId: row.order_id,
     customerName: row.customer_name || '',
     productId: row.product_id,
     productName: row.product_name,
     websiteId: row.website_id,
-    amount: row.amount_paise / 100,
-    currency: row.currency,
+    amount: amountNumber,
+    currency: row.currency || 'INR',
     status: row.payment_status,
     productStatus: row.product_status,
     upiUri: `upi://pay?${payment}`,
@@ -55,55 +69,205 @@ function safeOrder(row) {
 }
 
 export async function getProducts() {
-  const { data, error } = await db().from('payment_products').select('id,name,description,amount_paise,currency').eq('active', true).not('amount_paise', 'is', null).order('amount_paise');
-  if (error) throw error;
-  return (data || []).map((item) => ({ id: item.id, name: item.name, description: item.description, amount: item.amount_paise / 100, currency: item.currency }));
+  const productsCol = adminDb.collection('paymentProducts');
+  let snapshot = await productsCol.where('active', '==', true).get();
+
+  // Seed Pro Interactive default product if not yet in Firestore
+  if (snapshot.empty) {
+    const defaultProduct = {
+      id: 'pro-interactive',
+      name: 'Pro Interactive',
+      description: 'Unlock the Pro Interactive features for one selected website.',
+      amount_paise: 49900,
+      currency: 'INR',
+      active: true,
+      entitlement: 'pro_interactive',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    await productsCol.doc('pro-interactive').set(defaultProduct);
+    snapshot = await productsCol.where('active', '==', true).get();
+  }
+
+  const products = [];
+  snapshot.forEach((doc) => {
+    const item = doc.data();
+    if (item.amount_paise) {
+      products.push({
+        id: item.id || doc.id,
+        name: item.name,
+        description: item.description,
+        amount: item.amount_paise / 100,
+        currency: item.currency || 'INR',
+      });
+    }
+  });
+
+  return products.sort((a, b) => a.amount - b.amount);
 }
 
 export async function getOwnedWebsites(userId) {
-  const { data, error } = await db().from('event_websites').select('id,title,slug,is_lifetime,pro_interactive_enabled,status').eq('user_id', userId).eq('template_id', 'enrolldesk-01').order('created_at', { ascending: false });
-  if (error) throw error;
-  return (data || []).map((site) => ({ id: site.id, title: site.title, slug: site.slug, status: site.status, proInteractiveEnabled: Boolean(site.pro_interactive_enabled) }));
+  const snapshot = await adminDb
+    .collection('websites')
+    .where('userId', '==', userId)
+    .where('templateId', '==', 'enrolldesk-01')
+    .get();
+
+  const sites = [];
+  snapshot.forEach((doc) => {
+    const s = doc.data();
+    sites.push({
+      id: s.id || doc.id,
+      title: s.title,
+      slug: s.slug,
+      status: s.status,
+      proInteractiveEnabled: Boolean(s.proInteractiveEnabled),
+      createdAt: s.createdAt,
+    });
+  });
+
+  sites.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  return sites;
 }
 
 export async function createOrder(user, websiteId) {
-  const { data, error } = await db().rpc('create_pro_interactive_order', { p_user_id: user.id, p_customer_name: user.name, p_customer_email: user.email, p_website_id: websiteId });
-  if (error) throw error;
-  const row = Array.isArray(data) ? data[0] : data;
-  return row ? safeOrder({
-    order_id: row.public_order_id, customer_name: user.name, product_id: row.product_uuid, product_name: row.product_name,
-    website_id: row.website_uuid, amount_paise: row.amount_paise, currency: 'INR',
-    payment_status: row.payment_status, product_status: row.product_status, created_at: row.created_at, expires_at: row.expires_at,
-  }) : null;
+  const now = new Date();
+  const siteRef = adminDb.collection('websites').doc(websiteId);
+  const siteSnap = await siteRef.get();
+
+  if (!siteSnap.exists) {
+    throw new Error('Choose a Pro Interactive website owned by your account');
+  }
+
+  const site = siteSnap.data();
+  if (site.userId !== user.id || site.templateId !== 'enrolldesk-01') {
+    throw new Error('Choose a Pro Interactive website owned by your account');
+  }
+
+  if (site.proInteractiveEnabled) {
+    throw new Error('Pro Interactive is already enabled for this website');
+  }
+
+  // Check active products
+  const productDoc = await adminDb.collection('paymentProducts').doc('pro-interactive').get();
+  const product = productDoc.exists ? productDoc.data() : {
+    id: 'pro-interactive',
+    name: 'Pro Interactive',
+    amount_paise: 49900,
+  };
+
+  // Check existing unexpired order
+  const existingOrders = await adminDb
+    .collection('paymentOrders')
+    .where('website_id', '==', websiteId)
+    .where('user_id', '==', user.id)
+    .where('product_id', '==', 'pro-interactive')
+    .get();
+
+  for (const doc of existingOrders.docs) {
+    const o = doc.data();
+    if (['PENDING', 'VERIFYING'].includes(o.payment_status)) {
+      if (new Date(o.expires_at) > now) {
+        return safeOrder(o);
+      } else {
+        await doc.ref.update({ payment_status: 'EXPIRED' });
+      }
+    }
+  }
+
+  // Generate new unique order
+  const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+  const randomHex = crypto.randomBytes(6).toString('hex').toUpperCase();
+  const newOrderId = `ORD-${dateStr}-${randomHex}`;
+  const expiresAt = new Date(now.getTime() + 20 * 60 * 1000); // 20 minutes
+
+  const newOrderData = {
+    id: newOrderId,
+    order_id: newOrderId,
+    user_id: user.id,
+    customer_name: user.name || user.email.split('@')[0],
+    customer_email: user.email,
+    website_id: websiteId,
+    product_id: product.id,
+    product_name: product.name,
+    amount_paise: product.amount_paise,
+    currency: 'INR',
+    payment_status: 'PENDING',
+    product_status: 'LOCKED',
+    created_at: now.toISOString(),
+    expires_at: expiresAt.toISOString(),
+  };
+
+  await adminDb.collection('paymentOrders').doc(newOrderId).set(newOrderData);
+  return safeOrder(newOrderData);
 }
 
 export async function getOwnedOrder(orderId, userId) {
-  const client = db();
-  const { data, error } = await client.from('payment_orders').select('order_id,customer_name,product_id,product_name,website_id,amount_paise,currency,payment_status,product_status,created_at,expires_at,user_id').eq('order_id', orderId.toUpperCase()).eq('user_id', userId).maybeSingle();
-  if (error) throw error;
-  if (!data) return null;
+  const cleanId = orderId.toUpperCase().trim();
+  const orderRef = adminDb.collection('paymentOrders').doc(cleanId);
+  let snap = await orderRef.get();
+
+  if (!snap.exists) {
+    // Try query by order_id field
+    const q = await adminDb.collection('paymentOrders').where('order_id', '==', cleanId).limit(1).get();
+    if (q.empty) return null;
+    snap = q.docs[0];
+  }
+
+  const data = snap.data();
+  if (data.user_id !== userId) return null;
+
   if (['PENDING', 'VERIFYING'].includes(data.payment_status) && new Date(data.expires_at) <= new Date()) {
-    await client.from('payment_orders').update({ payment_status: 'EXPIRED' }).eq('order_id', data.order_id).eq('user_id', userId).in('payment_status', ['PENDING', 'VERIFYING']);
+    await snap.ref.update({ payment_status: 'EXPIRED' });
     data.payment_status = 'EXPIRED';
   }
+
   return safeOrder(data);
 }
 
 export async function submitPaymentClaim(orderId, userId) {
-  const { data, error } = await db().rpc('claim_pro_interactive_payment', { p_order_id: orderId, p_user_id: userId });
-  if (error) throw error;
-  return getOwnedOrder(orderId, userId);
+  const cleanId = orderId.toUpperCase().trim();
+  let snap = await adminDb.collection('paymentOrders').doc(cleanId).get();
+
+  if (!snap.exists) {
+    const q = await adminDb.collection('paymentOrders').where('order_id', '==', cleanId).limit(1).get();
+    if (q.empty) return null;
+    snap = q.docs[0];
+  }
+
+  const data = snap.data();
+  if (data.user_id !== userId) return null;
+
+  const now = new Date();
+  if (data.payment_status === 'PENDING') {
+    const newStatus = new Date(data.expires_at) <= now ? 'EXPIRED' : 'VERIFYING';
+    await snap.ref.update({ payment_status: newStatus });
+    data.payment_status = newStatus;
+  }
+
+  return safeOrder(data);
 }
 
 export async function getWebsiteAccess(websiteId, userId) {
-  const { data, error } = await db().from('event_websites').select('id,status,pro_interactive_enabled').eq('id', websiteId).eq('user_id', userId).maybeSingle();
-  if (error) throw error;
-  if (!data?.pro_interactive_enabled) return false;
-  // Already-published sites were grandfathered by the migration; drafts need an approved paid order.
-  if (data.status === 'published') return true;
-  const { data: paidOrders, error: orderError } = await db().from('payment_orders').select('id').eq('website_id', websiteId).eq('user_id', userId).eq('product_id', 'pro-interactive').eq('payment_status', 'PAID').eq('product_status', 'APPROVED').limit(1);
-  if (orderError) throw orderError;
-  return Boolean(paidOrders?.length);
+  const siteSnap = await adminDb.collection('websites').doc(websiteId).get();
+  if (!siteSnap.exists) return false;
+
+  const data = siteSnap.data();
+  if (data.userId !== userId) return false;
+  if (data.proInteractiveEnabled) return true;
+  if (data.status === 'published') return true; // Grandfathered published EnrollDesk sites
+
+  const paidOrdersSnap = await adminDb
+    .collection('paymentOrders')
+    .where('website_id', '==', websiteId)
+    .where('user_id', '==', userId)
+    .where('product_id', '==', 'pro-interactive')
+    .where('payment_status', '==', 'PAID')
+    .where('product_status', '==', 'APPROVED')
+    .limit(1)
+    .get();
+
+  return !paidOrdersSnap.empty;
 }
 
 function decodePart(data = '') {
@@ -180,18 +344,44 @@ export async function processGmailPayments() {
   if (!trustedSender || !/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(trustedSender)) {
     throw new Error('Set GMAIL_PAYMENT_SENDER to the exact FamApp payment-notification email address before enabling automatic verification.');
   }
-  const client = db();
-  const { data: acquired, error: lockError } = await client.rpc('acquire_payment_scan_lock', { p_lease_seconds: 55 });
-  if (lockError) throw lockError;
+
+  // Acquire distributed scan lock in Firestore
+  const lockRef = adminDb.collection('paymentScanLock').doc('lock');
+  const now = new Date();
+  const leaseSeconds = 55;
+
+  let acquired = false;
+  let pageToken = null;
+
+  await adminDb.runTransaction(async (t) => {
+    const lockSnap = await t.get(lockRef);
+    if (lockSnap.exists) {
+      const data = lockSnap.data();
+      const lockedUntil = new Date(data.locked_until || 0);
+      if (now < lockedUntil) {
+        acquired = false;
+        return;
+      }
+      pageToken = data.gmail_next_page_token || null;
+    }
+    t.set(
+      lockRef,
+      {
+        locked_until: new Date(now.getTime() + leaseSeconds * 1000).toISOString(),
+        updated_at: now.toISOString(),
+      },
+      { merge: true }
+    );
+    acquired = true;
+  });
+
   if (!acquired) return { configured: true, processed: 0, busy: true };
 
   const token = await getGmailAccessToken();
   const query = env('GMAIL_PAYMENT_QUERY', 'from:(famapp) newer_than:30d');
-  const { data: scanState } = await client.from('payment_scan_lock').select('gmail_next_page_token').eq('id', true).single();
-  const pageToken = scanState?.gmail_next_page_token;
   let listResponse = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=50${pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : ''}`, { headers: { Authorization: `Bearer ${token}` } });
   if (!listResponse.ok && pageToken) {
-    await client.from('payment_scan_lock').update({ gmail_next_page_token: null }).eq('id', true);
+    await lockRef.update({ gmail_next_page_token: null });
     listResponse = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=50`, { headers: { Authorization: `Bearer ${token}` } });
   }
   if (!listResponse.ok) throw new Error('Gmail messages could not be read. Check Gmail API enablement and OAuth read scope.');
@@ -199,103 +389,352 @@ export async function processGmailPayments() {
   let processed = 0;
 
   for (const message of listed.messages || []) {
-    const { data: already } = await client.from('processed_payment_notifications').select('gmail_message_id').eq('gmail_message_id', message.id).maybeSingle();
-    if (already) continue;
+    const processedRef = adminDb.collection('processedPaymentNotifications').doc(message.id);
+    const already = await processedRef.get();
+    if (already.exists) continue;
+
     const messageResponse = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${encodeURIComponent(message.id)}?format=full`, { headers: { Authorization: `Bearer ${token}` } });
     if (!messageResponse.ok) continue;
     const full = await messageResponse.json();
     const senderHeader = headerValue(full, 'from');
     const sender = senderHeader.match(/<([^<>]+)>/)?.[1]?.trim().toLowerCase() || senderHeader.trim().toLowerCase();
+    
     if (sender !== trustedSender) {
-      await client.from('processed_payment_notifications').insert({ gmail_message_id: message.id, outcome: 'IGNORED' });
+      await processedRef.set({
+        gmail_message_id: message.id,
+        outcome: 'IGNORED',
+        processed_at: new Date().toISOString(),
+      });
       continue;
     }
+
     const info = extractPayment(extractText(full.payload || {}));
     if (!info) {
-      await client.from('processed_payment_notifications').insert({ gmail_message_id: message.id, outcome: 'UNKNOWN' });
+      await processedRef.set({
+        gmail_message_id: message.id,
+        outcome: 'UNKNOWN',
+        processed_at: new Date().toISOString(),
+      });
       try { await sendUnmatchedNotification(null); } catch (error) { console.error('[Admin payment notice email failed]', error.message); }
       continue;
     }
-    const { data: result, error } = await client.rpc('verify_upi_payment', {
-      p_gmail_message_id: message.id,
-      p_order_id: info.orderId,
-      p_transaction_reference: info.reference,
-      p_amount_paise: info.amountPaise,
-      p_payment_time: info.paymentTime,
+
+    // Atomic UPI payment verification in Firestore
+    let outcome = 'UNKNOWN';
+    await adminDb.runTransaction(async (t) => {
+      // Find order
+      const targetQuery = await adminDb
+        .collection('paymentOrders')
+        .where('order_id', '==', (info.orderId || '').toUpperCase())
+        .limit(1)
+        .get();
+
+      if (targetQuery.empty) {
+        t.set(processedRef, {
+          gmail_message_id: message.id,
+          transaction_reference: info.reference,
+          amount_paise: info.amountPaise,
+          outcome: 'UNKNOWN',
+          processed_at: new Date().toISOString(),
+        });
+        outcome = 'UNKNOWN';
+        return;
+      }
+
+      const orderDoc = targetQuery.docs[0];
+      const target = orderDoc.data();
+
+      // Check duplicate transaction reference
+      if (info.reference) {
+        const dupQuery = await adminDb
+          .collection('paymentTransactions')
+          .where('transaction_reference', '==', info.reference)
+          .limit(1)
+          .get();
+
+        if (!dupQuery.empty) {
+          t.set(processedRef, {
+            gmail_message_id: message.id,
+            transaction_reference: info.reference,
+            amount_paise: info.amountPaise,
+            order_id: target.order_id,
+            outcome: 'DUPLICATE',
+            processed_at: new Date().toISOString(),
+          });
+          outcome = 'DUPLICATE';
+          return;
+        }
+      }
+
+      const isInvalid =
+        !info.reference ||
+        !['PENDING', 'VERIFYING'].includes(target.payment_status) ||
+        target.amount_paise !== info.amountPaise ||
+        new Date(target.expires_at) < now;
+
+      if (isInvalid) {
+        outcome = 'REVIEW';
+        if (target.payment_status !== 'PAID') {
+          t.update(orderDoc.ref, {
+            payment_status: 'MANUAL_REVIEW',
+            product_status: 'LOCKED',
+          });
+        }
+        const txnId = `txn_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+        t.set(adminDb.collection('paymentTransactions').doc(txnId), {
+          id: txnId,
+          order_id: target.order_id,
+          transaction_reference: info.reference || `unparsed-${message.id}`,
+          amount_paise: info.amountPaise,
+          payment_time: info.paymentTime,
+          verification_status: 'MANUAL_REVIEW',
+          verified_at: new Date().toISOString(),
+        });
+        t.set(adminDb.collection('paymentNotificationOutbox').doc(`admin_${target.order_id}`), {
+          order_id: target.order_id,
+          recipient_type: 'admin',
+          delivery_status: 'PENDING',
+          attempts: 0,
+          created_at: new Date().toISOString(),
+        });
+      } else {
+        outcome = 'VERIFIED';
+        const txnId = `txn_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+        t.set(adminDb.collection('paymentTransactions').doc(txnId), {
+          id: txnId,
+          order_id: target.order_id,
+          transaction_reference: info.reference,
+          amount_paise: info.amountPaise,
+          payment_time: info.paymentTime,
+          verification_status: 'VERIFIED',
+          verified_at: new Date().toISOString(),
+        });
+        t.update(orderDoc.ref, {
+          payment_status: 'PAID',
+          product_status: 'APPROVED',
+          paid_at: new Date().toISOString(),
+        });
+        // Unlock Pro Interactive on the event website
+        t.update(adminDb.collection('websites').doc(target.website_id), {
+          proInteractiveEnabled: true,
+        });
+        t.set(adminDb.collection('paymentNotificationOutbox').doc(`cust_${target.order_id}`), {
+          order_id: target.order_id,
+          recipient_type: 'customer',
+          delivery_status: 'PENDING',
+          attempts: 0,
+          created_at: new Date().toISOString(),
+        });
+        t.set(adminDb.collection('paymentNotificationOutbox').doc(`admin_${target.order_id}`), {
+          order_id: target.order_id,
+          recipient_type: 'admin',
+          delivery_status: 'PENDING',
+          attempts: 0,
+          created_at: new Date().toISOString(),
+        });
+      }
+
+      t.set(processedRef, {
+        gmail_message_id: message.id,
+        transaction_reference: info.reference,
+        amount_paise: info.amountPaise,
+        order_id: target.order_id,
+        outcome,
+        processed_at: new Date().toISOString(),
+      });
     });
-    if (error) throw error;
-    const outcome = Array.isArray(result) ? result[0] : result;
-    if (outcome?.outcome === 'UNKNOWN' || outcome?.outcome === 'DUPLICATE') {
-      try { await sendUnmatchedNotification(outcome.amount_paise); } catch (error) { console.error('[Admin payment notice email failed]', error.message); }
+
+    if (outcome === 'UNKNOWN' || outcome === 'DUPLICATE') {
+      try { await sendUnmatchedNotification(info?.amountPaise); } catch (error) { console.error('[Admin payment notice email failed]', error.message); }
     }
     processed++;
   }
-  await client.from('payment_scan_lock').update({ gmail_next_page_token: listed.nextPageToken || null }).eq('id', true);
-  await client.rpc('expire_pro_interactive_orders');
+
+  await lockRef.update({ gmail_next_page_token: listed.nextPageToken || null });
+  
+  // Expire overdue orders
+  await expireProInteractiveOrders();
+
   const notificationsSent = await deliverPendingNotifications();
   return { configured: true, processed, notificationsSent, hasMore: Boolean(listed.nextPageToken) };
 }
 
+async function expireProInteractiveOrders() {
+  const now = new Date();
+  const pendingOrders = await adminDb
+    .collection('paymentOrders')
+    .where('payment_status', 'in', ['PENDING', 'VERIFYING'])
+    .get();
+
+  const batch = adminDb.batch();
+  let count = 0;
+  pendingOrders.forEach((doc) => {
+    const o = doc.data();
+    if (new Date(o.expires_at) <= now) {
+      batch.update(doc.ref, { payment_status: 'EXPIRED' });
+      count++;
+    }
+  });
+
+  if (count > 0) {
+    await batch.commit();
+  }
+  return count;
+}
+
 export async function deliverPendingNotifications() {
   if (process.env.GMAIL_SEND_ENABLED !== 'true') return 0;
-  const client = db();
-  const { data: pending, error } = await client.from('payment_notification_outbox').select('id,order_id,recipient_type,attempts').eq('delivery_status', 'PENDING').order('created_at').limit(20);
-  if (error) throw error;
+  const pendingSnap = await adminDb
+    .collection('paymentNotificationOutbox')
+    .where('delivery_status', '==', 'PENDING')
+    .limit(20)
+    .get();
+
   let sent = 0;
-  for (const notice of pending || []) {
-    const { data: row, error: orderError } = await client.from('payment_orders').select('order_id,customer_name,customer_email,product_name,website_id,amount_paise,payment_status').eq('id', notice.order_id).maybeSingle();
-    if (orderError || !row) continue;
-    let recipient = notice.recipient_type === 'customer' ? row.customer_email : process.env.ADMIN_EMAIL;
+  for (const doc of pendingSnap.docs) {
+    const notice = doc.data();
+    const orderSnap = await adminDb.collection('paymentOrders').doc(notice.order_id).get();
+    if (!orderSnap.exists) continue;
+    const row = orderSnap.data();
+
+    const recipient = notice.recipient_type === 'customer' ? row.customer_email : process.env.ADMIN_EMAIL;
     if (!recipient) continue;
+
     try {
       if (notice.recipient_type === 'admin' && row.payment_status === 'MANUAL_REVIEW') {
         await sendReviewNotification(row);
       } else if (row.payment_status === 'PAID') {
-        if (notice.recipient_type === 'customer') await sendGmail(recipient, `Payment successful — ${row.order_id}`, paymentText(row));
-        else await sendGmail(recipient, `Payment verified — ${row.order_id}`, `PAYMENT VERIFIED\n\nCustomer: ${cleanName(row.customer_name)}\nProduct: ${row.product_name}\nAmount: ₹${(row.amount_paise / 100).toFixed(2)}\nOrder ID: ${row.order_id}\nStatus: PAID\nTime: ${new Date().toISOString()}`);
+        if (notice.recipient_type === 'customer') {
+          await sendGmail(recipient, `Payment successful — ${row.order_id}`, paymentText(row));
+        } else {
+          await sendGmail(
+            recipient,
+            `Payment verified — ${row.order_id}`,
+            `PAYMENT VERIFIED\n\nCustomer: ${cleanName(row.customer_name)}\nProduct: ${row.product_name}\nAmount: ₹${(row.amount_paise / 100).toFixed(2)}\nOrder ID: ${row.order_id}\nStatus: PAID\nTime: ${new Date().toISOString()}`
+          );
+        }
       } else {
         continue;
       }
     } catch (deliveryError) {
-      await client.from('payment_notification_outbox').update({ attempts: notice.attempts + 1 }).eq('id', notice.id).eq('delivery_status', 'PENDING');
-      console.error('[Sanitized payment email delivery failed]', deliveryError.message);
+      await doc.ref.update({ attempts: (notice.attempts || 0) + 1 });
+      console.error('[Payment email delivery failed]', deliveryError.message);
       continue;
     }
-    const { error: sentError } = await client.from('payment_notification_outbox').update({ delivery_status: 'SENT', attempts: notice.attempts + 1, sent_at: new Date().toISOString() }).eq('id', notice.id).eq('delivery_status', 'PENDING');
-    if (!sentError) sent++;
+
+    await doc.ref.update({
+      delivery_status: 'SENT',
+      attempts: (notice.attempts || 0) + 1,
+      sent_at: new Date().toISOString(),
+    });
+    sent++;
   }
   return sent;
 }
 
 export async function listAdminOrders(status) {
-  const allowed = ['PENDING','VERIFYING','PAID','FAILED','EXPIRED','MANUAL_REVIEW'];
-  let query = db().from('payment_orders').select('order_id,customer_name,customer_email,product_name,amount_paise,payment_status,created_at,paid_at').order('created_at', { ascending: false }).limit(200);
-  if (allowed.includes(status)) query = query.eq('payment_status', status);
-  const { data, error } = await query;
-  if (error) throw error;
-  const { data: unmatched, error: unmatchedError } = await db().from('processed_payment_notifications').select('amount_paise,processed_at,outcome,order_id').in('outcome', ['UNKNOWN','REVIEW','DUPLICATE']).order('processed_at', { ascending: false }).limit(50);
-  if (unmatchedError) throw unmatchedError;
-  const relatedOrderIds = [...new Set((unmatched || []).map((row) => row.order_id).filter(Boolean))];
-  let publicOrderIds = new Map();
-  if (relatedOrderIds.length) {
-    const { data: related, error: relatedError } = await db().from('payment_orders').select('id,order_id').in('id', relatedOrderIds);
-    if (relatedError) throw relatedError;
-    publicOrderIds = new Map((related || []).map((row) => [row.id, row.order_id]));
+  const allowed = ['PENDING', 'VERIFYING', 'PAID', 'FAILED', 'EXPIRED', 'MANUAL_REVIEW'];
+  let query = adminDb.collection('paymentOrders');
+  if (allowed.includes(status)) {
+    query = query.where('payment_status', '==', status);
   }
+
+  const ordersSnap = await query.get();
+  const orders = [];
+  ordersSnap.forEach((doc) => {
+    const r = doc.data();
+    orders.push({
+      orderId: r.order_id,
+      customer: r.customer_name,
+      email: r.customer_email,
+      product: r.product_name,
+      amount: (r.amount_paise || 49900) / 100,
+      status: r.payment_status,
+      createdAt: r.created_at,
+      paidAt: r.paid_at || null,
+    });
+  });
+
+  orders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  // Unmatched payments
+  const unmatchedSnap = await adminDb
+    .collection('processedPaymentNotifications')
+    .where('outcome', 'in', ['UNKNOWN', 'REVIEW', 'DUPLICATE'])
+    .get();
+
+  const unmatched = [];
+  unmatchedSnap.forEach((doc) => {
+    const r = doc.data();
+    unmatched.push({
+      orderId: r.order_id || null,
+      amount: Number.isInteger(r.amount_paise) ? r.amount_paise / 100 : null,
+      processedAt: r.processed_at,
+      status: r.outcome === 'DUPLICATE' ? 'DUPLICATE' : 'MANUAL_REVIEW',
+    });
+  });
+
+  unmatched.sort((a, b) => new Date(b.processedAt).getTime() - new Date(a.processedAt).getTime());
+
   return {
-    orders: (data || []).map((row) => ({ orderId: row.order_id, customer: row.customer_name, email: row.customer_email, product: row.product_name, amount: row.amount_paise / 100, status: row.payment_status, createdAt: row.created_at, paidAt: row.paid_at })),
-    unmatchedPayments: (unmatched || []).map((row) => ({ orderId: publicOrderIds.get(row.order_id) || null, amount: Number.isInteger(row.amount_paise) ? row.amount_paise / 100 : null, processedAt: row.processed_at, status: row.outcome === 'DUPLICATE' ? 'DUPLICATE' : 'MANUAL_REVIEW' })),
+    orders: orders.slice(0, 200),
+    unmatchedPayments: unmatched.slice(0, 50),
   };
 }
 
 export async function approveManualOrder(orderId, adminId, reason) {
-  const { data, error } = await db().rpc('approve_payment_manually', { p_order_id: orderId, p_admin_id: adminId, p_reason: reason });
-  if (error) throw error;
-  if (!data) return null;
-  const { data: dbOrder, error: orderError } = await db().from('payment_orders').select('id,order_id,customer_name,customer_email,product_name,amount_paise,payment_status').eq('order_id', orderId.toUpperCase()).single();
-  if (orderError) throw orderError;
+  const cleanId = orderId.toUpperCase().trim();
+  let snap = await adminDb.collection('paymentOrders').doc(cleanId).get();
+
+  if (!snap.exists) {
+    const q = await adminDb.collection('paymentOrders').where('order_id', '==', cleanId).limit(1).get();
+    if (q.empty) return null;
+    snap = q.docs[0];
+  }
+
+  const target = snap.data();
+  if (target.payment_status !== 'MANUAL_REVIEW') return null;
+
+  const now = new Date().toISOString();
+  await adminDb.runTransaction(async (t) => {
+    t.update(snap.ref, {
+      payment_status: 'PAID',
+      product_status: 'APPROVED',
+      paid_at: now,
+    });
+
+    const approvalId = `appr_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+    t.set(adminDb.collection('paymentManualApprovals').doc(approvalId), {
+      id: approvalId,
+      order_id: target.order_id,
+      admin_id: adminId,
+      reason: reason.trim(),
+      approved_at: now,
+    });
+
+    // Unlock website
+    t.update(adminDb.collection('websites').doc(target.website_id), {
+      proInteractiveEnabled: true,
+    });
+
+    t.set(adminDb.collection('paymentNotificationOutbox').doc(`cust_${target.order_id}`), {
+      order_id: target.order_id,
+      recipient_type: 'customer',
+      delivery_status: 'PENDING',
+      attempts: 0,
+      created_at: now,
+    });
+    t.set(adminDb.collection('paymentNotificationOutbox').doc(`admin_${target.order_id}`), {
+      order_id: target.order_id,
+      recipient_type: 'admin',
+      delivery_status: 'PENDING',
+      attempts: 0,
+      created_at: now,
+    });
+  });
+
   await deliverPendingNotifications();
-  return { orderId: dbOrder.order_id, status: dbOrder.payment_status, productStatus: 'APPROVED' };
+  return { orderId: target.order_id, status: 'PAID', productStatus: 'APPROVED' };
 }
 
 export async function isAdmin(user) {

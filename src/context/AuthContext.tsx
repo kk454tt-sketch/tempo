@@ -1,8 +1,20 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { User as SupabaseUser, Session, AuthError } from '@supabase/supabase-js';
-import { supabase, isSupabaseConfigured } from '@/services/supabase';
+import {
+  User as FirebaseUser,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  sendPasswordResetEmail,
+  updateProfile,
+  AuthError,
+} from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, googleProvider, db } from '@/firebase';
 import { apiService } from '@/services/apiService';
 import { unlockService } from '@/services/unlockService';
+import { eventService } from '@/services/eventService';
 import { User, LoginCredentials, SignUpCredentials, UserProfile, UserSubscription } from '@/types';
 
 interface AuthContextType {
@@ -10,8 +22,11 @@ interface AuthContextType {
   profile: UserProfile | null;
   subscription: UserSubscription | null;
   isPremiumActive: boolean;
-  supabaseUser: SupabaseUser | null;
-  session: Session | null;
+  /** @deprecated Use `firebaseUser` instead. Kept for backward compatibility. */
+  supabaseUser: FirebaseUser | null;
+  firebaseUser: FirebaseUser | null;
+  /** @deprecated Firebase does not use session objects. Always null. */
+  session: null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -27,9 +42,21 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * Maps a Firebase user to the app's User interface.
+ */
+function mapFirebaseUser(fbUser: FirebaseUser): User {
+  return {
+    id: fbUser.uid,
+    name: fbUser.displayName || fbUser.email?.split('@')[0] || 'Creator',
+    email: fbUser.email || '',
+    avatarUrl: fbUser.photoURL || '',
+    createdAt: fbUser.metadata.creationTime || new Date().toISOString(),
+  };
+}
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
@@ -53,102 +80,145 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfileAndUserData = useCallback(async (authenticatedUser: User) => {
     setUser(authenticatedUser);
+
+    // 1. Direct ensure & sync in Cloud Firestore (works seamlessly in both local and hosted environments)
+    try {
+      const userDocRef = doc(db, 'users', authenticatedUser.id);
+      const docSnap = await getDoc(userDocRef);
+      const now = new Date().toISOString();
+      if (!docSnap.exists()) {
+        const initialProfile = {
+          id: authenticatedUser.id,
+          email: (authenticatedUser.email || '').toLowerCase().trim(),
+          name: authenticatedUser.name,
+          fullName: authenticatedUser.name,
+          avatarUrl: authenticatedUser.avatarUrl || '',
+          bio: '',
+          profileData: {},
+          createdAt: now,
+          updatedAt: now,
+        };
+        await setDoc(userDocRef, initialProfile, { merge: true });
+        setProfile({
+          id: `prof_${authenticatedUser.id}`,
+          userId: authenticatedUser.id,
+          fullName: authenticatedUser.name,
+          avatarUrl: authenticatedUser.avatarUrl || '',
+          bio: '',
+          profileData: {},
+          createdAt: now,
+          updatedAt: now,
+        });
+      } else {
+        const d = docSnap.data();
+        setProfile({
+          id: `prof_${authenticatedUser.id}`,
+          userId: authenticatedUser.id,
+          fullName: d.fullName || d.name || authenticatedUser.name,
+          avatarUrl: d.avatarUrl || authenticatedUser.avatarUrl || '',
+          bio: d.bio || '',
+          profileData: d.profileData || {},
+          createdAt: d.createdAt || now,
+          updatedAt: d.updatedAt || now,
+        });
+      }
+    } catch (fsErr) {
+      console.warn('[AuthContext] Firestore direct profile sync notice:', fsErr);
+    }
+
+    // 2. Also trigger backend API call (server will verify token and ensure user in Admin SDK)
     try {
       const prof = await apiService.getProfile();
-      setProfile(prof);
+      if (prof) setProfile(prof);
     } catch {
-      // profile fallback to user
-      setProfile(null);
+      // Backend may be offline or purely static hosting
     }
+
     await fetchSubscription();
   }, [fetchSubscription]);
 
-  // Initial session restoration on startup (Phase 10)
+  /**
+   * Helper: get Firebase ID token and push it to apiService.
+   * The backend will verify this token using Firebase Admin SDK.
+   */
+  const syncFirebaseToken = useCallback(async (fbUser: FirebaseUser) => {
+    const idToken = await fbUser.getIdToken();
+    apiService.setAuthToken(idToken);
+  }, []);
+
+  // ─── Firebase onAuthStateChanged listener ───
   useEffect(() => {
     let isMounted = true;
 
-    const restoreSession = async () => {
-      setIsLoading(true);
-      try {
-        // 1. Check database session token
-        const existingToken = apiService.getAuthToken();
-        if (existingToken) {
-          const verifiedUser = await apiService.getMe();
-          if (verifiedUser && isMounted) {
-            await fetchProfileAndUserData(verifiedUser);
-            setIsLoading(false);
-            return;
-          }
-        }
+    const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      if (!isMounted) return;
 
-        // 2. Check Supabase session if configured
-        if (isSupabaseConfigured) {
-          const { data: { session: sbSession } } = await supabase.auth.getSession();
-          if (sbSession?.user && isMounted) {
-            setSession(sbSession);
-            setSupabaseUser(sbSession.user);
-            apiService.setAuthToken(sbSession.access_token);
-
-            const verifiedUser: User = {
-              id: sbSession.user.id,
-              name: sbSession.user.user_metadata?.full_name || sbSession.user.email?.split('@')[0] || 'Creator',
-              email: sbSession.user.email || '',
-              avatarUrl: sbSession.user.user_metadata?.avatar_url || '',
-              createdAt: sbSession.user.created_at,
-            };
-            await fetchProfileAndUserData(verifiedUser);
-            setIsLoading(false);
-            return;
-          }
+      if (fbUser) {
+        setFirebaseUser(fbUser);
+        try {
+          await syncFirebaseToken(fbUser);
+          const appUser = mapFirebaseUser(fbUser);
+          await fetchProfileAndUserData(appUser);
+          unlockService.loadUserUnlocks(appUser.id).catch(() => {});
+        } catch (err) {
+          console.warn('[AuthContext] Error syncing Firebase user:', err);
         }
-      } catch (err) {
-        console.warn('[AuthContext] Session restore note:', err);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+      } else {
+        // Signed out
+        setFirebaseUser(null);
+        setUser(null);
+        setProfile(null);
+        setSubscription(null);
+        setIsPremiumActive(false);
+        apiService.setAuthToken(null);
+        unlockService.reset();
+        eventService.clearUserCache();
       }
-    };
 
-    restoreSession();
-
-    // Listen to Supabase auth changes if configured
-    let sbSubscription: { unsubscribe: () => void } | null = null;
-    if (isSupabaseConfigured) {
-      const { data } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
-        if (!isMounted) return;
-        setSession(newSession);
-        setSupabaseUser(newSession?.user ?? null);
-        if (newSession?.user) {
-          apiService.setAuthToken(newSession.access_token);
-          const sbUser: User = {
-            id: newSession.user.id,
-            name: newSession.user.user_metadata?.full_name || newSession.user.email?.split('@')[0] || 'Creator',
-            email: newSession.user.email || '',
-            avatarUrl: newSession.user.user_metadata?.avatar_url || '',
-            createdAt: newSession.user.created_at,
-          };
-          await fetchProfileAndUserData(sbUser);
-        } else {
-          setUser(null);
-          setProfile(null);
-          setSubscription(null);
-          setIsPremiumActive(false);
-          unlockService.reset();
-        }
-      });
-      sbSubscription = data.subscription;
-    }
+      if (isMounted) {
+        setIsLoading(false);
+      }
+    });
 
     return () => {
       isMounted = false;
-      if (sbSubscription) sbSubscription.unsubscribe();
+      unsubscribe();
     };
-  }, [fetchProfileAndUserData]);
+  }, [fetchProfileAndUserData, syncFirebaseToken]);
 
   const formatAuthError = (err: AuthError | Error | unknown): string => {
     if (!err) return 'An unexpected error occurred.';
+    const code = (err as AuthError)?.code || '';
     const message = (err as Error).message || String(err);
+
+    // Firebase Auth error codes → user-friendly messages
+    switch (code) {
+      case 'auth/invalid-email':
+        return 'Please enter a valid email address.';
+      case 'auth/user-disabled':
+        return 'This account has been disabled. Please contact support.';
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+        return 'Invalid email or password. Please check your credentials and try again.';
+      case 'auth/email-already-in-use':
+        return 'An account with this email already exists. Please sign in instead.';
+      case 'auth/weak-password':
+        return 'Password is too weak. Please choose a password with at least 6 characters.';
+      case 'auth/popup-closed-by-user':
+      case 'auth/cancelled-popup-request':
+        return 'Sign-in was cancelled.';
+      case 'auth/popup-blocked':
+        return 'Sign-in popup was blocked by your browser. Please allow popups and try again.';
+      case 'auth/too-many-requests':
+        return 'Too many unsuccessful attempts. Please wait a moment and try again.';
+      case 'auth/network-request-failed':
+        return 'Network error. Please check your connection and try again.';
+      default:
+        break;
+    }
+
+    // Legacy error message string matching
     if (message.includes('Invalid login credentials') || message.includes('Invalid password')) {
       return 'Invalid email or password. Please check your credentials and try again.';
     }
@@ -157,9 +227,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     if (message.includes('Password should be at least')) {
       return 'Password is too weak. Please choose a password with at least 6 characters.';
-    }
-    if (message.includes('Email not confirmed')) {
-      return 'Please verify your email address before signing in.';
     }
     if (message.includes('popup closed') || message.includes('cancelled')) {
       return 'Sign-in was cancelled.';
@@ -171,37 +238,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
     setIsLoading(true);
     try {
-      // 1. Authenticate with backend API
-      const result = await apiService.login({
-        email: credentials.email.trim(),
-        password: credentials.password || '',
-      });
-
-      if (result.user && result.token) {
-        await fetchProfileAndUserData(result.user);
-        return;
-      }
-
-      // 2. Supabase fallback if configured
-      if (isSupabaseConfigured) {
-        const { data, error: authErr } = await supabase.auth.signInWithPassword({
-          email: credentials.email.trim(),
-          password: credentials.password || '',
-        });
-        if (authErr) throw authErr;
-        if (data.user) {
-          const u: User = {
-            id: data.user.id,
-            name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'Creator',
-            email: data.user.email || '',
-            createdAt: data.user.created_at,
-          };
-          await fetchProfileAndUserData(u);
-          return;
-        }
-      }
-
-      throw new Error('Could not authenticate. Please verify your credentials.');
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        credentials.email.trim(),
+        credentials.password || ''
+      );
+      await syncFirebaseToken(userCredential.user);
+      const appUser = mapFirebaseUser(userCredential.user);
+      await fetchProfileAndUserData(appUser);
     } catch (err) {
       const msg = formatAuthError(err);
       setError(msg);
@@ -214,18 +258,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async () => {
     setError(null);
     try {
-      if (isSupabaseConfigured) {
-        const redirectUrl = `${window.location.origin}/auth/callback`;
-        const { error: oauthErr } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: redirectUrl,
-          },
-        });
-        if (oauthErr) throw oauthErr;
-      } else {
-        throw new Error('OAuth provider is unavailable.');
-      }
+      const result = await signInWithPopup(auth, googleProvider);
+      await syncFirebaseToken(result.user);
+      const appUser = mapFirebaseUser(result.user);
+      await fetchProfileAndUserData(appUser);
     } catch (err) {
       const msg = formatAuthError(err);
       setError(msg);
@@ -237,40 +273,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
     setIsLoading(true);
     try {
-      // 1. Register with backend API
-      const result = await apiService.register({
-        name: credentials.name.trim(),
-        email: credentials.email.trim(),
-        password: credentials.password || '',
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        credentials.email.trim(),
+        credentials.password || ''
+      );
+
+      // Set display name on the Firebase user
+      await updateProfile(userCredential.user, {
+        displayName: credentials.name.trim(),
       });
 
-      if (result.user && result.token) {
-        await fetchProfileAndUserData(result.user);
-        return { confirmationRequired: false };
-      }
+      // Sync token to backend
+      await syncFirebaseToken(userCredential.user);
 
-      // 2. Supabase signup if configured
-      if (isSupabaseConfigured) {
-        const { data, error: signErr } = await supabase.auth.signUp({
-          email: credentials.email.trim(),
-          password: credentials.password || '',
-          options: {
-            data: { full_name: credentials.name.trim() },
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
-          },
-        });
-        if (signErr) throw signErr;
-        if (data.user) {
-          if (!data.session) return { confirmationRequired: true };
-          const u: User = {
-            id: data.user.id,
-            name: credentials.name.trim(),
-            email: credentials.email.trim(),
-            createdAt: data.user.created_at,
-          };
-          await fetchProfileAndUserData(u);
-          return { confirmationRequired: false };
-        }
+      const appUser: User = {
+        id: userCredential.user.uid,
+        name: credentials.name.trim(),
+        email: userCredential.user.email || credentials.email.trim(),
+        avatarUrl: '',
+        createdAt: userCredential.user.metadata.creationTime || new Date().toISOString(),
+      };
+      await fetchProfileAndUserData(appUser);
+
+      // Direct write to Cloud Firestore immediately on signup
+      try {
+        const userDocRef = doc(db, 'users', userCredential.user.uid);
+        const now = new Date().toISOString();
+        await setDoc(userDocRef, {
+          id: userCredential.user.uid,
+          email: (userCredential.user.email || credentials.email).toLowerCase().trim(),
+          name: credentials.name.trim(),
+          fullName: credentials.name.trim(),
+          avatarUrl: '',
+          bio: '',
+          profileData: {},
+          createdAt: now,
+          updatedAt: now,
+        }, { merge: true });
+      } catch (fsErr) {
+        console.warn('[AuthContext] Signup Firestore direct write:', fsErr);
       }
 
       return { confirmationRequired: false };
@@ -286,13 +328,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const resetPassword = async (email: string) => {
     setError(null);
     try {
-      if (isSupabaseConfigured) {
-        const { error: resetErr } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/reset-password`,
-        });
-        if (resetErr) throw resetErr;
-        return { error: null };
-      }
+      await sendPasswordResetEmail(auth, email);
       return { error: null };
     } catch (err) {
       const msg = formatAuthError(err);
@@ -304,9 +340,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       await apiService.logout();
-      if (isSupabaseConfigured) {
-        await supabase.auth.signOut();
-      }
+      await signOut(auth);
     } catch {
       // ignore
     } finally {
@@ -314,9 +348,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setProfile(null);
       setSubscription(null);
       setIsPremiumActive(false);
-      setSession(null);
-      setSupabaseUser(null);
+      setFirebaseUser(null);
+      apiService.setAuthToken(null);
       unlockService.reset();
+      eventService.clearUserCache(user?.id);
     }
   };
 
@@ -339,8 +374,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         profile,
         subscription,
         isPremiumActive,
-        supabaseUser,
-        session,
+        supabaseUser: firebaseUser,
+        firebaseUser,
+        session: null,
         isAuthenticated: !!user,
         isLoading,
         error,

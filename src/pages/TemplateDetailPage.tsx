@@ -679,8 +679,8 @@ export const TemplateDetailPage: React.FC = () => {
         }}
         templateId={template.id}
         templateName={template.name}
-        priceLabel={template.priceLabel}
-        priceAmount={template.price || 29}
+        priceLabel={template.priceLabel || `₹${template.price || 99}`}
+        priceAmount={template.price || 99}
         userId={user?.id}
       />
     </div>

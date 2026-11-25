@@ -4,13 +4,14 @@ import { ArrowRight, Check, Copy, LoaderCircle, LockKeyhole, X } from 'lucide-re
 import QRCode from 'qrcode';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/common/Button';
+import { auth } from '@/firebase';
 
 type Product = { id: string; name: string; description: string; amount: number; currency: string };
 type Order = { orderId: string; customerName: string; productName: string; websiteId: string; amount: number; currency: string; status: string; productStatus: string; upiUri: string; expiresAt: string };
 type Website = { id: string; title: string; slug: string; status: string; proInteractiveEnabled: boolean };
 
 export const PlansPage = () => {
-  const { user, session } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [websites, setWebsites] = useState<Website[]>([]);
@@ -22,15 +23,17 @@ export const PlansPage = () => {
   const [copied, setCopied] = useState(false);
 
   const request = async (path: string, init: RequestInit = {}) => {
-    if (!session?.access_token) throw new Error('Secure checkout requires a verified Supabase account. Please sign in after configuring Supabase authentication.');
-    const response = await fetch(`/api${path}`, { ...init, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}`, ...(init.headers || {}) } });
+    const currentUser = auth.currentUser;
+    if (!currentUser) throw new Error('Secure checkout requires a verified account. Please sign in.');
+    const idToken = await currentUser.getIdToken();
+    const response = await fetch(`/api${path}`, { ...init, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}`, ...(init.headers || {}) } });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Could not complete the request.');
     return data;
   };
 
   useEffect(() => {
-    if (!session?.access_token) { setError('Sign in with your Tempo account to load the Pro Interactive checkout.'); return; }
+    if (!isAuthenticated) { setError('Sign in with your Tempo account to load the Pro Interactive checkout.'); return; }
     Promise.all([request('/payments/products'), request('/payments/websites')])
       .then(([productData, websiteData]) => {
         setProducts(productData.products);
@@ -41,7 +44,7 @@ export const PlansPage = () => {
         setWebsiteId(eligible?.id || '');
       })
       .catch((e) => setError(e.message));
-  }, [session?.access_token]);
+  }, [isAuthenticated]);
   useEffect(() => {
     let active = true;
     setQrImage('');
@@ -51,10 +54,10 @@ export const PlansPage = () => {
     return () => { active = false; };
   }, [order?.upiUri]);
   useEffect(() => {
-    if (!order || !session?.access_token || ['PAID', 'FAILED', 'EXPIRED', 'MANUAL_REVIEW'].includes(order.status)) return;
+    if (!order || !isAuthenticated || ['PAID', 'FAILED', 'EXPIRED', 'MANUAL_REVIEW'].includes(order.status)) return;
     const timer = window.setInterval(() => request(`/payments/order-status?orderId=${encodeURIComponent(order.orderId)}`).then((data) => setOrder(data.order)).catch(() => {}), 5000);
     return () => window.clearInterval(timer);
-  }, [order?.orderId, order?.status, session?.access_token]);
+  }, [order?.orderId, order?.status, isAuthenticated]);
 
   const buy = async (productId: string) => {
     if (!websiteId) { setError('Create or select a Pro Interactive website first.'); return; }
@@ -88,7 +91,7 @@ export const PlansPage = () => {
         <h1 className="font-display text-4xl sm:text-5xl text-on-surface mt-3">Unlock Pro Interactive</h1>
         <p className="text-on-surface-variant mt-4">One-time ₹499 upgrade for a Pro Interactive website. The selected site unlocks only after backend payment verification.</p>
         {user && <p className="text-xs text-on-surface-variant mt-3">Signed in as {user.email}</p>}
-        {!session?.access_token && <Link to="/login?from=/plans" className="inline-flex mt-5 rounded-xl bg-primary px-5 py-3 font-semibold text-white">Sign in to continue</Link>}
+        {!isAuthenticated && <Link to="/login?from=/plans" className="inline-flex mt-5 rounded-xl bg-primary px-5 py-3 font-semibold text-white">Sign in to continue</Link>}
       </div>
       {error && <div role="alert" className="max-w-2xl mx-auto mb-6 rounded-xl border border-error/30 bg-error-container/30 p-4 text-sm text-error">{error}</div>}
       {products.length > 0 && <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -122,9 +125,9 @@ export const PlansPage = () => {
             <p className="mt-3 font-mono text-sm font-semibold">{orderUpiId}</p>
             <a href={order.upiUri} className="mt-4 inline-flex w-full justify-center items-center gap-2 rounded-xl bg-primary text-white font-semibold py-3 px-4 hover:opacity-90">Pay via UPI App <ArrowRight size={17}/></a>
             <button onClick={copyUpi} className="mt-3 inline-flex items-center gap-2 text-sm text-primary">{copied ? <Check size={16}/> : <Copy size={16}/>} {copied ? 'UPI ID copied' : 'Copy UPI ID'}</button>
-            <details className="mt-4 text-left"><summary className="cursor-pointer text-xs text-on-surface-variant">Show your backup FamApp QR</summary><img src="/upi-payment.gif" alt="Backup FamApp QR for Jaisingh Kushwaha" className="w-full max-w-[240px] mx-auto mt-3 rounded-xl"/><p className="mt-2 text-center text-xs text-on-surface-variant">This backup QR may not include this order’s reference. Prefer the order QR above.</p></details>
+            <details className="mt-4 text-left"><summary className="cursor-pointer text-xs text-on-surface-variant">Show your backup FamApp QR</summary><img src="/upi-payment.gif" alt="Backup FamApp QR for Jaisingh Kushwaha" className="w-full max-w-[240px] mx-auto mt-3 rounded-xl"/><p className="mt-2 text-center text-xs text-on-surface-variant">This backup QR may not include this order's reference. Prefer the order QR above.</p></details>
           </div>
-          <p className="text-sm text-on-surface-variant">After paying, return here and tap “I have paid”. That only starts a verification check; your product stays locked until the payment is verified.</p>
+          <p className="text-sm text-on-surface-variant">After paying, return here and tap "I have paid". That only starts a verification check; your product stays locked until the payment is verified.</p>
           {order.status === 'PAID' ? <div className="rounded-xl bg-emerald-50 text-emerald-800 p-4"><strong>Payment successful ✓</strong><p className="text-sm mt-1">{order.productName} is approved and available.</p><Link to={`/dashboard/websites/${encodeURIComponent(order.websiteId)}/edit`} className="inline-flex mt-4 items-center gap-2 font-semibold underline">Continue editing your site <ArrowRight size={16}/></Link></div>
             : order.status === 'MANUAL_REVIEW' ? <div className="rounded-xl bg-amber-50 text-amber-900 p-4 text-sm">Your payment needs a manual review. Your product will unlock after approval.</div>
             : order.status === 'EXPIRED' || order.status === 'FAILED' ? <div className="rounded-xl bg-amber-50 text-amber-900 p-4 text-sm">This order has expired. Start a new checkout to pay.</div>
@@ -134,4 +137,3 @@ export const PlansPage = () => {
     </div>}
   </main>;
 };
-

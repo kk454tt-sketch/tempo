@@ -59,10 +59,15 @@ export const PublicEventPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col">
+    <div className="w-full min-h-screen h-screen bg-stone-950 flex flex-col overflow-hidden m-0 p-0">
       <TemplateRenderer
         templateId={website.templateId}
-        data={{ ...website.eventData, slug: website.slug }}
+        data={{
+          ...website.eventData,
+          slug: website.slug,
+          proInteractiveEnabled: website.proInteractiveEnabled ?? true,
+          isPro: website.proInteractiveEnabled ?? true,
+        }}
         isLivePreview={false}
         onRsvpSubmit={handleRsvpSubmit}
       />

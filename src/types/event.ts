@@ -353,6 +353,8 @@ export interface EventData {
   saasData?: SaasData;
   studentHub?: StudentHubData; // Student lounge & function suite data
   slug?: string;
+  proInteractiveEnabled?: boolean;
+  isPro?: boolean;
 }
 
 export interface EventWebsite {

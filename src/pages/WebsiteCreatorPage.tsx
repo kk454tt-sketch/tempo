@@ -20,7 +20,20 @@ import { DEFAULT_PORTFOLIO_CARD_1, DEFAULT_PORTFOLIO_CARD_2 } from '@/templates/
 import { RestaurantEditSection } from '@/components/editor/RestaurantEditSection';
 import { SaasEditSection } from '@/components/editor/SaasEditSection';
 import { LocationMapData } from '@/components/editor/LocationMapPicker';
+import { auth } from '@/firebase';
 import QRCode from 'qrcode';
+
+// Helper to generate a collision-free unique slug code for each published site
+export const generateUniqueSiteSlug = (baseName?: string): string => {
+  const clean = (baseName || 'site')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .substring(0, 20);
+  const uniqueCode = Math.random().toString(36).substring(2, 7);
+  return `${clean || 'site'}-${uniqueCode}`;
+};
 
 export const WebsiteCreatorPage: React.FC = () => {
   const { templateId, websiteId } = useParams<{ templateId?: string; websiteId?: string }>();
@@ -45,7 +58,7 @@ export const WebsiteCreatorPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activeWebsiteId, setActiveWebsiteId] = useState<string | undefined>(websiteId);
   const [isUnlocked, setIsUnlocked] = useState<boolean>(
-    unlockService.isTemplateUnlocked(initialTemplate.id, isFreeTemplate)
+    unlockService.isTemplateUnlocked(initialTemplate.id, isFreeTemplate, user?.id)
   );
   const [showUpiModal, setShowUpiModal] = useState<boolean>(false);
   const [whatsappNumber, setWhatsappNumber] = useState<string>(
@@ -67,9 +80,7 @@ export const WebsiteCreatorPage: React.FC = () => {
     initialTemplate.defaultData.note ||
       'Champagne toast at 5:30 PM • Cake cutting at sunset • Dancing under fairy lights'
   );
-  const [subdomain, setSubdomain] = useState(
-    (templateId || 'keepsake-birthday').toLowerCase().replace(/[^a-z0-9]/g, '-')
-  );
+  const [subdomain, setSubdomain] = useState(() => generateUniqueSiteSlug(templateId || 'site'));
 
   // Section 1: Dress Code & Location Map
   const [dressCode, setDressCode] = useState<DressCodeData>({
@@ -183,7 +194,19 @@ export const WebsiteCreatorPage: React.FC = () => {
 
   const liveUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/e/${subdomain || 'my-event'}`
-    : `https://tempo-a85d9.web.app/e/${subdomain || 'my-event'}`;
+    : `https://tempo-fbfbb.web.app/e/${subdomain || 'my-event'}`;
+
+  const isPortfolioCat = initialTemplate.category === 'portfolio' || initialTemplate.id.includes('portfolio');
+  const isBirthdayCat = initialTemplate.category === 'birthday' || initialTemplate.id.includes('birthday');
+  const isWeddingCat = initialTemplate.category === 'wedding' || initialTemplate.id.includes('wedding');
+
+  const waShareMessage = isPortfolioCat
+    ? `Check out my portfolio: ${siteTitle} — ${liveUrl}`
+    : isBirthdayCat
+    ? `You're invited! ${siteTitle} — ${liveUrl}`
+    : isWeddingCat
+    ? `Save the date! ${siteTitle} — ${liveUrl}`
+    : `Check out our website: ${siteTitle} — ${liveUrl}`;
 
   useEffect(() => {
     if (subdomain) {
@@ -205,7 +228,7 @@ export const WebsiteCreatorPage: React.FC = () => {
       try {
         await navigator.share({
           title: siteTitle,
-          text: `Check out our celebration website: ${siteTitle}`,
+          text: waShareMessage,
           url: liveUrl,
         });
       } catch {
@@ -332,7 +355,7 @@ export const WebsiteCreatorPage: React.FC = () => {
       if (initialTemplate.defaultData.schedule && initialTemplate.defaultData.schedule.length > 0) {
         setSchedule(initialTemplate.defaultData.schedule);
       }
-      setSubdomain((templateId || 'invitation').toLowerCase().replace(/[^a-z0-9]/g, '-'));
+      setSubdomain(generateUniqueSiteSlug(templateId || 'invitation'));
 
       // Always reset and scope portfolioData to the selected template
       const siteConfig = getPortfolioSiteConfig(initialTemplate.id);
@@ -389,11 +412,15 @@ export const WebsiteCreatorPage: React.FC = () => {
     }
   }, [templateId, websiteId, initialTemplate]);
 
-  // Restore local draft for anonymous users or when returning from sign in
+  // Restore user-isolated local draft
   useEffect(() => {
     if (!websiteId) {
       try {
-        const draftKey = `tempo_draft_${initialTemplate.id}`;
+        const currentUid = user?.id || auth.currentUser?.uid;
+        const draftKey = currentUid
+          ? `tempo_draft_${currentUid}_${initialTemplate.id}`
+          : `tempo_draft_guest_${initialTemplate.id}`;
+
         const localData = localStorage.getItem(draftKey);
         if (localData) {
           const parsed = JSON.parse(localData);
@@ -406,12 +433,17 @@ export const WebsiteCreatorPage: React.FC = () => {
           if (parsed.welcomeNote) setWelcomeNote(parsed.welcomeNote);
           if (parsed.subdomain) setSubdomain(parsed.subdomain);
           if (parsed.whatsappNumber) setWhatsappNumber(parsed.whatsappNumber);
+        } else {
+          // If no draft exists for THIS user, reset to clean template defaults
+          setSiteTitle(initialTemplate.defaultData.title || "Emma's 25th Birthday Soirée");
+          setSiteTagline(initialTemplate.defaultData.tagline || "you're invited to celebrate");
+          setSubdomain(generateUniqueSiteSlug(initialTemplate.id));
         }
       } catch (err) {
         console.debug('Draft restoration error:', err);
       }
     }
-  }, [initialTemplate.id, websiteId]);
+  }, [initialTemplate.id, websiteId, user?.id]);
 
   // Sync unlock state with authoritative database check
   useEffect(() => {
@@ -435,12 +467,21 @@ export const WebsiteCreatorPage: React.FC = () => {
     };
   }, [initialTemplate.id, isFreeTemplate, user?.id]);
 
-  // Load existing website or draft if websiteId is provided in params
+  // Load existing website or draft if websiteId is provided in params with STRICT ownership verification
   useEffect(() => {
     const effectiveSiteId = websiteId || searchParams.get('websiteId');
     if (effectiveSiteId) {
       eventService.getWebsiteById(effectiveSiteId).then((site) => {
         if (site) {
+          const currentUid = user?.id || auth.currentUser?.uid;
+          // If another user owns this website, do NOT link activeWebsiteId so User B cannot overwrite User A!
+          if (currentUid && site.userId && site.userId !== currentUid) {
+            console.warn('[WebsiteCreator] Site belongs to a different user. Starting a new decoupled site.');
+            setActiveWebsiteId(undefined);
+            setSubdomain(generateUniqueSiteSlug(site.templateId || 'site'));
+            return;
+          }
+
           setActiveWebsiteId(site.id);
           setSiteTitle(site.title || '');
           setSubdomain(site.slug || '');
@@ -564,40 +605,32 @@ export const WebsiteCreatorPage: React.FC = () => {
 
   // Handle Save Draft & Publish
   const handleSave = async (publishNow = false) => {
-    // 1. If trying to publish without being signed in:
-    if (publishNow && !user) {
-      try {
-        const draftKey = `tempo_draft_${initialTemplate.id}`;
-        localStorage.setItem(draftKey, JSON.stringify({
-          siteTitle, siteTagline, eventDate, eventTime, venue, address, welcomeNote, subdomain, photos, musicUrl, whatsappNumber
-        }));
-      } catch (e) {
-        console.debug('Local storage draft save:', e);
-      }
-      showToast('Please sign in to publish your website live to the web.');
-      navigate(`/login?from=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+    const effectiveUserId = user?.id || auth.currentUser?.uid;
+
+    // Strict authentication check for publishing
+    if (publishNow && !effectiveUserId) {
+      showToast('Please sign in to publish your website.');
+      navigate('/login');
       return;
     }
 
-    // 2. If saving draft without being signed in:
-    if (!publishNow && !user) {
-      try {
-        const draftKey = `tempo_draft_${initialTemplate.id}`;
-        localStorage.setItem(draftKey, JSON.stringify({
-          siteTitle, siteTagline, eventDate, eventTime, venue, address, welcomeNote, subdomain, photos, musicUrl, whatsappNumber
-        }));
-      } catch (e) {
-        console.debug('Local storage draft save:', e);
-      }
-      showToast('Draft saved locally in your browser! Sign in whenever you are ready to publish.');
-      return;
-    }
-
-    // 3. If publishing a paid template that is not yet unlocked:
+    // 1. If publishing a paid template that is not yet unlocked:
     if (publishNow && !isFreeTemplate && !isUnlocked) {
       setShowUpiModal(true);
       showToast('Please unlock this Pro template to publish your website.');
       return;
+    }
+
+    // Always keep a user-isolated local fallback draft in browser storage
+    try {
+      const draftKey = effectiveUserId
+        ? `tempo_draft_${effectiveUserId}_${initialTemplate.id}`
+        : `tempo_draft_guest_${initialTemplate.id}`;
+      localStorage.setItem(draftKey, JSON.stringify({
+        siteTitle, siteTagline, eventDate, eventTime, venue, address, welcomeNote, subdomain, photos, musicUrl, whatsappNumber
+      }));
+    } catch (e) {
+      console.debug('Local storage draft save:', e);
     }
 
     if (publishNow) {
@@ -619,13 +652,14 @@ export const WebsiteCreatorPage: React.FC = () => {
           slug: finalSlug,
           eventData: currentEventData,
         });
-        setActiveWebsiteId(updated.id);
-        savedSiteId = updated.id;
+        const validUpdatedId = updated?.id || activeWebsiteId;
+        setActiveWebsiteId(validUpdatedId);
+        savedSiteId = validUpdatedId;
         setPublishStatus(targetStatus);
         showToast(publishNow ? '🎉 Website is LIVE on production!' : '✅ Changes saved to database!');
       } else {
         const created = await eventService.createWebsite({
-          userId: user ? user.id : 'anonymous',
+          userId: effectiveUserId,
           templateId: initialTemplate.id,
           title: siteTitle,
           eventType: initialTemplate.categoryLabel,
@@ -633,21 +667,47 @@ export const WebsiteCreatorPage: React.FC = () => {
           eventData: currentEventData,
           status: targetStatus,
         });
-        setActiveWebsiteId(created.id);
-        savedSiteId = created.id;
+        const validCreatedId = created?.id || `site_${Date.now()}`;
+        setActiveWebsiteId(validCreatedId);
+        savedSiteId = validCreatedId;
         setPublishStatus(targetStatus);
         showToast(publishNow ? '🎉 Website deployed & published!' : '✅ Saved draft to your database!');
       }
 
+      if (publishNow) {
+        try {
+          const publishedData = {
+            id: savedSiteId || `site_${Date.now()}`,
+            userId: effectiveUserId || 'anonymous',
+            templateId: initialTemplate.id,
+            title: siteTitle,
+            eventType: initialTemplate.categoryLabel,
+            slug: finalSlug,
+            status: 'published',
+            eventData: currentEventData,
+            isLifetime: true,
+            viewsCount: 1,
+            rsvpsCount: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          localStorage.setItem(`tempo_published_${finalSlug}`, JSON.stringify(publishedData));
+        } catch (_) {}
+      }
+
       // Persist draft in database (Phase 5)
-      await eventService.saveDraft({
-        siteId: savedSiteId,
-        templateId: initialTemplate.id,
-        title: siteTitle,
-        slug: finalSlug,
-        eventType: initialTemplate.categoryLabel,
-        eventData: currentEventData as unknown as Record<string, unknown>,
-      });
+      try {
+        await eventService.saveDraft({
+          siteId: savedSiteId,
+          templateId: initialTemplate.id,
+          title: siteTitle,
+          slug: finalSlug,
+          eventType: initialTemplate.categoryLabel,
+          eventData: currentEventData as unknown as Record<string, unknown>,
+        });
+      } catch (draftErr) {
+        console.warn('Draft sync warning:', draftErr);
+      }
 
       // Update URL search param so browser refresh restores the exact draft (Phase 10 & 14)
       if (savedSiteId && (!websiteId || websiteId !== savedSiteId)) {
@@ -670,20 +730,162 @@ export const WebsiteCreatorPage: React.FC = () => {
 
   // Dedicated Immersive Studio Mode for ALL Templates (Portfolio & Birthday)
   return (
-    <PortfolioStudioView
-      template={initialTemplate}
-      eventData={currentEventData}
-      portfolioData={portfolioData}
-      onChangePortfolioData={setPortfolioData}
-      onSave={handleSave}
-      isSaving={isSaving}
-      isPublishing={isPublishing}
-      publishStatus={publishStatus}
-      subdomain={subdomain}
-      onChangeSubdomain={setSubdomain}
-      onToast={showToast}
-      onBack={() => navigate('/templates')}
-    />
+    <>
+      <PortfolioStudioView
+        template={initialTemplate}
+        eventData={currentEventData}
+        portfolioData={portfolioData}
+        onChangePortfolioData={setPortfolioData}
+        onSave={handleSave}
+        isSaving={isSaving}
+        isPublishing={isPublishing}
+        publishStatus={publishStatus}
+        subdomain={subdomain}
+        onChangeSubdomain={setSubdomain}
+        onToast={showToast}
+        onBack={() => navigate('/templates')}
+      />
+
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#14305A] text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-white flex items-center gap-2 animate-bounce">
+          <span className="material-symbols-outlined text-[20px] text-[#ffd84d]">info</span>
+          <span className="text-xs font-bold">{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Publish Success Modal */}
+      {showPublishSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="fixed inset-0" onClick={() => setShowPublishSuccessModal(false)} />
+          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden z-10 border border-zinc-200 animate-in zoom-in-95 duration-200">
+            {/* Header banner */}
+            <div className="bg-gradient-to-r from-[#14305A] via-[#1E4984] to-[#006876] text-white p-6 sm:p-7 text-center relative overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowPublishSuccessModal(false)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center mb-3 shadow-inner border border-white/20">
+                <span className="material-symbols-outlined text-3xl text-white/90">public</span>
+              </div>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-400/30 mb-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Published to Web
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight">Your Website is Live!</h2>
+              <p className="text-xs text-white/80 mt-1 max-w-sm mx-auto">
+                {siteTitle} is live on the internet and ready to view!
+              </p>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 sm:p-6 space-y-4 max-h-[65vh] overflow-y-auto">
+              {/* Copy URL Box */}
+              <div>
+                <label className="text-xs font-bold text-gray-700 block mb-1.5">Shareable Public URL</label>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl font-mono text-xs text-gray-800 truncate shadow-inner">
+                    {liveUrl}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 shadow-sm cursor-pointer ${
+                      copiedLink
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-zinc-900 text-white hover:bg-zinc-800'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[16px]">
+                      {copiedLink ? 'check' : 'content_copy'}
+                    </span>
+                    <span>{copiedLink ? 'Copied!' : 'Copy'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Instant Share Buttons */}
+              <div>
+                <label className="text-xs font-bold text-gray-700 block mb-2">Instant Share</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent(waShareMessage)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-[#25D366] text-white text-xs font-bold hover:brightness-105 transition-all shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-[17px]">chat</span>
+                    <span>WhatsApp</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={handleNativeShare}
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-gray-900 text-white text-xs font-bold hover:bg-black transition-all shadow-sm cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[17px]">share</span>
+                    <span>Share</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* QR Code */}
+              {qrCodeUrl && (
+                <div className="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 flex items-center gap-4">
+                  <img src={qrCodeUrl} alt="QR Code" className="w-20 h-20 bg-white p-1 rounded-xl shadow border border-gray-200 shrink-0" />
+                  <div className="space-y-0.5">
+                    <p className="text-xs font-bold text-gray-900">Scan to Open on Mobile</p>
+                    <p className="text-[11px] text-gray-500">
+                      Scan with any smartphone camera to view this website instantly.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Bottom Actions */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center gap-2">
+                <a
+                  href={liveUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full flex-1 py-3 px-4 bg-zinc-900 text-white font-bold text-xs rounded-xl hover:bg-zinc-800 shadow text-center flex items-center justify-center gap-1.5 transition-all"
+                >
+                  <span>Open Live Website</span>
+                  <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setShowPublishSuccessModal(false)}
+                  className="w-full sm:w-auto py-3 px-5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* UPI Payment Gate Modal for Studio View */}
+      <UpiPaymentModal
+        isOpen={showUpiModal}
+        onClose={() => setShowUpiModal(false)}
+        onSuccess={() => {
+          setIsUnlocked(true);
+          setShowUpiModal(false);
+          showToast(`Access granted to ${initialTemplate.name}! 🎉`);
+          handleSave(true);
+        }}
+        templateId={initialTemplate.id}
+        templateName={initialTemplate.name}
+        priceLabel={initialTemplate.priceLabel || `₹${initialTemplate.price || 99}`}
+        priceAmount={initialTemplate.price || 99}
+      />
+    </>
   );
 
   return (
@@ -1585,8 +1787,8 @@ export const WebsiteCreatorPage: React.FC = () => {
         }}
         templateId={initialTemplate.id}
         templateName={initialTemplate.name}
-        priceLabel={initialTemplate.priceLabel}
-        priceAmount={initialTemplate.price || 29}
+        priceLabel={initialTemplate.priceLabel || `₹${initialTemplate.price || 99}`}
+        priceAmount={initialTemplate.price || 99}
         userId={user?.id}
       />
 

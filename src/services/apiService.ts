@@ -1,4 +1,5 @@
 import { EventWebsite, EventData, User, UserProfile, UserSubscription, SavedDraft } from '@/types';
+import { auth } from '@/firebase';
 
 const TOKEN_STORAGE_KEY = 'tempo_session_token';
 
@@ -33,20 +34,46 @@ class ApiService {
     return this.token;
   }
 
+  /**
+   * Get a fresh Firebase ID token if the user is signed in.
+   * Falls back to the cached token if Firebase auth is unavailable.
+   */
+  private async getFreshToken(): Promise<string | null> {
+    try {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const freshToken = await currentUser.getIdToken();
+        this.token = freshToken;
+        return freshToken;
+      }
+    } catch {
+      // Fallback to cached token
+    }
+    return this.token;
+  }
+
   private async request<T>(path: string, options: RequestInit = {}): Promise<T> {
+    // Get a fresh Firebase ID token for each API request
+    const freshToken = await this.getFreshToken();
+
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...((options.headers as Record<string, string>) || {}),
     };
 
-    if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
+    if (freshToken) {
+      headers['Authorization'] = `Bearer ${freshToken}`;
     }
 
     const res = await fetch(`${this.baseUrl}${path}`, {
       ...options,
       headers,
     });
+
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error(`API endpoint ${path} returned non-JSON response (${contentType || 'empty'})`);
+    }
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
@@ -155,6 +182,9 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify(payload),
     });
+    if (!data?.website) {
+      throw new Error('API response missing website payload');
+    }
     return data.website;
   }
 
@@ -166,6 +196,9 @@ class ApiService {
       method: 'PUT',
       body: JSON.stringify(updates),
     });
+    if (!data?.website) {
+      throw new Error('API response missing website payload');
+    }
     return data.website;
   }
 

@@ -15,6 +15,7 @@ export const HomePage: React.FC = () => {
   const portfolioTemplates = templatesRegistry.filter((t) => t.category === 'portfolio');
   const featuredTemplates = portfolioTemplates.slice(0, 3);
   const birthdayTemplates = templatesRegistry.filter((t) => t.category === 'birthday');
+  const pinterestTemplates = templatesRegistry.filter((t) => t.category === 'pinterest');
 
   return (
     <div className="min-h-screen bg-surface flex flex-col antialiased">
@@ -381,6 +382,40 @@ export const HomePage: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
                   {birthdayTemplates.slice(0, 4).map((template) => (
+                    <TemplateCard
+                      key={template.id}
+                      template={template}
+                      onPreviewClick={(t) => setSelectedPreview(t)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Group 2: Pinterest Site */}
+          {pinterestTemplates.length > 0 && (
+            <section className="w-full" id="pinterest-site-section">
+              <div className="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-space-xs mb-space-md">
+                  <div>
+                    <h2 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+                      Pinterest Site
+                    </h2>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                      Full-stack Next.js 15 &amp; Supabase affiliate hub built for Pinterest traffic, multi-country Amazon stores, and campaign analytics (source in <code>pinterest-site/</code>).
+                    </p>
+                  </div>
+                  <Link
+                    to="/templates?category=pinterest"
+                    className="font-label-md text-label-md text-on-surface flex items-center gap-1 hover:text-on-surface-variant transition-colors whitespace-nowrap font-medium"
+                  >
+                    View Pinterest Site →
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+                  {pinterestTemplates.map((template) => (
                     <TemplateCard
                       key={template.id}
                       template={template}

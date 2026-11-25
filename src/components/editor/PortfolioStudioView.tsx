@@ -37,10 +37,39 @@ export const PortfolioStudioView: React.FC<PortfolioStudioViewProps> = ({
   onBack,
 }) => {
   const [viewportMode, setViewportMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [mobileTab, setMobileTab] = useState<'editor' | 'preview'>('editor');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const siteConfig = getPortfolioSiteConfig(template.id);
+  const liveUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/e/${subdomain || template.id}`
+    : `https://tempo-fbfbb.web.app/e/${subdomain || template.id}`;
+
+  const currentDisplayTitle = portfolioData?.title || eventData?.title || template.name;
+  const isPortfolioCat = template.category === 'portfolio' || template.id.includes('portfolio');
+  const isBirthdayCat = template.category === 'birthday' || template.id.includes('birthday');
+  const isWeddingCat = template.category === 'wedding' || template.id.includes('wedding');
+
+  const waShareMessage = isPortfolioCat
+    ? `Check out my portfolio: ${currentDisplayTitle} — ${liveUrl}`
+    : isBirthdayCat
+    ? `You're invited! ${currentDisplayTitle} — ${liveUrl}`
+    : isWeddingCat
+    ? `Save the date! ${currentDisplayTitle} — ${liveUrl}`
+    : `Check out our website: ${currentDisplayTitle} — ${liveUrl}`;
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(liveUrl);
+      setCopiedLink(true);
+      onToast('✓ Website link copied to clipboard!');
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch {
+      onToast('Failed to copy link.');
+    }
+  };
 
   // Generate and download standalone clean HTML
   const handleDownloadHtml = () => {
@@ -437,11 +466,43 @@ export const PortfolioStudioView: React.FC<PortfolioStudioViewProps> = ({
       </header>
       {/* END: TopNavigationBar */}
 
+      {/* Mobile Switcher Bar (Mobile only: lg:hidden) */}
+      <div className="lg:hidden flex items-center justify-center p-2 bg-zinc-100 border-b border-zinc-200 shrink-0 z-20">
+        <div className="inline-flex rounded-lg p-1 bg-zinc-200/90 text-xs font-semibold shadow-inner">
+          <button
+            type="button"
+            onClick={() => setMobileTab('editor')}
+            className={`px-4 py-1.5 rounded-md transition cursor-pointer flex items-center gap-1.5 ${
+              mobileTab === 'editor'
+                ? 'bg-white text-zinc-900 shadow-sm'
+                : 'text-zinc-600 hover:text-zinc-900'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[15px]">edit_note</span>
+            <span>Content Editor</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileTab('preview')}
+            className={`px-4 py-1.5 rounded-md transition cursor-pointer flex items-center gap-1.5 ${
+              mobileTab === 'preview'
+                ? 'bg-white text-zinc-900 shadow-sm'
+                : 'text-zinc-600 hover:text-zinc-900'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[15px]">visibility</span>
+            <span>Live Canvas</span>
+          </button>
+        </div>
+      </div>
+
       {/* BEGIN: MainWorkspaceLayout */}
       <main className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden min-h-0">
         {/* BEGIN: LeftInspectorColumn (Matching stitch_minimal_website_builder_panel/code.html) */}
         <aside
-          className="w-full lg:w-[460px] shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-zinc-200 flex flex-col h-auto lg:h-full overflow-hidden z-10"
+          className={`w-full lg:w-[460px] shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-zinc-200 flex-col h-auto lg:h-full overflow-hidden z-10 ${
+            mobileTab === 'editor' ? 'flex' : 'hidden lg:flex'
+          }`}
           data-purpose="content-inspector"
         >
           {/* Subheader / Live Sync Indicator */}
@@ -454,6 +515,77 @@ export const PortfolioStudioView: React.FC<PortfolioStudioViewProps> = ({
               </span>
             </div>
             <p className="text-xs text-zinc-500">Edit key copy and contact links for this template</p>
+          </div>
+
+          {/* Site Link & Public Sharing Section */}
+          <div className="px-5 py-3.5 bg-zinc-50/90 border-b border-zinc-200 shrink-0 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[16px] text-zinc-700">link</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-900">Site Link</span>
+              </div>
+              <span
+                className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide ${
+                  publishStatus === 'published'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    : 'bg-amber-100 text-amber-800 border border-amber-300'
+                }`}
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    publishStatus === 'published' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                  }`}
+                />
+                {publishStatus === 'published' ? 'Live & Published' : 'Unpublished Draft'}
+              </span>
+            </div>
+
+            {/* Public Link Box */}
+            <div className="flex items-center gap-1.5">
+              <div
+                className="flex-1 px-3 py-1.5 bg-white border border-zinc-200 rounded-lg font-mono text-[11px] text-zinc-800 truncate select-all shadow-2xs"
+                title={liveUrl}
+              >
+                {liveUrl}
+              </div>
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 shrink-0 cursor-pointer shadow-2xs ${
+                  copiedLink
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-zinc-900 text-white hover:bg-black'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[14px]">
+                  {copiedLink ? 'check' : 'content_copy'}
+                </span>
+                <span>{copiedLink ? 'Copied' : 'Copy'}</span>
+              </button>
+            </div>
+
+            {/* Quick Share Buttons: WhatsApp & Open Live */}
+            <div className="grid grid-cols-2 gap-2 pt-0.5">
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(waShareMessage)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg bg-[#25D366] hover:bg-[#20ba59] text-white text-[11px] font-bold transition-all shadow-2xs"
+              >
+                <span className="material-symbols-outlined text-[15px]">chat</span>
+                <span>Share via WhatsApp</span>
+              </a>
+
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg bg-white hover:bg-zinc-100 text-zinc-800 border border-zinc-200 text-[11px] font-semibold transition-all shadow-2xs"
+              >
+                <span>Open Live Site</span>
+                <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+              </a>
+            </div>
           </div>
 
           {/* Scrollable Form Container with 3 Accordions */}
@@ -501,7 +633,9 @@ export const PortfolioStudioView: React.FC<PortfolioStudioViewProps> = ({
 
         {/* BEGIN: RightCanvasPreview (Matching stitch_minimal_website_builder_panel/code.html) */}
         <section
-          className="flex-1 bg-zinc-100/80 flex flex-col min-h-[600px] lg:h-full overflow-hidden relative"
+          className={`flex-1 bg-zinc-100/80 flex-col min-h-[500px] lg:h-full overflow-hidden relative ${
+            mobileTab === 'preview' ? 'flex' : 'hidden lg:flex'
+          }`}
           data-purpose="live-canvas-preview-workspace"
         >
           {/* Canvas Top Control Bar */}
@@ -597,7 +731,7 @@ export const PortfolioStudioView: React.FC<PortfolioStudioViewProps> = ({
           </div>
 
           {/* Canvas Viewport Surface */}
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center">
+          <div className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-6 flex items-center justify-center min-h-0">
             {/* Live Rendered Web Page Frame (Browser Mockup Frame from code.html & Screenshot 2) */}
             <article
               className={`w-full bg-white border border-zinc-200/90 rounded-lg shadow-sm transition-all duration-300 overflow-hidden flex flex-col my-auto ${getContainerMaxWidth()}`}
@@ -624,7 +758,7 @@ export const PortfolioStudioView: React.FC<PortfolioStudioViewProps> = ({
               </div>
 
               {/* RENDERED WEBSITE CONTENT (Clean Live Preview with 100% fidelity) */}
-              <div className="flex-1 w-full h-full relative overflow-hidden bg-white">
+              <div className="flex-1 w-full h-full relative overflow-hidden bg-white min-h-[480px]">
                 {template.component ? (
                   <template.component data={liveEventData} isLivePreview={true} {...({ viewportMode } as any)} />
                 ) : (

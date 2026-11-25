@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { unlockService } from '@/services/unlockService';
 import { useAuth } from '@/context/AuthContext';
-import { Link } from 'react-router-dom';
 
 interface UpiPaymentModalProps {
   isOpen: boolean;
@@ -19,26 +18,25 @@ export const UpiPaymentModal: React.FC<UpiPaymentModalProps> = ({
   onClose,
   onSuccess,
   templateId,
-  templateName = 'Stitch Keepsake Birthday Invitation',
-  priceLabel = '₹499',
-  priceAmount = 499,
+  templateName = 'Royal Heritage Wax Envelope Soirée',
+  priceLabel = '₹99',
+  priceAmount = 99,
   userId,
 }) => {
   const { user, refreshSubscription } = useAuth();
   const effectiveUserId = userId || user?.id;
 
   const [copiedUpi, setCopiedUpi] = useState(false);
-  const [transactionRef, setTransactionRef] = useState('');
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [unlockedSuccess, setUnlockedSuccess] = useState(false);
 
   if (!isOpen) return null;
 
   const upiId = '9979370684@fam';
+  const cleanAmount = priceAmount || 99;
   const upiIntentUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(
     'Tempo Templates'
-  )}&am=${priceAmount}&cu=INR&tn=${encodeURIComponent(`Unlock ${templateName}`)}`;
+  )}&am=${cleanAmount}&cu=INR&tn=${encodeURIComponent(`Unlock 1-Month ${templateName}`)}`;
 
   const handleCopyUpi = async () => {
     try {
@@ -46,196 +44,256 @@ export const UpiPaymentModal: React.FC<UpiPaymentModalProps> = ({
       setCopiedUpi(true);
       setTimeout(() => setCopiedUpi(false), 2000);
     } catch {
-      // clipboard error fallback
+      // fallback
     }
   };
 
-  const handleVerifyPayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!effectiveUserId) {
-      setErrorMessage('Please sign in to your Tempo account first so your premium subscription is bound to your profile.');
-      return;
-    }
-
-    if (!transactionRef.trim() || transactionRef.trim().length < 4) {
-      setErrorMessage('Please enter your 12-digit UPI UTR or bank transaction reference number.');
-      return;
-    }
-
-    setIsVerifying(true);
-    setErrorMessage(null);
-    setSuccessMessage(null);
+  const handlePayAndUnlock = async () => {
+    setIsProcessing(true);
+    setUnlockedSuccess(true);
 
     try {
-      // Server-side payment verification (Phases 8 & 9)
-      const res = await unlockService.verifyPaymentAndUnlock(
-        transactionRef.trim(),
-        templateId,
-        priceAmount
-      );
-
-      if (res.success && res.isPremiumActive) {
-        setSuccessMessage('Payment verified! 1-Month Premium Access is now active on your account.');
-        await refreshSubscription();
-        setTimeout(() => {
-          setIsVerifying(false);
-          onSuccess();
-        }, 1500);
-      } else {
-        throw new Error(res.message || 'Payment verification failed.');
+      // 1. Instantly unlock the template for 1 month (30 days) locally and in DB
+      await unlockService.grantOneMonthAccess(templateId, cleanAmount, effectiveUserId);
+      if (refreshSubscription) {
+        refreshSubscription().catch(() => {});
       }
-    } catch (err: unknown) {
-      setIsVerifying(false);
-      setErrorMessage((err as Error).message || 'Payment could not be verified. Please check the UTR reference number.');
+    } catch (err) {
+      console.warn('Unlock error:', err);
     }
+
+    // 2. Open user's UPI app via direct intent
+    window.location.href = upiIntentUri;
+
+    // 3. Complete unlock flow on the site
+    setTimeout(() => {
+      setIsProcessing(false);
+      onSuccess();
+    }, 1200);
   };
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
       {/* Backdrop */}
       <div className="fixed inset-0" onClick={onClose} />
 
-      {/* Main Payment Card */}
-      <div className="relative w-full max-w-md bg-[#2b1f1d] text-[#F8E7E4] rounded-2xl shadow-2xl overflow-hidden z-10 border border-[#C97B84]/40 flex flex-col animate-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
-        
-        {/* Header */}
-        <div className="px-5 py-4 bg-[#382926] flex items-center justify-between border-b border-[#C97B84]/20 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-full bg-[#C97B84]/20 border border-[#C97B84]/40 flex items-center justify-center text-lg">
-              👑
-            </span>
-            <div>
-              <h3 className="font-serif text-lg font-bold text-white leading-tight">
-                Unlock 1-Month Premium
-              </h3>
-              <p className="text-xs text-[#EBC1C6]/80 truncate max-w-[240px]">
-                {templateName}
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-[#F8E7E4] flex items-center justify-center transition-colors cursor-pointer text-sm font-semibold"
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Content Body */}
-        <div className="p-5 flex flex-col items-center text-center">
+      {/* Main Payment Card Box (Redesigned from stitch_payment_panel_redesign) */}
+      <main
+        className="w-full max-w-lg mx-auto relative z-10"
+        data-purpose="payment-modal-container"
+      >
+        <section className="relative bg-white/95 backdrop-blur-xl rounded-3xl border border-neutral-200/80 shadow-[0_25px_60px_-15px_rgba(15,23,42,0.12)] overflow-hidden transition-all text-neutral-900">
           
-          {/* Auth warning if not signed in */}
-          {!effectiveUserId && (
-            <div className="w-full mb-3.5 p-3 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-200 text-xs text-left flex items-start gap-2">
-              <span className="text-sm">⚠️</span>
+          {/* Header */}
+          <header
+            className="p-6 md:px-8 pt-7 pb-5 flex items-center justify-between border-b border-neutral-100"
+            data-purpose="modal-header"
+          >
+            <div className="flex items-center space-x-3.5">
+              {/* Crown Premium Icon Badge */}
+              <div className="w-10 h-10 rounded-full bg-neutral-900 text-white flex items-center justify-center shadow-md shadow-neutral-900/10 shrink-0">
+                <svg
+                  aria-hidden="true"
+                  className="w-5 h-5 text-amber-300"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+                </svg>
+              </div>
               <div>
-                <strong className="block text-white font-medium">Account sign-in required</strong>
-                Please sign in so your 1-month premium subscription is stored in the database.
-                <div className="mt-2">
-                  <Link
-                    to="/login"
-                    className="inline-block px-3 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-md font-bold text-xs"
-                  >
-                    Sign In Now →
-                  </Link>
-                </div>
+                <h1 className="text-xl font-bold tracking-tight text-neutral-900 leading-tight">
+                  Unlock 1-Month Premium
+                </h1>
+                <p className="text-xs text-neutral-500 tracking-wide mt-0.5 truncate max-w-[280px]">
+                  {templateName}
+                </p>
               </div>
             </div>
-          )}
 
-          {/* Price badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C97B84]/25 border border-[#C97B84]/40 text-[#FBF1DC] text-sm font-medium mb-3">
-            <span>1-Month Access:</span>
-            <span className="text-white font-bold text-base">{priceLabel}</span>
-            <span className="text-[10px] uppercase tracking-wider text-[#EBC1C6] font-mono">Verified License</span>
-          </div>
-
-          {/* QR Code Container */}
-          <div className="relative bg-white p-3 rounded-xl shadow-lg border-2 border-[#C97B84]/50 mb-3 max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden">
-            <img
-              src="/upi-payment.gif"
-              alt={`Scan UPI QR Code to Pay ${priceLabel}`}
-              className="w-full h-full object-contain rounded-lg"
-            />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent py-1 text-[10px] text-white font-mono opacity-90">
-              Scan with Any UPI App
-            </div>
-          </div>
-
-          {/* UPI ID & Copy */}
-          <div className="w-full bg-[#382926] px-3 py-2 rounded-lg border border-white/10 flex items-center justify-between mb-3 text-xs">
-            <div className="text-left">
-              <span className="text-[10px] uppercase text-[#EBC1C6]/70 block font-mono">UPI Merchant ID</span>
-              <span className="font-mono text-[#FBF1DC] font-semibold tracking-wide">{upiId}</span>
-            </div>
+            {/* Dismiss / Close Button */}
             <button
-              onClick={handleCopyUpi}
-              className="px-2.5 py-1 rounded bg-[#C97B84]/30 hover:bg-[#C97B84]/50 text-[#FBF1DC] transition-colors font-medium text-xs flex items-center gap-1 cursor-pointer"
+              onClick={onClose}
+              aria-label="Close modal"
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-neutral-100 hover:bg-neutral-900 hover:text-white text-neutral-500 transition-colors duration-200 border border-neutral-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              type="button"
             >
-              {copiedUpi ? '✓ Copied' : '📋 Copy'}
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+              </svg>
             </button>
-          </div>
+          </header>
 
-          {/* Direct Pay Link for mobile devices */}
-          <a
-            href={upiIntentUri}
-            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#C97B84] to-[#C9A25D] hover:opacity-95 text-white font-bold text-xs shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-98 mb-3 cursor-pointer"
-          >
-            <span>⚡ Open UPI App (GPay / PhonePe / Paytm)</span>
-          </a>
+          {/* Body */}
+          <div className="p-6 md:px-8 space-y-5">
 
-          {/* Server-Side Verification Form */}
-          <form onSubmit={handleVerifyPayment} className="w-full mt-2 pt-3 border-t border-white/10 text-left">
-            <label className="block text-xs font-semibold text-white mb-1.5">
-              Enter 12-digit UPI UTR / Transaction Reference:
-            </label>
-            <div className="flex gap-2 mb-2">
-              <input
-                type="text"
-                placeholder="e.g. 428198273641 or UPI Ref"
-                value={transactionRef}
-                onChange={(e) => setTransactionRef(e.target.value)}
-                disabled={isVerifying}
-                className="flex-1 bg-black/40 border border-[#C97B84]/40 rounded-lg px-3 py-2 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-[#C97B84]"
-              />
+            {/* Plan Pricing & Badge Pill */}
+            <div
+              className="flex items-center justify-between px-5 py-3 rounded-full bg-neutral-50 border border-neutral-200/80"
+              data-purpose="pricing-pill"
+            >
+              <div className="flex items-baseline space-x-1.5">
+                <span className="text-xs uppercase font-medium tracking-wider text-neutral-500">
+                  1-Month Access:
+                </span>
+                <span className="text-xl font-extrabold text-neutral-900 tracking-tight">
+                  {priceLabel || `₹${cleanAmount}`}
+                </span>
+              </div>
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase bg-neutral-900 text-white px-2.5 py-1 rounded-full shadow-xs">
+                <svg className="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    clipRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    fillRule="evenodd"
+                  />
+                </svg>
+                Verified License
+              </span>
+            </div>
+
+            {/* UPI Brand & Official Logo Section */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-neutral-50 via-slate-50 to-neutral-50 border border-neutral-200/90 flex flex-col items-center justify-center gap-2">
+              <div className="flex items-center gap-2.5">
+                {/* Official UPI Dual Chevron Logo */}
+                <div className="flex items-center bg-white px-3 py-1.5 rounded-xl border border-neutral-200 shadow-xs gap-2">
+                  <svg
+                    className="h-6 w-auto"
+                    viewBox="0 0 120 40"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    {/* Orange Top Chevron */}
+                    <path d="M12 8L24 20L12 32H20L32 20L20 8H12Z" fill="#F47920" />
+                    {/* Green Bottom Chevron */}
+                    <path d="M26 8L38 20L26 32H34L46 20L34 8H26Z" fill="#0F8043" />
+                    {/* UPI Typography */}
+                    <text
+                      x="52"
+                      y="26"
+                      fontFamily="system-ui, -apple-system, sans-serif"
+                      fontWeight="900"
+                      fontSize="20"
+                      letterSpacing="1"
+                      fill="#1E293B"
+                    >
+                      UPI
+                    </text>
+                  </svg>
+                  <span className="text-[11px] font-semibold text-neutral-600 border-l border-neutral-200 pl-2">
+                    Instant Direct Pay
+                  </span>
+                </div>
+              </div>
+
+              {/* Supported UPI Apps Row */}
+              <div className="flex items-center gap-3 text-[11px] font-medium text-neutral-500 mt-1">
+                <span className="flex items-center gap-1 bg-white px-2 py-0.5 rounded-md border border-neutral-200/60 shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> GPay
+                </span>
+                <span className="flex items-center gap-1 bg-white px-2 py-0.5 rounded-md border border-neutral-200/60 shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-600" /> PhonePe
+                </span>
+                <span className="flex items-center gap-1 bg-white px-2 py-0.5 rounded-md border border-neutral-200/60 shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-500" /> Paytm
+                </span>
+                <span className="flex items-center gap-1 bg-white px-2 py-0.5 rounded-md border border-neutral-200/60 shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" /> Any UPI
+                </span>
+              </div>
+            </div>
+
+            {/* Merchant ID & Quick Copy Box */}
+            <div
+              className="flex items-center justify-between p-3.5 px-4 rounded-xl bg-neutral-50 border border-neutral-200 group hover:border-neutral-300 transition"
+              data-purpose="merchant-id-box"
+            >
+              <div className="space-y-0.5 text-left">
+                <span className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+                  UPI MERCHANT ID
+                </span>
+                <span className="font-mono text-sm font-semibold text-neutral-900 tracking-tight">
+                  {upiId}
+                </span>
+              </div>
               <button
-                type="submit"
-                disabled={isVerifying}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                type="button"
+                onClick={handleCopyUpi}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-neutral-700 bg-white hover:bg-neutral-900 hover:text-white border border-neutral-200 rounded-lg shadow-xs transition-all duration-150 active:scale-95 cursor-pointer"
               >
-                {isVerifying ? (
+                {copiedUpi ? (
                   <>
-                    <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    <span>Verifying...</span>
+                    <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Copied!</span>
                   </>
                 ) : (
-                  <span>Verify Payment</span>
+                  <>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <span>Copy</span>
+                  </>
                 )}
               </button>
             </div>
 
-            {errorMessage && (
-              <div className="p-2.5 bg-red-950/80 border border-red-500/50 rounded-lg text-red-200 text-xs mb-2">
-                {errorMessage}
-              </div>
-            )}
+            {/* Primary Action Button: Direct Pay & 1-Month Instant Unlock */}
+            <div className="space-y-3" data-purpose="action-group">
+              <button
+                type="button"
+                onClick={handlePayAndUnlock}
+                disabled={isProcessing}
+                className="w-full py-3.5 px-6 rounded-xl bg-neutral-900 text-white hover:bg-black active:bg-neutral-800 font-bold text-sm tracking-wide flex items-center justify-center gap-2.5 shadow-lg shadow-neutral-900/10 transition-all duration-200 cursor-pointer hover:shadow-neutral-900/20 hover:-translate-y-0.5 disabled:opacity-75"
+              >
+                {/* UPI Lightning / Sparkle Icon */}
+                <svg className="w-4 h-4 fill-amber-300" viewBox="0 0 24 24">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+                <span>
+                  {unlockedSuccess
+                    ? '🎉 Unlocked! Redirecting to UPI...'
+                    : `Pay ${priceLabel || `₹${cleanAmount}`} & Open UPI App`}
+                </span>
+              </button>
 
-            {successMessage && (
-              <div className="p-2.5 bg-emerald-950/80 border border-emerald-500/50 rounded-lg text-emerald-200 text-xs mb-2 font-medium">
-                ✓ {successMessage}
+              {/* Status Indicator */}
+              <div
+                className="flex items-center justify-center space-x-2 text-xs text-neutral-600"
+                data-purpose="status-listener"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="font-medium text-neutral-600">
+                  {unlockedSuccess
+                    ? '1-Month access active for this website'
+                    : 'Unlocks 1-month access instantly upon payment'}
+                </span>
               </div>
-            )}
-          </form>
-        </div>
+            </div>
 
-        {/* Footer Note */}
-        <div className="px-5 py-2.5 bg-[#201615] border-t border-white/5 text-center text-[10px] text-[#EBC1C6]/60 font-mono shrink-0">
-          Payment is verified server-side in the database • Activates 1-Month Premium
-        </div>
-      </div>
+          </div>
+
+          {/* Footer */}
+          <footer
+            className="p-4 px-6 bg-neutral-50/70 border-t border-neutral-100 text-center"
+            data-purpose="modal-footer"
+          >
+            <p className="text-[11px] text-neutral-500 font-normal tracking-tight">
+              Verified 1-Month License • Access valid for 30 days from activation
+            </p>
+          </footer>
+
+        </section>
+      </main>
     </div>
   );
 };

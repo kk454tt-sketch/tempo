@@ -11,10 +11,9 @@ export const HtmlIframeTemplate: React.FC<HtmlIframeTemplateProps> = ({
   htmlSrc,
   templateTitle = 'Interactive Template',
   data,
-  isLivePreview: _isLivePreview = false,
+  isLivePreview = false,
   onRsvpSubmit,
 }) => {
-  void _isLivePreview;
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,9 +27,25 @@ export const HtmlIframeTemplate: React.FC<HtmlIframeTemplateProps> = ({
         const doc = iframe.contentDocument || iframe.contentWindow?.document;
         if (!doc) return;
 
+        // Ensure viewport meta tag exists in iframe head for proper mobile responsiveness
+        if (doc.head && !doc.querySelector('meta[name="viewport"]')) {
+          const vp = doc.createElement('meta');
+          vp.name = 'viewport';
+          vp.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
+          doc.head.appendChild(vp);
+        }
+
         // Synchronize dynamic script configurations (e.g. window.__TEMPO_EVENT_CONFIG)
         const win = iframe.contentWindow as any;
-        if (win && win.__TEMPO_EVENT_CONFIG) {
+        if (win) {
+          if (!win.__TEMPO_EVENT_CONFIG) {
+            win.__TEMPO_EVENT_CONFIG = {};
+          }
+          const isPro = (data as any)?.proInteractiveEnabled !== false;
+          win.__TEMPO_EVENT_CONFIG.proInteractiveEnabled = isPro;
+          win.__TEMPO_EVENT_CONFIG.isPro = isPro;
+          win.__TEMPO_PRO_ACTIVE = isPro;
+
           if (data?.title) win.__TEMPO_EVENT_CONFIG.title = data.title;
           if (data?.tagline) win.__TEMPO_EVENT_CONFIG.script = data.tagline;
           if (data?.venue) win.__TEMPO_EVENT_CONFIG.venue = data.venue;
@@ -125,29 +140,33 @@ export const HtmlIframeTemplate: React.FC<HtmlIframeTemplateProps> = ({
           const dt = pf?.defaultTexts || {};
           void pf;
 
-          // Inject visual editing indicators stylesheet for live canvas interaction
+          // Inject visual editing indicators stylesheet for live canvas interaction only in editor preview
           let styleEl = doc.getElementById('tempo-canvas-editor-indicators') as HTMLStyleElement | null;
-          if (!styleEl && doc.head) {
-            styleEl = doc.createElement('style');
-            styleEl.id = 'tempo-canvas-editor-indicators';
-            styleEl.textContent = `
-              [data-sync-key] {
-                cursor: text !important;
-                transition: outline 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out !important;
-              }
-              [data-sync-key]:hover {
-                outline: 1.5px dashed #10b981 !important;
-                outline-offset: 3px !important;
-                background-color: rgba(16, 185, 129, 0.08) !important;
-              }
-              [data-sync-key]:focus {
-                outline: 2px solid #10b981 !important;
-                outline-offset: 3px !important;
-                box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25) !important;
-                background-color: rgba(16, 185, 129, 0.12) !important;
-              }
-            `;
-            doc.head.appendChild(styleEl);
+          if (isLivePreview) {
+            if (!styleEl && doc.head) {
+              styleEl = doc.createElement('style');
+              styleEl.id = 'tempo-canvas-editor-indicators';
+              styleEl.textContent = `
+                [data-sync-key] {
+                  cursor: text !important;
+                  transition: outline 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out !important;
+                }
+                [data-sync-key]:hover {
+                  outline: 1.5px dashed #10b981 !important;
+                  outline-offset: 3px !important;
+                  background-color: rgba(16, 185, 129, 0.08) !important;
+                }
+                [data-sync-key]:focus {
+                  outline: 2px solid #10b981 !important;
+                  outline-offset: 3px !important;
+                  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25) !important;
+                  background-color: rgba(16, 185, 129, 0.12) !important;
+                }
+              `;
+              doc.head.appendChild(styleEl);
+            }
+          } else if (styleEl) {
+            styleEl.remove();
           }
 
           // Helper for bidirectional synchronization of editable site canvas elements
@@ -232,37 +251,42 @@ export const HtmlIframeTemplate: React.FC<HtmlIframeTemplateProps> = ({
                 }
               }
 
-              // Bind click-to-edit and real-time live input dispatch once
-              if (!el.getAttribute('data-editable-bound')) {
-                el.setAttribute('data-editable-bound', 'true');
-                el.setAttribute('contenteditable', 'true');
-                el.setAttribute('spellcheck', 'false');
+              // Bind click-to-edit and real-time live input dispatch only in live preview mode
+              if (isLivePreview) {
+                if (!el.getAttribute('data-editable-bound')) {
+                  el.setAttribute('data-editable-bound', 'true');
+                  el.setAttribute('contenteditable', 'true');
+                  el.setAttribute('spellcheck', 'false');
 
-                // Prevent link navigation on click so user can edit link text
-                el.addEventListener('click', (e) => {
-                  if (el.tagName === 'A' || el.closest('a')) {
-                    e.preventDefault();
-                  }
-                });
+                  // Prevent link navigation on click so user can edit link text
+                  el.addEventListener('click', (e) => {
+                    if (el.tagName === 'A' || el.closest('a')) {
+                      e.preventDefault();
+                    }
+                  });
 
-                const sendInlineUpdate = () => {
-                  const liveText = el.innerText !== undefined ? el.innerText.trim() : (el.textContent || '').trim();
-                  try {
-                    window.parent.postMessage(
-                      {
-                        type: 'TEMPO_CANVAS_INLINE_EDIT',
-                        key,
-                        value: liveText,
-                      },
-                      '*'
-                    );
-                  } catch (err) {
-                    console.debug('Failed to postMessage:', err);
-                  }
-                };
+                  const sendInlineUpdate = () => {
+                    const liveText = el.innerText !== undefined ? el.innerText.trim() : (el.textContent || '').trim();
+                    try {
+                      window.parent.postMessage(
+                        {
+                          type: 'TEMPO_CANVAS_INLINE_EDIT',
+                          key,
+                          value: liveText,
+                        },
+                        '*'
+                      );
+                    } catch (err) {
+                      console.debug('Failed to postMessage:', err);
+                    }
+                  };
 
-                el.addEventListener('input', sendInlineUpdate);
-                el.addEventListener('blur', sendInlineUpdate);
+                  el.addEventListener('input', sendInlineUpdate);
+                  el.addEventListener('blur', sendInlineUpdate);
+                }
+              } else {
+                el.removeAttribute('contenteditable');
+                el.removeAttribute('title');
               }
             });
           };
@@ -286,9 +310,7 @@ export const HtmlIframeTemplate: React.FC<HtmlIframeTemplateProps> = ({
                 (el as HTMLImageElement).src = pf.customAvatarUrl!;
               });
             }
-          }
-
-          if (htmlSrc?.includes('web-developer') && pf?.card1?.characterImage) {
+          } else if (htmlSrc?.includes('web-developer') && pf?.card1?.characterImage) {
             const charEls = doc.querySelectorAll('img.char');
             charEls.forEach((el) => {
               (el as HTMLImageElement).src = pf.card1!.characterImage!;
@@ -916,7 +938,13 @@ export const HtmlIframeTemplate: React.FC<HtmlIframeTemplateProps> = ({
   void toggleMusic;
 
   return (
-    <div className="relative w-full h-full min-h-[520px] md:min-h-[760px] flex flex-col bg-stone-950 rounded-xl overflow-hidden shadow-2xl border border-stone-800/60">
+    <div
+      className={
+        isLivePreview
+          ? 'relative w-full h-full flex flex-col bg-stone-950 overflow-hidden'
+          : 'relative w-full h-full min-h-screen flex flex-col bg-stone-950 rounded-none border-0 shadow-none overflow-hidden m-0 p-0'
+      }
+    >
       {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-stone-950/90 backdrop-blur-sm text-stone-400">
@@ -937,7 +965,20 @@ export const HtmlIframeTemplate: React.FC<HtmlIframeTemplateProps> = ({
         />
       )}
 
-      {/* Audio Element for Music */}
+      {/* Floating Music Toggle Button */}
+      {musicUrl && (
+        <button
+          type="button"
+          onClick={toggleMusic}
+          aria-label={isPlayingMusic ? 'Mute background music' : 'Play background music'}
+          className="fixed bottom-4 right-4 z-40 w-10 h-10 rounded-full bg-stone-900/90 border border-stone-700 text-white flex items-center justify-center shadow-lg hover:bg-stone-800 transition-all cursor-pointer backdrop-blur-md"
+          title={isPlayingMusic ? 'Mute music' : 'Play music'}
+        >
+          <span className="material-symbols-outlined text-[18px] text-amber-400">
+            {isPlayingMusic ? 'music_note' : 'music_off'}
+          </span>
+        </button>
+      )}
 
       {/* Floating WhatsApp RSVP Modal */}
       {isRsvpModalOpen && (
@@ -1048,7 +1089,17 @@ export const HtmlIframeTemplate: React.FC<HtmlIframeTemplateProps> = ({
         ref={iframeRef}
         src={htmlSrc}
         title={data?.title || templateTitle}
-        className="w-full flex-1 min-h-[500px] md:min-h-[720px] border-0 bg-transparent"
+        className={
+          isLivePreview
+            ? 'w-full flex-1 h-full border-0 bg-transparent block'
+            : 'w-full flex-1 h-full min-h-screen border-0 bg-transparent block'
+        }
+        style={{
+          width: '100%',
+          height: isLivePreview ? '100%' : '100vh',
+          minHeight: isLivePreview ? '100%' : '100vh',
+          border: 'none',
+        }}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads"
       />

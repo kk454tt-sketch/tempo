@@ -1,63 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase, isSupabaseConfigured } from '@/services/supabase';
+import { useAuth } from '@/context/AuthContext';
 
+/**
+ * AuthCallbackPage — Legacy callback route.
+ *
+ * With Firebase Auth (popup-based Google sign-in), OAuth callbacks are handled
+ * internally by the Firebase SDK, so this page simply waits for the auth state
+ * to settle and redirects the user to /templates.
+ *
+ * Kept as a valid route so that any external redirect URLs
+ * or bookmarked /auth/callback links still land gracefully.
+ */
 export const AuthCallbackPage: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, isLoading } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleAuthCallback = async () => {
-      try {
-        if (!isSupabaseConfigured) {
-          navigate('/templates', { replace: true });
-          return;
-        }
+    // If auth state is already settled and user is authenticated, redirect immediately
+    if (!isLoading && isAuthenticated) {
+      navigate('/templates', { replace: true });
+      return;
+    }
 
-        // Support Supabase PKCE flow with code query param
-        const searchParams = new URLSearchParams(window.location.search);
-        const code = searchParams.get('code');
-        if (code) {
-          try {
-            await supabase.auth.exchangeCodeForSession(code);
-          } catch (e) {
-            console.warn('PKCE exchange error, falling back to getSession:', e);
-          }
-        }
-
-        const { data, error: sessionErr } = await supabase.auth.getSession();
-        if (sessionErr) throw sessionErr;
-
-        if (data.session) {
-          // Successfully established session
-          navigate('/templates', { replace: true });
-        } else {
-          // If no immediate session, give onAuthStateChange a brief moment
-          const { data: authListener } = supabase.auth.onAuthStateChange(
-            (_event, session) => {
-              if (session) {
-                authListener.subscription.unsubscribe();
-                navigate('/templates', { replace: true });
-              }
-            }
-          );
-
-          setTimeout(() => {
-            authListener.subscription.unsubscribe();
-            navigate('/templates', { replace: true });
-          }, 1500);
-        }
-      } catch (err) {
-        console.error('Error handling auth callback:', err);
-        setError((err as Error).message || 'Authentication callback failed.');
+    // If auth state is settled but no user, wait briefly in case of late propagation
+    if (!isLoading && !isAuthenticated) {
+      const timeout = setTimeout(() => {
+        // Still no user after waiting — redirect to login
+        setError('No active session found. Redirecting to login...');
         setTimeout(() => {
           navigate('/login', { replace: true });
-        }, 3000);
-      }
-    };
+        }, 1500);
+      }, 2000);
 
-    handleAuthCallback();
-  }, [navigate]);
+      return () => clearTimeout(timeout);
+    }
+  }, [isLoading, isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-space-xl text-center">
@@ -84,4 +63,3 @@ export const AuthCallbackPage: React.FC = () => {
     </div>
   );
 };
-

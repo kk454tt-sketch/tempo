@@ -6,6 +6,7 @@ export type EventCategory =
   | 'birthday'
   | 'wedding'
   | 'portfolio'
+  | 'pinterest'
   | 'business'
   | 'restaurant'
   | 'events'

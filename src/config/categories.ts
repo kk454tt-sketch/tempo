@@ -10,6 +10,7 @@ export const eventCategories: CategoryFilterItem[] = [
   { id: 'all', label: 'All' },
   { id: 'portfolio', label: 'Portfolio' },
   { id: 'birthday', label: 'Birthday' },
+  { id: 'pinterest', label: 'Pinterest Site' },
 ];
 
 export interface MomentGridItem {
@@ -37,5 +38,13 @@ export const momentCategories: MomentGridItem[] = [
     subtitle: 'Keepsake envelopes, wax seals, music & party hubs',
     count: '7 Templates',
     imageUrl: '/templates/royal-luxury-envelope-poster.png',
+  },
+  {
+    number: '03',
+    category: 'pinterest',
+    title: 'Pinterest Site',
+    subtitle: 'Full-stack Next.js 15 + Supabase multi-country Amazon affiliate hub & analytics',
+    count: '1 Full-Stack Site',
+    imageUrl: '/templates/pinterest-site-poster.svg',
   },
 ];

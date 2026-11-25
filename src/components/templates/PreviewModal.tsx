@@ -86,7 +86,7 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ template, isOpen, on
             >
               {isFree
                 ? 'Use Free Template'
-                : unlockService.isTemplateUnlocked(template.id, false)
+                : unlockService.isTemplateUnlocked(template.id, false, user?.id)
                 ? 'Customize (Unlocked ✓)'
                 : `Customize — ${template.priceLabel || `$${template.price}`}`}
             </button>
@@ -169,8 +169,8 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ template, isOpen, on
         }}
         templateId={template.id}
         templateName={template.name}
-        priceLabel={template.priceLabel}
-        priceAmount={template.price || 29}
+        priceLabel={template.priceLabel || `₹${template.price || 99}`}
+        priceAmount={template.price || 99}
         userId={user?.id}
       />
     </div>

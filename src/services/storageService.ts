@@ -1,6 +1,5 @@
 import { EventPhoto } from '@/types';
 import { validateImageUpload } from '@/utils/validation';
-import { isSupabaseConfigured, supabase } from '@/services/supabase';
 
 export interface StorageBucketStatus {
   hasBucket: boolean;
@@ -9,72 +8,21 @@ export interface StorageBucketStatus {
 }
 
 class StorageService {
-  private cachedBucketStatus: StorageBucketStatus | null = null;
-  private lastBucketCheck = 0;
-
   /**
-   * Proactively discover if any Supabase storage bucket exists and is accessible.
+   * Status check for cloud storage.
+   * Direct image URLs, curated presets, and local previews are fully supported.
    */
   public async checkStorageBucket(): Promise<StorageBucketStatus> {
-    const now = Date.now();
-    // Cache result for 30 seconds to avoid excessive network requests
-    if (this.cachedBucketStatus && now - this.lastBucketCheck < 30000) {
-      return this.cachedBucketStatus;
-    }
-
-    if (!isSupabaseConfigured) {
-      const status: StorageBucketStatus = {
-        hasBucket: false,
-        bucketName: null,
-        message: 'Supabase credentials not configured.',
-      };
-      this.cachedBucketStatus = status;
-      this.lastBucketCheck = now;
-      return status;
-    }
-
-    try {
-      const { data, error } = await supabase.storage.listBuckets();
-      if (error || !data || data.length === 0) {
-        const status: StorageBucketStatus = {
-          hasBucket: false,
-          bucketName: null,
-          message: 'No storage bucket found in Supabase. Direct image URLs, curated presets, and local photo previews are enabled.',
-        };
-        this.cachedBucketStatus = status;
-        this.lastBucketCheck = now;
-        return status;
-      }
-
-      // Prioritize tempo-event-media, images, or first accessible bucket
-      const preferred = data.find((b) => b.name === 'tempo-event-media') ||
-                        data.find((b) => b.name === 'images') ||
-                        data.find((b) => b.name === 'public') ||
-                        data[0];
-
-      const status: StorageBucketStatus = {
-        hasBucket: true,
-        bucketName: preferred.name,
-        message: `Connected to Supabase storage bucket: "${preferred.name}"`,
-      };
-      this.cachedBucketStatus = status;
-      this.lastBucketCheck = now;
-      return status;
-    } catch {
-      const status: StorageBucketStatus = {
-        hasBucket: false,
-        bucketName: null,
-        message: 'No storage bucket accessible. Direct image URLs & curated presets are enabled.',
-      };
-      this.cachedBucketStatus = status;
-      this.lastBucketCheck = now;
-      return status;
-    }
+    return {
+      hasBucket: false,
+      bucketName: null,
+      message: 'Direct image URLs, curated presets, and local photo previews are enabled.',
+    };
   }
 
   /**
-   * Upload an image file. If no bucket exists in Supabase, returns a clear error
-   * instructing the user or allowing direct URL / preset selection.
+   * Upload an image file. If cloud storage is not configured, signals noBucket
+   * so the caller seamlessly loads the image as a local preview.
    */
   public async uploadImage(file: File): Promise<{ success: boolean; photo?: EventPhoto; noBucket?: boolean; error?: string }> {
     const validation = validateImageUpload(file);
@@ -82,48 +30,13 @@ class StorageService {
       return { success: false, error: validation.error };
     }
 
-    // Step 1: Detect available storage bucket
-    const bucketStatus = await this.checkStorageBucket();
-    if (!bucketStatus.hasBucket || !bucketStatus.bucketName) {
-      return {
-        success: false,
-        noBucket: true,
-        error: 'No Supabase storage bucket found. Without a storage bucket in Supabase, files cannot be stored in the cloud. Please enter a direct image URL, choose a photography preset, or create a public bucket in your Supabase dashboard.',
-      };
-    }
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      const userId = user?.id || 'public-creator';
-      const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-      const objectPath = `${userId}/${crypto.randomUUID()}.${extension}`;
-
-      const { error: uploadError } = await supabase.storage.from(bucketStatus.bucketName).upload(objectPath, file, {
-        cacheControl: '31536000',
-        upsert: false,
-        contentType: file.type,
-      });
-
-      if (uploadError) {
-        return {
-          success: false,
-          error: `Upload to bucket "${bucketStatus.bucketName}" failed: ${uploadError.message}`,
-        };
-      }
-
-      const { data: { publicUrl } } = supabase.storage.from(bucketStatus.bucketName).getPublicUrl(objectPath);
-      const photo: EventPhoto = {
-        id: objectPath,
-        url: publicUrl,
-        caption: file.name.replace(/\.[^/.]+$/, ''),
-        isCover: false,
-        altText: file.name,
-      };
-
-      return { success: true, photo };
-    } catch (err) {
-      return { success: false, error: err instanceof Error ? err.message : 'Image upload failed' };
-    }
+    // Cloud storage is intentionally omitted (no Blaze billing required).
+    // Signal noBucket to trigger instant high-quality local file preview.
+    return {
+      success: false,
+      noBucket: true,
+      error: 'Direct image URLs, photography presets, or instant local previews are enabled.',
+    };
   }
 
   /**
@@ -290,12 +203,8 @@ class StorageService {
     ];
   }
 
-  public async deleteImage(photoId: string): Promise<boolean> {
-    if (!isSupabaseConfigured || !photoId.includes('/')) return false;
-    const bucketStatus = await this.checkStorageBucket();
-    if (!bucketStatus.hasBucket || !bucketStatus.bucketName) return false;
-    const { error } = await supabase.storage.from(bucketStatus.bucketName).remove([photoId]);
-    return !error;
+  public async deleteImage(_photoId: string): Promise<boolean> {
+    return false;
   }
 }
 
