@@ -220,7 +220,11 @@ export const TemplateDetailPage: React.FC = () => {
                       <span className="font-display-hero text-headline-xl text-on-surface font-medium tracking-tight">
                         {isFree ? 'FREE' : template.priceLabel || `$${template.price}`}
                       </span>
-                      {!isFree && <span className="font-body-sm text-body-sm text-on-surface-variant">USD</span>}
+                      {!isFree && (
+                        <span className="font-body-sm text-body-sm text-on-surface-variant">
+                          {template.priceLabel?.includes('₹') ? 'INR' : 'USD'}
+                        </span>
+                      )}
                     </div>
                     <p className="font-label-sm text-label-sm text-on-tertiary-container font-medium mt-0.5">
                       {isFree ? 'Free license · Instant clone' : 'One-time purchase · Lifetime source updates'}

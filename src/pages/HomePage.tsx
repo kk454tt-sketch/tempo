@@ -99,13 +99,13 @@ export const HomePage: React.FC = () => {
                     3D Motion · Character Art
                   </span>
                 </div>
-                <div className="p-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">3D in Motion</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">3D Character Artist &amp; Animator</p>
+                  <div className="p-4 flex items-center justify-between">
+                    <div>
+                      <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">3D in Motion</p>
+                      <p className="font-body-sm text-body-sm text-on-surface-variant">3D Character Artist &amp; Animator</p>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-label-md text-label-md font-bold">₹149</span>
                   </div>
-                  <span className="font-label-md text-label-md text-emerald-600 font-bold">FREE</span>
-                </div>
               </div>
 
               {/* Card 1: CENTERPIECE (3D Web Developer Portfolio) */}
@@ -186,7 +186,7 @@ export const HomePage: React.FC = () => {
                     <p className="font-headline-sm text-headline-sm text-on-surface leading-tight">Motion Graphics</p>
                     <p className="font-body-sm text-body-sm text-on-surface-variant">Cinematic Reel &amp; Kinetic FX</p>
                   </div>
-                  <span className="font-label-md text-label-md text-emerald-600 font-bold">FREE</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-label-md text-label-md font-bold">₹199</span>
                 </div>
               </div>
             </div>
